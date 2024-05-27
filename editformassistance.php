@@ -140,32 +140,32 @@ if(isset($_POST['email'])) {
       
         <div class="user-details">
           <div class="input-box">
-            <span class="details"> Date </span>
-            <input type="date" id="calendar" name="Date" required value="<?php echo $record['Date']; ?>"/>
+            <span class="details"> Date of Application</span>
+             <span id="calendar"><?php echo $record['Date']; ?></span>
+
         </div>
 
         <div class="input-box">
           <span class="details">Time</span>
-            <input type="text" id="time" required value="<?php echo $record['transaction_time']; ?>" name="time">
+          <span id="time"><?php echo date("h:i A", strtotime($record['transaction_time'])); ?></span>
             <input type="hidden" required value="<?php echo $record['Beneficiary_ID']; ?>" name="Beneficiary_ID" disabled/>
         </div>
           
 
         <div class="user-details">
           <div class="input-box">
-            <span class="details"> Last Name </span>
-            <input type="text" required value="<?php echo $record['Lastname']; ?>" name="Lastname" disabled/>
-        </div>
-
-          <div class="input-box">
+            <span class="details"> Full Name </span>
+            <span class="details"><?php echo $record['Firstname'] . " " . $record['Lastname']; ?></span>
+  </div>
+       <!--   <div class="input-box">
             <span class="details"> First Name </span>
-            <input type="text" required value="<?php echo $record['Firstname']; ?>" name="Firstname" disabled/>
+            <input type="text" required value="  php echo $record['Firstname']; " name="Firstname" disabled/>
           </div>
           <div class="user-details">
           <div class="input-box">
             <span class="details"> City </span>
             <input type="text" required value="<?php echo $record['CityMunicipality']; ?>" name="CityMunicipality" disabled/>
-          </div>
+          </div>-->
 
           <div class="input-box">
             <span class="details"> Transaction Type </span>
@@ -272,6 +272,14 @@ foreach ($status as $status) {
       
             document.getElementById("confirmed").value = "no";    }
 }
+
+    document.getElementById('time').addEventListener('input', function() {
+        var timeInput = document.getElementById('time').value;
+        var time = new Date('1970-01-01T' + timeInput);
+        var formattedTime = time.toLocaleTimeString('en-US', {hour: 'numeric', minute: 'numeric', hour12: true});
+        document.getElementById('time').value = formattedTime;
+    });
+
 
 
 </script>
