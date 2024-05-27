@@ -94,17 +94,15 @@
 
         
     <div class = "container">
-        <div class="box form-box">
 
-            <header>Change Profile</header>
+            <header>Change Profile </header>
          
           
-            <form action="#" method= "POST" onload="populateBarangays() " >
+            <form action="#" class="form" method= "POST" onload="populateBarangays()" >
             <div class="field input">
                     
-                    
+                <div class = "column">
                     <input type="hidden" name="userId" value="<?php echo "{$res_ID['Id']}"; ?>">                  
-                </div>
                 <div class="field input">
                     <label for = "Lastname">Last Name</label>
                     <input type="text" name="Lastname" id="Lastname"  autocomplete="off" value="<?php echo "{$res_ID['Lastname']}"; ?>"  required>                      
@@ -117,6 +115,8 @@
                     <label for = "Middlename">Middle Name</label>
                     <input type="text" name="Middlename" id="Middlename" autocomplete="off" value="<?php echo "{$res_ID['Middlename']}"; ?>" required>                 
                 </div>
+                </div>
+                <div class = "column">
                 <div class="field input">
                     <label for = "Birthday">Birthday</label>
                     <input type="date" name="Birthday" id="Birthday"value="<?php echo "{$res_ID['Birthday']}"; ?>" required> 
@@ -124,12 +124,16 @@
                 <div class="field input">
                     <label for = "Contactnumber">Contact Number</label>
                     <input type="text" name="Contactnumber" id="Contactnumber" autocomplete="off"value="<?php echo "{$res_ID['Contactnumber']}"; ?>" required>
-
                 </div>
                 <div class="field input">
                     <label for = "Province">Province</label>
                     <input type="text" name="Province" id="Province" value="Bataan"value="<?php echo "{$res_ID['Middlename']}"; ?>" required>
-                 
+                </div>
+                </div>
+                <div class = "column">
+                <div class="field input">
+                    <label for = "HousenoStreet">House No /Street</label>
+                    <input type="text" name="HousenoStreet" id="HousenoStreet" autocomplete="off"value="<?php echo "{$res_ID['HousenoStreet']}"; ?>" required>  
                 </div>
                 <div class="field input">
                     <label for = "CityMunicipality">City/Municipality</label>
@@ -243,32 +247,21 @@
                 }
               
                 </script>
-
-
-                <div class="field input">
-
-                    <label for = "HousenoStreet">House No /Street</label>
-                    <input type="text" name="HousenoStreet" id="HousenoStreet" autocomplete="off"value="<?php echo "{$res_ID['HousenoStreet']}"; ?>" required>  
-                    
-               
                 </div>
+                <div class = "column">
                 <div class="field input">
                     <label for = "Email">Email</label>
                     <input type="text" name="Email" id="Email" autocomplete="off"value="<?php echo "{$res_ID['Email']}"; ?>">       
-                 
                 </div>
                 <div class="field input">
                     <label for = "Username">Username</label>
                     <input type="text" name="Username" id="Username" autocomplete="off"value="<?php echo "{$res_ID['Username']}"; ?>" required>  
-                   
-                 
                 </div>
                 <div class="field input">
                     <label for = "Password">Password</label>
                     <input type="password" name="Password" id="Password" autocomplete="off"value="<?php echo "{$res_ID['Password']}"; ?>" required>           
-                     
                 </div>
-
+                </div>
                 <input type="hidden" name="confirmed" id="confirmed" value="no">
                 <div class="field">
                 <input type="submit" class="btn"  name="update" value="Update" onclick="showConfirmation()" required>
