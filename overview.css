@@ -241,7 +241,7 @@ html ::-webkit-scrollbar {
   text-align: center;
   border-radius: 10px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0.7, 0.7);
-  cursor: pointer;
+ 
   color: black;
 }
 
@@ -328,7 +328,7 @@ h1 {
   text-align: center;
   border-radius: 10px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0.7, 0.7);
-  cursor: pointer;
+ 
   color: black;
 }
 
@@ -378,7 +378,7 @@ h1 {
   text-align: center;
   border-radius: 10px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0.7, 0.7);
-  cursor: pointer;
+ 
   color: black;
 }
 

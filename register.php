@@ -154,8 +154,8 @@ date_default_timezone_set('Asia/Manila');
 $currentDateTime = date('Y-m-d H:i:s');
 
 // Construct the SQL query to insert data into the database
-$query = "INSERT INTO users (Lastname, Firstname, Middlename, Birthday, Contactnumber, Province, CityMunicipality, Barangay, HousenoStreet, Email, Username, Password, userIDpic, signup_time,status, verification_code) 
-          VALUES ('$Lastname', '$Firstname', '$Middlename', '$Birthday', '$Contactnumber', '$Province', '$CityMunicipality', '$Barangay', '$HousenoStreet', '$Email', '$Username', '$Password', '$newImageName', '$currentDateTime','0', '$verification_code')";
+$query = "INSERT INTO users (Lastname, Firstname, Middlename, Birthday, Contactnumber, Province, CityMunicipality, Barangay, HousenoStreet, Email, Username, Password,  signup_time,status, verification_code) 
+          VALUES ('$Lastname', '$Firstname', '$Middlename', '$Birthday', '$Contactnumber', '$Province', '$CityMunicipality', '$Barangay', '$HousenoStreet', '$Email', '$Username', '$Password', '$currentDateTime','0', '$verification_code')";
 
 if(mysqli_query($con, $query)){
   if ($result) {
@@ -406,11 +406,7 @@ barangayDropdown.setAttribute("name", "Barangay");
                     <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $passError ?></p>                    
                 </div>
   
-                   <div class="field">
-                   <label for = "Profile" style="font-size: 18px;">Profile Picture</label>
-                    <input type="file" class="images" name="image" id="img" accept=".jpg, .jpeg, .png "value=""><br>      
-                      <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $profileError ?></p>
-                     </div>
+                  
                      <form class="form-inline">
        
                 <div class="field">
@@ -428,31 +424,7 @@ barangayDropdown.setAttribute("name", "Barangay");
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
-    var selDiv="";
-    var storedFiles=[];
-    $(document).ready(function(){
-        $("#img").on("change", handleFileSelect);
-        selDiv=$("#selectedBanner");
-        
-    });
-    function handleFileSelect(e){
-        var files=e.target.files;
-        var fileArr= Array.prototype.slice.call(files);
-        fileArr.forEach(function(f){
-            if(!f.type.match("image.*")){
-                return;
-            }
-            storedFiles.push(f);
-            
-            var reader=new FileReader();
-            reader.onload= function (e){
-                var html='<img src="'+ e.target.result + "\" data-file='" + f.name +"' class='avatar rounded lg' alt='Category Image' height='200px' width='200px'>";
-                selDiv.html(html);
-                
-            };
-            reader.readAsDataURL(f);
-        });
-    }
+  
  
         function togglePasswordVisibility() {
             const passwordField = document.getElementById('password');
