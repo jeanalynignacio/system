@@ -1,0 +1,115 @@
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Arial';   
+}
+body{
+
+    background-size: cover;
+    background-repeat: no-repeat;
+      background-attachment: fixed;
+      display: flex;
+}
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 90vh;
+   margin-left: 35%;
+   margin-right: 35%;
+}
+.box{
+    margin: 120px 10px 20px 20px;
+    background: #fdfdfd;
+    
+    flex-direction: column;
+    padding: 25px 25px;
+    border-radius: 20px;
+    box-shadow: 0 0 128px 0  rgba(0, 0, 0, 0.1),
+                0 32px 64px -48px rgba(0, 0, 0, 0.5);               
+}
+.form-box{
+    width: 450px;
+    margin: 120px 10px 20px 20px;
+}
+h3{
+    color:#4b4b45; 
+    margin-bottom: 10px;
+}
+.form-box header{
+    font-size: 20px;
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e6e6e6;
+    margin-bottom: 10px;
+    color: #636a70;  
+    font-size: 16px; 
+     
+}
+.form-box form .field{
+    display: flex;
+    margin-bottom: 10px;
+    flex-direction: column;
+}
+.form-box form .input {
+    height: 40px;
+    width: 100%;
+    font-size: 25px;
+    padding: 0 10px;
+   align-items: center;
+    justify-content: center;
+    outline: none;
+}
+
+.btn1{
+    height: 50px;
+    background:#4187c9;
+    border: 0;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all .3s;
+    margin-top: 10px;
+    padding: 0px 10px;
+}
+
+.btn1:hover{
+    height: 50px;
+    background: #6d9cc9;
+    border: 0;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all .3s;
+    margin-top: 10px;
+    padding: 0px 10px;
+}
+.btn2{
+    height: 50px;
+    background: #4187c9;
+    border: 0;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all .3s;
+    margin-top: 10px;
+    padding: 0px 10px;
+}
+
+.btn2:hover{
+    height: 50px;
+    background: #6d9cc9;
+    border: 0;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all .3s;
+    margin-top: 10px;
+    padding: 0px 10px;
+}

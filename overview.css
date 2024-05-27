@@ -1,0 +1,470 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;1,600&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  color: white;
+}
+
+body {
+  background-color: #1477d2;
+  height: 100%;
+}
+
+.all-content {
+  background: #1477d2;
+}
+
+html ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html ::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 10px;
+}
+
+html ::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* navbar start */
+
+#navbar {
+  background-color: white;
+  height: 150px;
+}
+
+#logo img {
+  border-radius: 10px;
+  width: 60px;
+  margin-left: 5px;
+}
+
+.navbar-nav {
+  margin-left: 50px;
+  
+}
+
+.nav-item .nav-link {
+  color: white;
+  margin-left: 10px;
+  font-weight: bold;
+  transition: 0.5s;
+}
+
+.nav-item .nav-link:hover {
+  background: #2b5074;
+  border-radius: 5px;
+  color: black;
+}
+
+#navbar form button {
+  background: black;
+  color: white;
+  border: 1px solid white;
+}
+
+.container-fluid .navbar-brand {
+  font-size: 18px;
+}
+/* navbar end */
+
+/* home section */
+
+#home {
+  margin-top: 100px;
+  width: 100%;
+  background: #1477d2;
+}
+
+#home h3 {
+  margin-top: 30px;
+  font-size: 50px;
+  color: white;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+#home p {
+  margin: 35px;
+  color: white;
+  margin-right: 50px;
+  font-size: 18px;
+  text-align: center;
+}
+
+#btn {
+  width: 150px;
+  height: 36px;
+  margin-top: 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  border: none;
+  transition: 0.5s ease;
+  cursor: pointer;
+}
+
+#home .card-container h3 {
+  font-size: 40px;
+  color: #1477d2;
+  text-align: center;
+  margin-bottom: auto;
+  margin-top: 40px;
+}
+
+#home .card-container p {
+  margin: 30px;
+  color: #1477d2;
+  margin-right: 50px;
+  font-size: 18px;
+  text-align: center;
+}
+
+#home .card-container {
+  height: auto;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  background: white;
+}
+
+#home .card {
+  width: 320px;
+  height: 600px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0.7, 0.7);
+  margin-left: 10px;
+  margin-bottom: 30px;
+}
+
+#home .card-content h3 {
+  margin-top: 10px;
+  font-size: 25px;
+  margin-bottom: 8px;
+  color: black;
+  text-align: center;
+}
+
+#home .card img {
+  margin-top: 10px;
+  width: 315px;
+  height: 65%;
+}
+
+#home .card-content p {
+  margin: 15px;
+  color: black;
+  font-size: 15px;
+  line-height: 1.3;
+  text-align: center;
+}
+
+#home .container2 {
+  display: flex;
+  margin-bottom: 100px;
+}
+
+#home .container2 .card {
+  height: 500px;
+  margin-left: 200px;
+  box-shadow: 5px 5px 20px black;
+  overflow: hidden;
+  margin-bottom: 100px;
+}
+
+#home .container2 img {
+  height: 300px;
+  width: 300px;
+  border-radius: 3px;
+  margin-left: 10px;
+}
+
+#home .container2 .intro h3 {
+  color: black;
+  font-size: 30px;
+  text-align: center;
+  margin-left: 20px;
+}
+
+#home .container2 .intro {
+  height: 50px;
+  width: 350px;
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 100px;
+  color: black;
+  transition: 0.5s;
+}
+
+#home .container2 p {
+  font-size: 18px;
+  visibility: hidden;
+  color: black;
+  text-align: justify;
+  margin-left: 10px;
+}
+
+#home .container2 .card:hover {
+  cursor: pointer;
+}
+
+#home .container2 .card:hover .intro {
+  height: 220px;
+  bottom: 240px;
+  background: 240px;
+}
+
+#home .container2 .card:hover p {
+  opacity: 1;
+  visibility: visible;
+}
+
+#home .container2 .card:hover img {
+  transform: scale (1.1) rotate(0deg);
+}
+
+.services {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  background: #1477d2;
+}
+
+.service {
+  width: 300px;
+  height: 65vh;
+  margin: 10px;
+  background: white;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0.7, 0.7);
+  cursor: pointer;
+  color: black;
+}
+
+.service i {
+  font-size: 50px;
+  color: red;
+  margin-bottom: 18px;
+}
+
+.service h3 {
+  margin-top: 25px;
+  font-size: 25px;
+  word-wrap: break-word;
+  color: #cc0033;
+  transition: 0.5s;
+  text-align: center;
+  transition: 0.5s;
+}
+
+.service p {
+  font-size: 14px;
+  color: black;
+  text-align: justify;
+  transform: scale (2) rotate(0deg);
+  padding: 20px;
+}
+
+.service a {
+  text-decoration: none;
+  font-size: 17px;
+  color: #e01919;
+  margin-top: 20px;
+  border: #e01919;
+}
+
+.header h3 {
+  margin-top: 70px;
+  font-size: 40px;
+  color: white;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+h1 {
+  padding: 50px;
+  font-size: 40px;
+  color: #1477d2;
+  text-align: center;
+  margin-bottom: 50px;
+  background: white;
+}
+
+.head2 {
+  margin-top: 10px;
+  padding: 50px;
+  font-size: 40px;
+  color: white;
+  text-align: center;
+  margin-bottom: 50px;
+  background: #1477d2;
+}
+
+.insideHospital h3 {
+  margin-top: 10px;
+  font-size: 40px;
+  color: #1477d2;
+  text-align: center;
+}
+
+.insideHospital {
+  margin-top: -10px;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  background: white;
+  padding-bottom: 40px;
+}
+
+.hospitals {
+  width: 280px;
+  height: 40vh;
+  margin: 8px;
+  background: #1477d2;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0.7, 0.7);
+  cursor: pointer;
+  color: black;
+}
+
+.hospitals h3 {
+  margin-top: 10px;
+  font-size: 18px;
+  word-wrap: break-word;
+  color: #f7f5f2;
+  text-align: center;
+  padding: 15px;
+}
+
+.hospitals a {
+  text-decoration: none;
+  font-size: 17px;
+  margin-top: 20px;
+  border: #e01919;
+}
+
+.hospitals .card-image {
+  margin-top: 10px;
+  position: relative;
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  background: #e01919;
+  padding: 2px;
+  object-fit: cover;
+  border-radius: 70%;
+  border: 4px solid white;
+}
+
+.outsideHospital {
+  margin-top: -10px;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  background: #1477d2;
+  padding-bottom: 40px;
+}
+
+.outsideHospital .hospitals {
+  width: 280px;
+  height: 40vh;
+  margin: 8px;
+  background: white;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0.7, 0.7);
+  cursor: pointer;
+  color: black;
+}
+
+.outsideHospital .hospitals h3 {
+  margin-top: 10px;
+  font-size: 18px;
+  word-wrap: break-word;
+  color: #1477d2;
+  text-align: center;
+  padding: 15px;
+}
+
+.outsideHospital .hospitals a {
+  text-decoration: none;
+  font-size: 17px;
+  margin-top: 20px;
+  border: #e01919;
+}
+
+.outsideHospital .card-image {
+  margin-top: 10px;
+  position: relative;
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  background: #e01919;
+  padding: 2px;
+  object-fit: cover;
+  border-radius: 70%;
+  border: 4px solid white;
+}
+
+/* home section end */
+
+.footer {
+  padding: 20px;
+  text-align: center;
+  background: white;
+  margin-top: 20px;
+  height: 450px;
+}
+@media screen and (max-width: 80px) {
+  .leftcolumn,
+  .rightcolumn {
+    width: 100%;
+    padding: 0;
+  }
+}
+.styled {
+  font-size: 20px;
+  width: 250px;
+  color: white;
+  margin-bottom: -50px;
+  background: #e01919;
+  border-style: double;
+  border-radius: 15px;
+}
+
+.footer h1 {
+  margin-top: -20px;
+  font-size: 35px;
+  word-wrap: break-word;
+  color: black;
+  transition: 0.5s;
+  text-align: center;
+  transition: 0.5s;
+  padding: 15px;
+}
+
+.footer p {
+  color: black;
+  text-wrap: wrap;
+  line-height: 1.5px;
+  margin: 15px;
+}
+
+.footer img {
+  margin-top: -30px;
+  height: 200px;
+}
+
+.Location h3 {
+  margin-top: 0;
+  font-size: 18px;
+  color: black;
+  transition: 0.5s;
+  text-align: center;
+  transition: 0.5s;
+}

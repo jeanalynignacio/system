@@ -1,0 +1,193 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+}
+
+body {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+.input-container input[type="password"], 
+.input-container input[type="text"] {
+  width: 88%;
+  padding-right: 40px; /* Add padding to make space for the icon */
+  height: 35px;
+  border-radius: 8px;
+  margin-left: 10px;
+  font-size: 15px;
+  padding-left:10px;
+}
+.toggle-password {
+  position: absolute;
+  right: 10px;
+ 
+  transform: translateY(-50%);
+  cursor: pointer;
+  margin-right:60px;
+  margin-top: 20px;
+
+
+
+}
+label{
+  color: #fff;
+  margin-top: 20px;
+  display: grid;
+  font-weight: 250;
+  margin-bottom: 10px;
+  font-size: 15px;
+  margin-left: 20px;
+}
+.container {
+  max-width: 30%;
+  background: #1477d2;
+  background-position: center;
+  height: AUTO;
+  width: 340px;
+  background-size: 100vh;
+  padding: 25px 30px;
+  border-radius: 20px;
+  font-family: "Montserrat", sans-serif;
+  position: absolute;
+}
+
+.container form {
+  margin-top: 50px;
+}
+
+.container .title {
+  font-size: 30px;
+  font-weight: 500;
+  position: absolute;
+  color: #fff;
+  font-weight: bolder;
+  margin-bottom: 100px;
+  align-items: center;
+  margin-left:40px;
+}
+
+.container form .user-details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 20px 0 12px 0px;
+  align-items: center;
+}
+
+form .user-details .input-box {
+  margin: 10px;
+  width: calc(100% / 2 - 30px);
+}
+
+.user-details .input-box .details {
+  margin-top: 10px;
+  display: grid;
+  font-weight: 250;
+  margin-bottom: 5px;
+  font-size: medium;
+  color: #fff;
+
+ 
+  
+}
+
+.user-details .input-box input {
+  height: 35px;
+  width: 250px;
+  padding: 10px;
+  outline: none;
+  border-radius: 8px;
+  border: 1.5px solid black;
+  font-size: 13px;
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+}
+
+.user-details .input-box input:focus,
+.user-details .input-box input:valid {
+  border-color: #003399;
+}
+
+.user-details .input-box select:focus {
+  border-color: #003399;
+}
+
+/* form input */
+
+form input[type="date"] {
+  padding: 10px;
+}
+
+/* select box */
+.input-box select {
+  height: 35px;
+  width: 250px;
+  outline: none;
+  color: black;
+  cursor: pointer;
+  border-radius: 8px;
+  text-align: center;
+  margin-right: 50px;
+  border: 1.5px solid black;
+  font-size: 13px;
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+}
+
+/* button */
+
+.container .button {
+  height: 10%;
+}
+
+.container .button input {
+  height: 30px;
+  width: 150px;
+  outline: none;
+  color: #fff;
+  border: none;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  border-radius: 5px;
+  background: #003399;
+  justify-content: center;
+  align-items: center;
+  font-family: "Montserrat", sans-serif;
+  margin-top: 20px;
+  margin-left: 70px;
+
+}
+
+.container .button input:hover {
+  background: rgb(35, 176, 35);
+  cursor: pointer;
+}
+
+/* responsive */
+
+@media (max-width: 584px) {
+  .container {
+    max-width: 100%;
+  }
+
+  form .user-details .input-box {
+    margin-bottom: 15px;
+    width: 100%;
+    font-size: medium;
+  }
+
+  .container form .user-details {
+    max-height: 300px;
+    overflow-y: scroll;
+  }
+
+  .user-details::-webkit-scrollbar {
+    width: 0;
+  }
+}

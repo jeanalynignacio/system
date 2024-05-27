@@ -1,0 +1,223 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;1,600&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+
+}
+body {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+
+}
+
+.container {
+  max-width: 700px;
+  width: 100%;
+  background-color: rgb(50, 102, 155);
+  background-position: center;
+  height: 100vh;
+  width: 90vh;
+  background-size: 90vh;
+  padding: 25px 30px;
+  border-radius: 20px;
+  font-family: "Montserrat", sans-serif;
+  position: relative;
+}
+
+.container form {
+  margin-top: 50px;
+  margin-left: 25px;
+}
+
+.container .title {
+  font-size: 35px;
+  font-weight: 500;
+  position: relative;
+  color: #ffffff;
+  font-weight: bolder;
+  margin-bottom: -30px;
+}
+
+.container form .user-details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 20px 0 12px 0;
+}
+form .user-details .input-box {
+  margin: 5px;
+  width: calc(100% / 2 - 30px);
+}
+
+.user-details .input-box .details {
+  display: block;
+  font-weight: 250;
+  margin-bottom: 5px;
+  font-size: 15px;
+  color: #ffffff;
+  margin-top:20px;
+}
+
+.user-details .input-box input {
+  height: 35px;
+  width: 250px;
+  padding: 10px;
+  outline: none;
+  border-radius: 8px;
+  border: 1.5px solid #206ba8;
+  font-size: 13px;
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+  
+}
+
+.user-details .input-box input:focus,
+.user-details .input-box input:valid {
+  border-color: #003399;
+}
+
+.user-details .input-box select:focus {
+  border-color: #003399;
+  
+}
+
+.user-details .input-box input:disabled {
+  background-color:  #fff; /* Example background color */
+  color: #000000; /* Example text color */
+   border-color: #003399;
+}
+
+
+/* form input */
+
+form input[type="date"] {
+  padding: 10px;
+}
+
+/* select box */
+.input-box select {
+  height: 35px;
+  width: 250px;
+  outline: none;
+  color: black;
+  cursor: pointer;
+  border-radius: 8px;
+  text-align: center;
+  margin-right: 50px;
+  border: 1.5px solid black;
+  font-size: 13px;
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+}
+
+
+/* button */
+.container .button-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.container .button-row input,
+.container .cancel input,
+.container .btn2 input  {
+  height: 30px;
+  width: 150px;
+  outline: none;
+  color: #fdfdfd;
+  border: none;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  border-radius: 5px;
+  font-family: arial;
+  cursor: pointer;
+  margin-top: 30px;
+
+ 
+
+}
+
+
+.container .button-row input[type="submit"] {
+  background-color: #003399;
+  
+  
+}
+
+.button-row input[type="button"] {
+  background-color: #727272;
+  margin-left: 20px;
+
+}
+.button-row input[type="submit"]:hover {
+  background-color: #7095c9; /* Change background color on hover */
+}
+
+.button-row input[type="button"]:hover {
+  background-color: #b9b9b9; /* Change background color on hover */
+}
+/* Hide the cancel and submit buttons initially */
+#cancel.hidden, #submit.hidden {
+  display: none;
+}
+.btn2{
+  background-color: #5f9961; /* Green */
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+
+}
+#EnableFieldsButton{
+  background-color: #4CAF50; /* Green */
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+
+}
+/* Reduce opacity of disabled input fields */
+input[disabled] {
+  opacity: 2;
+}
+
+/* responsive */
+
+@media (max-width: 584px) {
+  .container {
+    max-width: 100%;
+  }
+
+  form .user-details .input-box {
+    margin-bottom: 15px;
+    width: 100%;
+  }
+
+  .container form .user-details {
+    max-height: 300px;
+    overflow-y: scroll;
+  }
+
+  .user-details::-webkit-scrollbar {
+    width: 0;
+  }
+}
