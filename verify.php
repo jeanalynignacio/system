@@ -22,7 +22,7 @@ if(isset($_GET['Email']) && isset($_GET['code'])){
                 </script>';
                   echo '<script>
                  setTimeout(function(){
-                    window.location.href="employee-login.php";
+                    window.location.href="login.php";
                 } , 5000);
               </script>
               </body>';
@@ -42,14 +42,14 @@ if(isset($_GET['Email']) && isset($_GET['code'])){
                  </head>
                  <body>
                      <div class="alert alert-warning" role="alert">
-                         Your account is already verified. You can <a href="employee-login.php" class="alert-link">login here</a>.
+                         Your account is already verified. You can <a href="login.php" class="alert-link">login here</a>.
                      </div>
                  </body>
                  </html>';
              }
              } else {
              echo '<div class="alert alert-danger" role="alert">
-             Invalid verification link or account already verified. Please <a href="employee-login.php" class="alert-link">login here</a>.
+             Invalid verification link or account already verified. Please <a href="login.php" class="alert-link">login here</a>.
              </div>';
              }
              } else {

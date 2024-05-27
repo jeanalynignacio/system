@@ -54,7 +54,7 @@
                 <a style = " color: #1477d2;" class="nav-link" href="#Services"  onclick="showServices('header')" > Services Available </a>
               </li>
               <li class="nav-item">
-                <a style = " color: white;" class="nav-link" href="#PartneredHospitals" onclick="showHospitals('partnered')"> Partnered Hospitals </a>
+                <a style = " color: #1477d2;" class="nav-link" href="#PartneredHospitals" onclick="showHospitals('partnered')"> Partnered Hospitals </a>
               </li>
               <li class="nav-item">
                 <a style = " color: #1477d2;" class="nav-link" href="#footer" onclick="showContact('footer')"> Contact </a>
@@ -63,7 +63,7 @@
               <a style = " color: #1477d2;" class="nav-link" href="register.php"> Sign Up </a>
               </li>
               <li class="nav-item">
-              <a style = " color: #1477d2;" class="nav-link" href="index.php"> Log in </a>
+              <a style = " color: #1477d2;" class="nav-link" href="login.php"> Log in </a>
               </li>
             </ul>
           </div>

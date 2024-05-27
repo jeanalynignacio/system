@@ -252,7 +252,7 @@ if(mysqli_query($con, $query)){
         </script>';
           echo '<script>
          setTimeout(function(){
-            window.location.href="index.php";
+            window.location.href="login.php";
         } , 5000);
       </script>
       </body>';
@@ -491,7 +491,7 @@ barangayDropdown.setAttribute("name", "Barangay");
 
        
                 <div class="links">
-            <center>    Already have an account? <a href="index.php">Log In here</a></center>
+            <center>    Already have an account? <a href="login.php">Log In here</a></center>
                 </div>
             </form>
             
