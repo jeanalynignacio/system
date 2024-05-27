@@ -112,9 +112,9 @@
 <body>
     <div class="all-content">
         <!-- navbar !-->
-        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #1477d2">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: white;">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#" id="logo" style="font-size: 15px; color: blue; background: white;">
+                <a class="navbar-brand" href="#" id="logo" style="font-size: 15px; color: #1477d2; background: white;">
                     <img src="images/background.png" /> Provincial Government of Bataan - Special Assistance Program
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
