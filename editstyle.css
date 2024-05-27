@@ -93,6 +93,7 @@ body {
 }
 .btn {
   height: 35px;
+  width: 200px;
   background: darkgreen;
   border: 0;
   border-radius: 5px;
@@ -100,7 +101,8 @@ body {
   font-size: 15px;
   cursor: pointer;
   transition: all 0.3s;
-  margin-left: 162%;
+  margin-top: 30px;
+  margin-left: 195%;
 }
 
 .btn:hover {
@@ -292,6 +294,7 @@ ul li a:hover {
     row-gap: 15px;
   }
 }
+
 
 
 
