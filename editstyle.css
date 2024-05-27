@@ -24,10 +24,10 @@ body {
 }
 
 .container header {
-  font-size: 1.5rem;
+  font-size: 3rem;
   color: white;
-  font-weight: 500;
   text-align: center;
+  margin-right: 100px;
 }
 
 .container .form {
@@ -100,9 +100,9 @@ body {
   font-size: 15px;
   cursor: pointer;
   transition: all 0.3s;
-  align-items: center;
-  padding: 0px 10px;
+  margin-left: 162%;
 }
+
 .btn:hover {
   background: rgb(83, 202, 83);
 }
@@ -239,7 +239,6 @@ ul li a:hover {
 .content .btn {
   width: 300px;
   height: 50px;
-
   font-size: 18px;
   background: darkblue;
   border: none;
@@ -293,5 +292,6 @@ ul li a:hover {
     row-gap: 15px;
   }
 }
+
 
 
