@@ -40,21 +40,12 @@
                     $Email = $_POST['Email'];
                     $Username = $_POST['Username'];
                     $Password = $_POST['password'];
-               //    $time = $_POST['time'];
-                //    $otp = $_POST ['Otp'];
-                //    $activation_code = $_POST['Activation_code'];
-                   
-                   
-                   
-                   
-                    
+           
+                  
                 $users1 = "SELECT * FROM users WHERE Username='$Username' LIMIT 1";
                 $results = mysqli_query($con, $users1);
                 $user1 = mysqli_fetch_assoc($results); 
-                   
-                    
-               
-                    
+                
                 $users = "SELECT * FROM users WHERE Email='$Email' LIMIT 1";
                 $results = mysqli_query($con, $users);
                 $user = mysqli_fetch_assoc($results);
@@ -149,62 +140,13 @@ $selectedDate = new DateTime($Birthday);
                       } elseif (!preg_match('/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9]).{8,}$/', $Password)) {
                         array_push($errors, $passError = "Password must be at least 8 characters long and contain at least one number, one uppercase letter, one lowercase letter, and one special character.");
                     }
-                    
-                    
-         $filesize=$_FILES["image"]["size"];
-         $maxFileSize = 5000000; // 5MB in bytes
-            if($_FILES["image"]["error"]===4)
-{
-   
-    array_push($errors, $profileError = "Image Does not Exist");
-}
-  
-
-elseif ($filesize > $maxFileSize) {
-    array_push($errors, $profileError = "Image size is too large. Please upload an image smaller than 5MB.");
-}
-
-else
-{
-    $filename=$_FILES["image"]["name"];
-    $filesize=$_FILES["image"]["size"];
-    $tmpName=$_FILES["image"]["tmp_name"];
-    
-    $validImageExtension=['jpg', 'jpeg','png'];
-    $imageExtension=explode('.',$filename);
-    $imageExtension=strtolower(end($imageExtension));
-    if(!in_array($imageExtension,$validImageExtension))
-    {
         
-         array_push($errors, $profileError = "Invalid Image Extension");
-    }
-  
-    else{
-        $newImageName=uniqid();
-        $newImageName .= '.' . $imageExtension;
-        
-       
         $check_user = "SELECT * FROM users WHERE Email='$Email' LIMIT 1";
                     $result = mysqli_query($con, $check_user);
-       /*            if(mysqli_num_rows) $user = mysqli_fetch_assoc($result);
-                    
-                    $status= $user['status'];
-                    
-                    if($status=='active')
-                    {
-                        echo"<script>alert('Email already registered')</script>";
-                    }else{
-                        $sqlUpdate="UPDATE users SET Lastname='".$Lastname."',Firstname='".$Firstname."',Middlename='".$Middlename."',Birthday='".$Birthday."',Contactnumber='".$Contactnumber."',  Province='".$Province."',CityMunicipality='".$CityMunicipality."',Barangay='".$Barangay."',HousenoStreet='".$HousenoStreet."',Email='".$Email."',Username='".$Username."',Password='".$Password."',userIDpic='".$newImageName."',otp='".$otp."',activation_code='".$activation_code."'";
-                        $updateresult= mysqli_query($con,$sqlUpdate);
-                        if($updateresult)
-                        {
-                          
-                        }
-                    }*/
+
     
 
       if (empty($errors)) {
-move_uploaded_file($tmpName, 'profile_images/'. $newImageName);
 
 date_default_timezone_set('Asia/Manila');
 
@@ -266,19 +208,11 @@ if(mysqli_query($con, $query)){
 $result = mysqli_query($con, $query);
 $user = mysqli_fetch_assoc($result);
 
-// Check if the user exists and has a profile picture
-if ($user && isset($user['userIDpic']) && !empty($user['userIDpic'])) {
-    $imageFileName = $user['userIDpic'];
-    $imagePath = "profile_images/$imageFileName"; 
-} else {
-  // If the query fails, push the error message into the $errors array
-  array_push($errors, mysqli_error($con));
-}
+
 
   }
 
-}
-}
+
 ?>
 
 <!DOCTYPE html>
@@ -298,15 +232,10 @@ if ($user && isset($user['userIDpic']) && !empty($user['userIDpic'])) {
     <div class = "container">
          
         <div class="box form-box">
-   
-
-       
+    
          <header>Sign Up</header>
             <form action="" method= "post" enctype="multipart/form-data">
       
-         
-
-            
                 <div class="field input">
                     
                     <label for = "Lastname" style="font-size: 18px;">Last Name</label>
@@ -454,7 +383,6 @@ barangayDropdown.setAttribute("name", "Barangay");
         populateBarangays();
     };
 
-              
                 </script>
                 <div class="field input">
                     <label for = "HousenoStreet" style="font-size: 18px;">House No /Street</label>
