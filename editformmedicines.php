@@ -22,6 +22,7 @@ if(isset($_POST['Beneficiary_Id'])) {
     while($row = mysqli_fetch_assoc($result)){
         $res_data[] = $row; // Append each fetched row to the array
     }
+    //test
 
 
 
