@@ -23,11 +23,11 @@
 
       <nav
         class="navbar navbar-expand-lg navbar-light"
-        style="background-color: #1477d2"
+         style="background-color: white;"
       >
         <div class="container-fluid">
-          <a class="navbar-brand" href="#" id="logo" style = "font-size: 13px; color: white;"
-            ><img src="images/background.png" /> Provincial Government of Bataan - Special Assistance Program </a>
+          <a class="navbar-brand" href="#" id="logo" style = "font-size: 13px; color: #1477d2;">
+            <img src="images/background.png" /> Provincial Government of Bataan - Special Assistance Program </a>
           <button
             class="navbar-toggler"
             type="button"
@@ -40,31 +40,30 @@
             <span>
               <i
                 class="fa-solid fa-bars"
-                style="color: white; font-size: 23px"
-              ></i
+                    style="color: #1477d2; font-size: 23px"></i
             ></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a style = " color: white;" class="nav-link" aria-current="page" href="#">
+               <a style = " color: #1477d2;" class="nav-link" aria-current="page" href="#">
                   Home
                 </a>
               </li>
                <li class="nav-item">
-                <a style = " color: white;" class="nav-link" href="#Services"  onclick="showServices('header')" > Services Available </a>
+                <a style = " color: #1477d2;" class="nav-link" href="#Services"  onclick="showServices('header')" > Services Available </a>
               </li>
               <li class="nav-item">
                 <a style = " color: white;" class="nav-link" href="#PartneredHospitals" onclick="showHospitals('partnered')"> Partnered Hospitals </a>
               </li>
               <li class="nav-item">
-                <a style = " color: white;" class="nav-link" href="#footer" onclick="showContact('footer')"> Contact </a>
+                <a style = " color: #1477d2;" class="nav-link" href="#footer" onclick="showContact('footer')"> Contact </a>
               </li>
               <li class="nav-item">
-                <a style = " color: white;" class="nav-link" href="register.php"> Sign Up </a>
+              <a style = " color: #1477d2;" class="nav-link" href="register.php"> Sign Up </a>
               </li>
               <li class="nav-item">
-                <a style = " color: white;" class="nav-link" href="index.php"> Log in </a>
+              <a style = " color: #1477d2;" class="nav-link" href="index.php"> Log in </a>
               </li>
             </ul>
           </div>
