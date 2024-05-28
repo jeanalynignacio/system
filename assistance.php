@@ -140,7 +140,7 @@ $res_Fname = $result['Firstname'];
                         <tr>
                             <th> Date: </th>
                             <th> Time: </th>
-                            <th> Beneficiary No: </th>
+                            <th> Beneficiary No: </th>s
                             <th> Name: </th>
                             <th> Municipality: </th>
                             <th> Schedule: <br> (if online) </th>
@@ -180,6 +180,7 @@ while ($row = $result->fetch_assoc()) {
             <td>".
             "<form method='post' action='editformassistance.php'>" .
             "<input type='hidden' name='Beneficiary_Id' value='" . $row['Beneficiary_Id'] . "'>" .
+            "<input type='hidden' name='Status' value='" . $row['Status'] . "'>" .
             "<button type='submit'>Edit</button>" .
            
        
@@ -189,6 +190,7 @@ while ($row = $result->fetch_assoc()) {
 }
 ?>
 <input type="hidden" id="confirmed" name="confirmed" value="">
+
 
 
                         </tbody>

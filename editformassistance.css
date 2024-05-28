@@ -110,6 +110,7 @@ form .user-details .input-box {
 
 form input[type="date"] {
   padding: 10px;
+  height:20px;
 }
 
 /* select box */

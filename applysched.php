@@ -28,34 +28,34 @@
             case 'dialysis':
                 $selectedCategory="Dialysis";
                 $query = "INSERT INTO financialassistance  (Beneficiary_ID, FA_Type) VALUES ('$BENEID','$selectedCategory')";
-                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType,Status,Date,transaction_time) VALUES ('$BENEID', 'Online','Financial Assistance','For Schedule', CURDATE(), CURTIME())";
+                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType,Status,Date) VALUES ('$BENEID', 'Online','Financial Assistance','For Schedule', CURDATE())";
                 break;
           
             case 'burial':
                 $selectedCategory="Burial";
                 $query = "INSERT INTO financialassistance  (Beneficiary_ID, FA_Type) VALUES ('$BENEID','$selectedCategory')";
-                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType,Status,Date,transaction_time) VALUES ('$BENEID', 'Online','Financial Assistance','For Schedule', CURDATE(), CURTIME())";
+                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType,Status,Date) VALUES ('$BENEID', 'Online','Financial Assistance','For Schedule', CURDATE())";
                 break;
                 case 'chemrad':
                     $selectedCategory="Chemotheraphy & Radiation";
                     $query = "INSERT INTO financialassistance  (Beneficiary_ID, FA_Type) VALUES ('$BENEID','$selectedCategory')";
-                    $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType,Status,Date,transaction_time) VALUES ('$BENEID', 'Online','Financial Assistance','For Schedule', CURDATE(), CURTIME())";
+                    $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType,Status,Date) VALUES ('$BENEID', 'Online','Financial Assistance','For Schedule', CURDATE())";
                   break;
 
                 case 'implant':
                 $selectedCategory="Implant";
                 $query = "INSERT INTO financialassistance  (Beneficiary_ID, FA_Type) VALUES ('$BENEID','$selectedCategory')";
-                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType,Status,Date,transaction_time) VALUES ('$BENEID', 'Online','Financial Assistance','For Schedule', CURDATE(), CURTIME())";
+                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType,Status,Date) VALUES ('$BENEID', 'Online','Financial Assistance','For Schedule', CURDATE())";
               break;
               case 'medicine':
                 $selectedCategory="Medicine";
                 $query = "INSERT INTO medicines (Beneficiary_ID, MedicineType) VALUES ('$BENEID', 'Medicine')";
-                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType,Status,Date,transaction_time) VALUES ('$BENEID', 'Online','$selectedCategory','For Schedule', CURDATE(), CURTIME())";
+                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType,Status,Date) VALUES ('$BENEID', 'Online','$selectedCategory','For Schedule', CURDATE())";
                 break;
                 case 'hospital':
                     $selectedCategory="Medicine";
                     $query = "INSERT INTO medicines (Beneficiary_ID, MedicineType) VALUES ('$BENEID', 'Medicine')";
-                    $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType,Status,Date,transaction_time) VALUES ('$BENEID', 'Online','$selectedCategory','For Schedule', CURDATE(), CURTIME())";
+                    $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType,Status,Date) VALUES ('$BENEID', 'Online','$selectedCategory','For Schedule', CURDATE())";
                     break;
             default:
                 // Handle unexpected categories

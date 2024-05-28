@@ -1,24 +1,27 @@
 <?php 
 session_start();
 include("php/config.php");
+ 
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
 // Check if Beneficiary_Id is set in the URL parameter
 if(isset($_POST['Beneficiary_Id'])) {
-    // Retrieve the Beneficiary_Id from the URL parameter
     $beneID = $_POST['Beneficiary_Id'];
+    $Status = $_POST['Status'];
 } else {
-    echo "Useszr ID is not set.";
+    echo "User ID is not set.";
     exit; // Exit if ID is not set
 }
 
 if(isset($_SESSION['Emp_ID'])) {
-  $EmpID = $_SESSION['Emp_ID'];
-
+    $EmpID = $_SESSION['Emp_ID'];
 } else {
-  echo "UserSSID is not set.";
-  exit; // Exit if ID is not set
+    echo "UserSSID is not set.";
+    exit; // Exit if ID is not set
 }
-  
+
 // Fetch data from the database
 $SQL = "SELECT b.*, t.*, f.*
         FROM beneficiary b
@@ -37,224 +40,271 @@ if(mysqli_num_rows($result) == 0) {
 // Fetch the first row (assuming there's only one beneficiary with the given ID)
 $record = mysqli_fetch_assoc($result);
 
-if(isset($_POST['submit'])) {
-  // Check if the user confirmed the update
-  if(isset($_POST['confirmed']) && $_POST['confirmed'] === "yes") {
-      $beneID=$_POST['Beneficiary_Id'];
-      $Date=$_POST['Date'];
-      $transaction_time=$_POST['time'];
-      $Given_Sched=($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
-      $TransactionType=$_POST['TransactionType'];
-      $FA_Type=$_POST['FA_Type'];
-       $Status=$_POST['Status'];
-      
-  
-      
-      // Construct the update query
-      $query = "UPDATE financialassistance f
-      INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
-      INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-      SET t.Date = '$Date',
-          t.transaction_time = '$transaction_time',
-          t.Given_Sched = '$Given_Sched',
-          t.TransactionType = '$TransactionType',
-          f.FA_Type = '$FA_Type',
-          t.Status = '$Status',
-      t.Emp_ID='$EmpID'
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    if(isset($_POST['confirmed']) && $_POST['confirmed'] === "yes") {
+        $beneID = $_POST['Beneficiary_Id'];
+        //$Date = $_POST['Date'];
+        $transaction_time = $_POST['time'];
+        $Date = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
+        //$TransactionType = $_POST['TransactionType'];
+       // $FA_Type = $_POST['FA_Type'];
+        $Status = $_POST['Status'];
+        
+        // Construct the update query
+        $query = "UPDATE financialassistance f
+        INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+        INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+        SET 
+            t.Given_Sched = '$Date',
+            t.Status = '$Status',
+            t.transaction_time='$transaction_time',
+            t.Emp_ID='$EmpID'
+        WHERE b.Beneficiary_Id = '$beneID'";
 
-      WHERE b.Beneficiary_Id = '$beneID'";
+        $result2 = mysqli_query($con, $query);
 
-$result2=mysqli_query($con,$query);
-      // Execute the update query
-     // Execute the update query
-if ($result2) {?>
-  <script>
-alert("update successfully");
-</script>
-<?php
+        if ($result2) {
+            require 'PHPMailer/src/Exception.php';
+            require 'PHPMailer/src/PHPMailer.php';
+            require 'PHPMailer/src/SMTP.php';
 
-  header("Location: assistance.php");
-  exit();
-} else {
-  echo "Error updating records: " . mysqli_error($con);
-  header("Location: assistance.php");
-  exit();
-}
+            $mail = new PHPMailer(true);
+            $lastName = $record['Lastname'];
+            $employeeName = $_POST['EmpName'];
+            $Email = $record['Email'];
 
-    
-  }
-}
-if(isset($_POST['email'])) {
-  $Status=$_POST['Status'];
- 
-  $_SESSION['Beneficiary_Id'] = $beneID;
-    
-  
-  $_SESSION['Status'] = $_POST['Status'];
-  header("Location: schedform.php");
-  exit();
+            try {
+                // Server settings
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'bataanpgbsap@gmail.com'; // Your Gmail address
+                $mail->Password = 'cmpp hltn mxuc tcgl'; // Your Gmail password or App Password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+
+                // Recipients
+                $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
+                $mail->addAddress($Email); // Add a recipient
+
+                // Content
+                $mail->isHTML(true); // Set email format to HTML
+                if($Status == 'For Schedule') {
+                    $mail->Subject = 'Schedule for requirements checking';
+                    $mail->Body = "
+                    <html>
+                    <body>
+                    <p>Dear Mr./Ms./Mrs. $lastName,</p>
+                    <p>I am writing to inform you that your request for scheduling has been approved.</p>
+                    <p>Your schedule has been set for $Date. We kindly expect your presence on the said date.</p>
+                    <p>Thank you for your cooperation.</p>
+                    <p>Best regards,</p>
+                    <p>$employeeName</p>
+                    <p>Provincial Government of Bataan - Special Assistance Program</p>
+                    </body>
+                    </html>
+                    ";
+
+                } elseif($Status == 'Pending for Requirements') {
+                    $mail->Subject = 'Pending for Requirements';
+                    $mail->Body = "
+                        <html>
+                        <body>
+                        <p>Dear Mr./Ms./Mrs. $lastName,</p>
+                        <p>Your assistance request is currently pending for requirements.</p>
+                        <p>Please submit the necessary documents on $Date to proceed with your request.</p>
+                        <p>Thank you for your cooperation.</p>
+                        <p>Best regards,</p>
+                        <p>$employeeName</p>
+                        <p>Provincial Government of Bataan - Special Assistance Program</p>
+                        </body>
+                        </html>
+                    ";
+                } elseif($Status == 'Pending for Payout') {
+                    $mail->Subject = 'Pending for Payout';
+                    $mail->Body = "
+                        <html>
+                        <body>
+                        <p>Dear Mr./Ms./Mrs. $lastName,</p>
+                        <p>Your assistance request is currently pending for payout.</p>
+                        <p>We are processing your application, and you will receive your financial assistance soon.</p>
+                        <p>Thank you for your patience and cooperation.</p>
+                        <p>Best regards,</p>
+                        <p>$employeeName</p>
+                        <p>Provincial Government of Bataan - Special Assistance Program</p>
+                        </body>
+                        </html>
+                    ";
+                } else {
+                    $mail->Body = "Default message content.";
+                }
+
+                $mail->send();
+                echo '<script>alert("Update and email send successful");</script>';
+                echo '<script>
+                        setTimeout(function(){
+                            window.location.href="assistance.php";
+                        }, 3000);
+                      </script>';
+                exit();
+
+            } catch (Exception $e) {
+                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
+        } else {
+            echo "Error updating records: " . mysqli_error($con);
+            header("Location: assistance.php");
+            exit();
+        }
+    }
 }
 
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit Form</title>
     <link rel="stylesheet" href="editformassistance.css" />
-  </head>
-  <body>
-    <div class="container">
-      <div class="title"> Edit form </div>
-      <form id="editForm"  method="post"> <!-- Changed method to POST -->
-      <input type="hidden" name="Beneficiary_Id" value="<?php echo $beneID; ?>">
-      <input type="hidden" name="Emp_ID" value="<?php echo $EmpID; ?>">
+    <script>
+    function handleStatusChange() {
+        var status = document.getElementById('status').value;
+        var emailFormat = document.getElementById('emailFormat');
+        var dateInput = document.getElementById('dateInput');
+        emailFormat.innerHTML = '';
 
-
-   
-      
-        <div class="user-details1">
-          <div class="input-box">
-            <span class="details" style="color:  #f5ca3b;"> Date of Application: </span>
-             <span id="calendar" style="color:white; margin-top:10px;"><?php echo $record['Date']; ?></span>
-
-        </div>
-
-        <div class="input-box">
-          <span class="details" style="color:  #f5ca3b;">Time of Application:</span>
-          <span id="time" style="color:  white;"><?php echo date("h:i A", strtotime($record['transaction_time'])); ?></span>
-            <input type="hidden" required value="<?php echo $record['Beneficiary_ID']; ?>" name="Beneficiary_ID" disabled/>
-        </div>
-</div>
-
-        <div class="user-details">
-          <div class="input-box">
-            <span class="details"  style="color:  #f5ca3b;"> Full Name </span>
-            <span class="details"><?php echo $record['Firstname'] . " " . $record['Lastname']; ?></span>
-  </div>
-
-      
-        
-          <div class="input-box">
-            <span class="details"> Transaction Type </span>
-            <span class="details"> <?php echo $record['TransactionType'] ; ?> </span>
+        if (status === 'For Schedule') {
+            emailFormat.innerHTML = `
+            Dear Mr./Ms./Mrs. <input type="text" value=" <?php echo  $record['Lastname']; ?>" <br><br> <br>
            
-          <!--  <select name="TransactionType">
-             
-              <option echo ($record['TransactionType'] == 'Online Appointment') ? 'selected' : ''; ?>>Online Appointment</option>
-        <option echo ($record['TransactionType'] == 'Walk-in') ? 'selected' : ''; ?>>Walk-in</option>
-            </select>-->
-         
-</div>
-
-          <div class="input-box">
-            <span class="details"> Financial Assistance Type </span>
-            <select name="FA_Type">
-            <?php
-// Array of hospitals
-$FA_type = array(
-    'Burial',
-    'Chemotheraphy & Radiation',
-    'Dialysis',
-    'Medicine'
-);
-
-// Loop through the array to generate options
-foreach ($FA_type as $FA_type) {
-    // Check if the current hospital matches the record's hospital
-    $selected = ($record['FA_Type'] == $FA_type) ? 'selected' : '';
-    // Output the option with hospital name and selected attribute if matched
-    echo "<option $selected>$FA_type</option>";
-}
-?>
-            </select>
-          </div>
-
-          <div class="input-box">
-            <span class="details">Status </span>
-            <select name="Status">
-            <?php
-// Array of hospitals
-$status = array(
-    
-    'Pending for Payout',
-    'Pending for Requirements',
-    'For Schedule',
-    'Done'
-  
-);
-
-// Loop through the array to generate options
-foreach ($status as $status) {
-    // Check if the current hospital matches the record's hospital
-    $selected = ($record['Status'] == $status) ? 'selected' : '';
-    // Output the option with hospital name and selected attribute if matched
-    echo "<option $selected>$status</option>";
-}
-?>
-            </select>
-
-</div>
-         
-          <div class="input-box">
-           
-        <span class="details">Given Schedule </span>
-        <input type="date" id="calendar" name="Given_Sched"  value="<?php echo $record['Given_Sched']; ?>"/>
-        </div>
-</div>
-          <br>
-          <input type="hidden" name="confirmed" id="confirmed" value="no">
-          <br> 
-      
-          <div class="button-row">
-  <!-- Submit button -->
-  <input type="submit" value="Send Email" name="email" onclick="email()" />
- 
-  <input type="submit" value="Done Edit" name="submit" onclick="showConfirmation()" />
-  <!-- Cancel button  php endforeach; ?>-->
-  <input type="button" value="Cancel" name="cancel" onclick="cancelEdit()" />
-</div>
-
-       
-        </div>
-      </form>
-    </div>
-
-    
-<script type="text/javascript">
-    function cancelEdit() {
-        // Redirect to the previous page
-        window.history.back();
-      }
-     function editRecord(beneficiaryId) {
-        // Set the value of the hidden input field
-        document.getElementById('beneficiaryIdInput').value = beneficiaryId;
-        // Submit the form
+                <p>I am writing to inform you that your request for scheduling has been approved.<br>
+                Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
+                at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br><br>
+                Thank you for your cooperation.<br><br>
+                Best regards,<br>
+                <input type="text" name="EmpName" value="" placeholder="Enter employee name" required><br><br>
+                Provincial Government of Bataan - Special Assistance Program</p>
+            `;
+        } else if (status === 'Pending for Requirements') {
+            emailFormat.innerHTML = `
+            
+            Dear Mr./Ms./Mrs. <input type="text" value=" <?php echo  $record['Lastname']; ?>" <br><br> <br>
+                <p>Your assistance request is currently pending for requirements.<br>
+                Please submit the necessary documents on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
+                at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" /> to proceed with your request.<br><br>
+                Thank you for your cooperation.<br><br>
+                Best regards,<br>
+                <input type="text" name="EmpName" value="" placeholder="Enter employee name" required><br><br>
+                Provincial Government of Bataan - Special Assistance Program</p>
+            `;
+        } else if (status === 'Pending for Payout') {
+            emailFormat.innerHTML = `
+            
+            Dear Mr./Ms./Mrs. <input type="text" value=" <?php echo  $record['Lastname']; ?>" <br><br><br>
+                <p>Your assistance request is currently pending for payout.<br>
+                We are processing your application, and you will receive your financial assistance soon.<br><br>
+                Thank you for your patience and cooperation.<br><br>
+                Best regards,<br>
+                <input type="text" name="EmpName" value="" placeholder="Enter employee name" required><br><br>
+                Provincial Government of Bataan - Special Assistance Program</p>
+            `;
+        }
     }
+    function cancelEdit() {
+            window.history.back();
+        }
 
-    function showConfirmation() {
-    var confirmation = confirm("Are you sure you want to update?");
-    if (confirmation) {
-        // If user clicks OK, submit the form
-       
-            document.getElementById("confirmed").value = "yes";
-    } else {
-      
-            document.getElementById("confirmed").value = "no";    }
-}
+        function showConfirmation() {
+            var confirmation = confirm("Are you sure you want to update?");
+            if (confirmation) {
+                document.getElementById("confirmed").value = "yes";
+            } else {
+                document.getElementById("confirmed").value = "no";
+            }
+        }
+        window.onload = handleStatusChange;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="title">Edit form</div>
+        <form id="editForm" method="post">
+            <input type="hidden" name="Beneficiary_Id" value="<?php echo $beneID; ?>">
+            <input type="hidden" name="Emp_ID" value="<?php echo $EmpID; ?>">
 
-    document.getElementById('time').addEventListener('input', function() {
-        var timeInput = document.getElementById('time').value;
-        var time = new Date('1970-01-01T' + timeInput);
-        var formattedTime = time.toLocaleTimeString('en-US', {hour: 'numeric', minute: 'numeric', hour12: true});
-        document.getElementById('time').value = formattedTime;
-    });
+            <div class="user-details1">
+                <div class="input-box">
+                    <span class="details" style="color:#f5ca3b;">Date of Application:</span>
+                    <span id="calendar" style="color:white; margin-top:10px;"><?php echo $record['Date']; ?></span>
+                </div>
 
+                <div class="input-box">
+                    <span class="details" style="color:  #f5ca3b;">Time of Application:</span>
+                    <span id="time" style="color:  white;"><?php echo date("h:i A", strtotime($record['transaction_time'])); ?></span>
+                    <input type="hidden" required value="<?php echo $record['Beneficiary_ID']; ?>" name="Beneficiary_ID" disabled />
+                </div>
+            </div>
 
+            <div class="user-details">
+                <div class="input-box">
+                    <span class="details" style="color:  #f5ca3b;">Full Name</span>
+                    <span class="details"><?php echo $record['Firstname'] . " " . $record['Lastname']; ?></span>
+                </div>
 
-</script>
-  </body>
+                <div class="input-box">
+                    <span class="details">Transaction Type</span>
+                    <span class="details"><?php echo $record['TransactionType']; ?></span>
+                </div>
+
+                <div class="input-box">
+                    <span class="details">Financial Assistance Type</span>
+                    <span class="details"><?php echo $record['FA_Type']; ?></span>
+                   <!-- <select name="FA_Type">
+                       
+                        $FA_type = array('Burial', 'Chemotherapy & Radiation', 'Dialysis', 'Medicine');
+                        foreach ($FA_type as $FA) {
+                            $selected = ($record['FA_Type'] == $FA) ? 'selected' : '';
+                            echo "<option $selected>$FA</option>";
+                        }
+                        ?>
+                    </select>-->
+                </div>
+
+                <div class="input-box">
+                    <span class="details">Status</span>
+                    <select id="status" name="Status" onchange="handleStatusChange()">
+                        <?php
+                        $status = array('Pending for Payout', 'Pending for Requirements', 'For Schedule', 'Done');
+                        foreach ($status as $stat) {
+                            $selected = ($record['Status'] == $stat) ? 'selected' : '';
+                            echo "<option $selected>$stat</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+
+                <!--<div class="input-box">
+                    <span class="details">Given Schedule</span>
+                    <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" />
+                </div>-->
+            </div>
+            
+            <input type="hidden" name="confirmed" id="confirmed" value="no">
+            <br>
+
+           
+                <div id="emailFormat" class="emailformat">
+                    <!-- Email content will be updated based on the selected status -->
+                </div>
+           
+
+            <div class="button-row">
+                <input type="submit" value="Submit" name="submit" onclick="showConfirmation()" />
+                <input type="button" value="Cancel" name="cancel" onclick="cancelEdit()" />
+            </div>
+        </form>
+    </div>
+</body>
 </html>
