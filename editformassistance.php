@@ -112,68 +112,41 @@ if(isset($_POST['email'])) {
       <form id="editForm"  method="post"> <!-- Changed method to POST -->
       <input type="hidden" name="Beneficiary_Id" value="<?php echo $beneID; ?>">
       <input type="hidden" name="Emp_ID" value="<?php echo $EmpID; ?>">
-     
-     <!-- 
-               
-              
-               $query = mysqli_query($con, "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname,b.CityMunicipality, t.TransactionType,t.Given_Sched, f.FA_Type, t.Status FROM financialassistance f INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID WHERE f.Beneficiary_ID='$beneID'" );
-              
-               while($result = mysqli_fetch_assoc($query)){
-                   $res_Date = $result['Date'];
-                   $res_transaction_time = $result['transaction_time'];
-                   $res_beneID = $result['Beneficiary_Id'];
-                   $res_Lname = $result['Lastname'];
 
-                  foreach($res_data as $record): ?>
-
-                   $res_Fname = $result['Firstname'];
-                   $res_city = $result['CityMunicipality'];
-                   $res_Given_Sched = $result['Given_Sched'];
-                   $res_transactiontype = $result['TransactionType'];
-                   $res_FA_Type = $result['FA_Type'];
-                   $res_Status = $result['Status'];
-                 
-               }
-                    ?> -->
 
    
       
-        <div class="user-details">
+        <div class="user-details1">
           <div class="input-box">
-            <span class="details"> Date of Application</span>
-             <span id="calendar"><?php echo $record['Date']; ?></span>
+            <span class="details" style="color:  #f5ca3b;"> Date of Application: </span>
+             <span id="calendar" style="color:white; margin-top:10px;"><?php echo $record['Date']; ?></span>
 
         </div>
 
         <div class="input-box">
-          <span class="details">Time</span>
-          <span id="time"><?php echo date("h:i A", strtotime($record['transaction_time'])); ?></span>
+          <span class="details" style="color:  #f5ca3b;">Time of Application:</span>
+          <span id="time" style="color:  white;"><?php echo date("h:i A", strtotime($record['transaction_time'])); ?></span>
             <input type="hidden" required value="<?php echo $record['Beneficiary_ID']; ?>" name="Beneficiary_ID" disabled/>
         </div>
-          
+</div>
 
         <div class="user-details">
           <div class="input-box">
-            <span class="details"> Full Name </span>
+            <span class="details"  style="color:  #f5ca3b;"> Full Name </span>
             <span class="details"><?php echo $record['Firstname'] . " " . $record['Lastname']; ?></span>
   </div>
-       <!--   <div class="input-box">
-            <span class="details"> First Name </span>
-            <input type="text" required value="  php echo $record['Firstname']; " name="Firstname" disabled/>
-          </div>
-          <div class="user-details">
-          <div class="input-box">
-            <span class="details"> City </span>
-            <input type="text" required value="<?php echo $record['CityMunicipality']; ?>" name="CityMunicipality" disabled/>
-          </div>-->
 
+      
+        
           <div class="input-box">
             <span class="details"> Transaction Type </span>
-            <select name="TransactionType">
+            <span class="details"> <?php echo $record['TransactionType'] ; ?> </span>
+           
+          <!--  <select name="TransactionType">
              
-              <option <?php echo ($record['TransactionType'] == 'Online Appointment') ? 'selected' : ''; ?>>Online Appointment</option>
-        <option <?php echo ($record['TransactionType'] == 'Walk-in') ? 'selected' : ''; ?>>Walk-in</option>
-            </select>
+              <option echo ($record['TransactionType'] == 'Online Appointment') ? 'selected' : ''; ?>>Online Appointment</option>
+        <option echo ($record['TransactionType'] == 'Walk-in') ? 'selected' : ''; ?>>Walk-in</option>
+            </select>-->
          
 </div>
 
