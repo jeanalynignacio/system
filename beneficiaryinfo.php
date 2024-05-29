@@ -165,12 +165,12 @@ else {
 
 
 // Use the complete user ID in the INSERT query
-$query ="INSERT INTO beneficiary( Lastname, Firstname, Middlename, Birthday, Contactnumber, Province, CityMunicipality, Barangay, HousenoStreet, Email, Representative_ID) VALUES ('$Lastname', '$Firstname', '$Middlename', '$Birthday', '$Contactnumber', '$Province', '$CityMunicipality', '$Barangay', '$HousenoStreet', '$Email', '$Representative_ID')";
+$query ="INSERT INTO beneficiary( Lastname, Firstname, Middlename, Birthday, Contactnumber, Province, CityMunicipality, Barangay, HousenoStreet, Email, Representative_ID,Date,time) VALUES ('$Lastname', '$Firstname', '$Middlename', '$Birthday', '$Contactnumber', '$Province', '$CityMunicipality', '$Barangay', '$HousenoStreet', '$Email', '$Representative_ID',CURDATE(),CURTIME())";
 if(mysqli_query($con, $query)){
   ?>
   <script>
-      alert("Register Successfully!");
-      window.location.href = "applysched.html";
+     
+      window.location.href = "applysched.php";
   </script>
   <?php
 } else {
@@ -343,7 +343,7 @@ barangayDropdown.setAttribute("name", "Barangay");
                 <div class="field input">
                     <label for = "Email" style="font-size: 18px;">Email</label>
                     <input type="text" name="Email" id="Email" autocomplete="off" value="<?php echo $_POST['Email'] ?? ''; ?>">                  
-                    <p style="color: rgb(150, 26, 26); font-size: 18px;""><?php echo $emailError ?></p>
+                    <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $emailError ?></p>
                   </div>
               
                    <div class="field">

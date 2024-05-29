@@ -158,7 +158,7 @@ $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.First
         INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
 
-        ORDER BY t.Date DESC"; 
+        ORDER BY t.Date ASC"; 
 
 $result = $con->query($sql);
 

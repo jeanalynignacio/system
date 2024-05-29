@@ -84,7 +84,7 @@ awesome/6.4.0/css/all.min.css"/>
 <span> Dashboard </span>
 </a>
 </li>
-<li class="active">
+<li >
 <a href="#" onclick="records()">
 <i class="fas fa-chart-bar"> </i>
 <span> Beneficiary's Records </span>
@@ -108,18 +108,28 @@ awesome/6.4.0/css/all.min.css"/>
 <span>Medicines</span>
 </a>
 </li>
-<li class="logout">
-<a href="#">
-<i class="fas fa-sign-out-alt"> </i>
-<span> Logout </span>
-</a>
-</li>
-<li class="user">
-<a href="#">
-<i class="fas fa-user"> </i>
-<span> Profile </span>
-</a>
-</li>
+<?php if ($role === 'Admin'): ?>
+            <li class="active">
+                <a href="#" onclick="employees()">
+                    <i class="fas fa-users"></i>
+                    <span>Employees</span>
+                </a>
+            </li>
+        <?php endif; ?>
+        <li class="user" >
+            <a href="#" onclick="profile()">
+                    <i class="fas fa-user"></i>
+                                    
+                <span>Profile</span>
+                <input type="hidden" name="Emp_ID" value="<?php echo "{$resEmp_ID['Emp_ID']}"; ?>">
+                </a>
+            </li>
+            <li class="logout">
+                <a href="#" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
 </ul>
 
 </div>
@@ -252,7 +262,9 @@ name='Emp_ID' value='" . $row['Emp_ID'] . "'>
 </div> 
 </div> 
     
+<input type="hidden" id="confirmed" name="confirmed" value="">
 
+                    
 
 <script type="text/javascript">
 function dashboard() {
@@ -270,6 +282,25 @@ window.location ="http://localhost/public_html/hospital.php";
 }
 function medicines() {
 window.location ="http://localhost/public_html/medicines.php";
+}
+function employees(){
+        window.location = "http://localhost/public_html/employeeRecords.php"
+    }
+
+function profile() {
+        window.location = "http://localhost/public_html/profileadmin.php";
+    }
+    function logout() {
+    var confirmation = confirm("Are you sure you want to Logout?");
+    if (confirmation) {
+        // If user clicks OK, set the value to "yes"
+        document.getElementById("confirmed").value = "yes";
+        // Redirect the user
+        window.location.href = "http://localhost/public_html/logoutemp.php";
+    } else {
+        // If user cancels, set the value to "no"
+        document.getElementById("confirmed").value = "no";
+    }
 }
 function toggleForm() {
 var form = document.getElementById("addForm");

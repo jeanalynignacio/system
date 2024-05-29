@@ -1,3 +1,29 @@
+<?php
+  session_start();
+include("php/config.php");
+
+  if(isset($_SESSION['Emp_ID'])){
+        $id = $_SESSION['Emp_ID'];
+        $query = mysqli_query($con, "SELECT * FROM employees WHERE Emp_ID=$id");
+
+if($result = mysqli_fetch_assoc($query)){
+$res_Id = $result['Emp_ID'];
+$res_Fname = $result['Firstname'];
+ $res_Lname = $result['Lastname'];
+ $role=$result['role'];
+}
+  }
+  else{
+    
+    header("Location: employee-login.php");
+}
+
+$query="SELECT * FROM employees where role='Employee'";
+        $result = mysqli_query($con, $query);
+
+
+
+        ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,17 +74,26 @@
                 <span>Medicines</span></a>
             </li>
 
-            <li class = "logout">
-                <a href = "#">
-                    <i class = "fas fa-sign-out-alt"> </i>
-                    <span> Logout </span>
+            <?php if ($role === 'Admin'): ?>
+            <li >
+                <a href="#" onclick="employees()">
+                    <i class="fas fa-users"></i>
+                    <span>Employees</span>
                 </a>
             </li>
-
-            <li class = "user">
-                <a href = "#">
-                    <i class = "fas fa-user"> </i>
-                    <span> Profile </span>
+        <?php endif; ?>
+        <li class="user" >
+            <a href="#" onclick="profile()">
+                    <i class="fas fa-user"></i>
+                                    
+                <span>Profile</span>
+                <input type="hidden" name="Emp_ID" value="<?php echo "{$resEmp_ID['Emp_ID']}"; ?>">
+                </a>
+            </li>
+            <li class="logout">
+                <a href="#" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
                 </a>
             </li>
         </ul>
@@ -145,7 +180,9 @@ while ($row = $result->fetch_assoc()) {
             </div>
         </div>
     </div>
-    
+    <input type="hidden" id="confirmed" name="confirmed" value="">
+
+
 <script type = "text/javascript">
 
 function dashboard(){
@@ -177,6 +214,25 @@ function chemrad(){
 }
 function dialysis(){
     window.location = "http://localhost/public_html/fa-dialysis.php"
+}
+function employees(){
+        window.location = "http://localhost/public_html/employeeRecords.php"
+    }
+    
+    function profile() {
+        window.location = "http://localhost/public_html/profileadmin.php";
+    }
+    function logout() {
+    var confirmation = confirm("Are you sure you want to Logout?");
+    if (confirmation) {
+        // If user clicks OK, set the value to "yes"
+        document.getElementById("confirmed").value = "yes";
+        // Redirect the user
+        window.location.href = "http://localhost/public_html/logoutemp.php";
+    } else {
+        // If user cancels, set the value to "no"
+        document.getElementById("confirmed").value = "no";
+    }
 }
 
 
