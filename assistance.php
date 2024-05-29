@@ -140,7 +140,7 @@ $res_Fname = $result['Firstname'];
                         <tr>
                             <th> Date: </th>
                             <th> Time: </th>
-                            <th> Beneficiary No: </th>s
+                            <th> Beneficiary No: </th>
                             <th> Name: </th>
                             <th> Municipality: </th>
                             <th> Schedule: <br> (if online) </th>

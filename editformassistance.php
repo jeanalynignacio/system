@@ -17,9 +17,17 @@ if(isset($_POST['Beneficiary_Id'])) {
 
 if(isset($_SESSION['Emp_ID'])) {
     $EmpID = $_SESSION['Emp_ID'];
+    $query = mysqli_query($con, "SELECT * FROM employees WHERE Emp_ID=$EmpID");
+
+    if($result = mysqli_fetch_assoc($query)){
+        $res_Id = $result['Emp_ID'];
+        $res_Fname = $result['Firstname'];
+        $res_Lname = $result['Lastname'];
+        $role = $result['role'];
+    }
 } else {
-    echo "UserSSID is not set.";
-    exit; // Exit if ID is not set
+    header("Location: employee-login.php");
+    exit();
 }
 
 // Fetch data from the database
@@ -169,11 +177,15 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     <title>Edit Form</title>
     <link rel="stylesheet" href="editformassistance.css" />
     <script>
+      
     function handleStatusChange() {
         var status = document.getElementById('status').value;
         var emailFormat = document.getElementById('emailFormat');
         var dateInput = document.getElementById('dateInput');
         emailFormat.innerHTML = '';
+
+        var requirements = document.getElementById('requirements');
+    var faType = "<?php echo $record['FA_Type']; ?>";
 
         if (status === 'For Schedule') {
             emailFormat.innerHTML = `
@@ -184,10 +196,27 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br><br>
                 Thank you for your cooperation.<br><br>
                 Best regards,<br>
-                <input type="text" name="EmpName" value="" placeholder="Enter employee name" required><br><br>
+                <input type="text" name="EmpName"  value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
                 Provincial Government of Bataan - Special Assistance Program</p>
             `;
-        } else if (status === 'Pending for Requirements') {
+        } else if (status === 'For Validation' || status === 'Pending for Requirements') {
+     
+        // Display checklist for validation based on FA type
+        if (faType === 'Burial') {
+            requirements.innerHTML = `
+            <h3>Requirements for Burial Assistance Validation</h3>
+            <ul>
+               <li> <input type="checkbox" name="requirement" value="Death Certificate"> Death Certificate</li>
+                <li><input type="checkbox" name="requirement" value="Barangay Certificate of Indigency"> Barangay Certificate of Indigency</li>
+                <li><input type="checkbox" name="requirement" value="Request Letter"> Request Letter</li>
+                <li><input type="checkbox" name="requirement" value="Photocopy of Beneficiary's ID"> Photocopy of Beneficiary's ID</li>
+            </ul>
+            `;
+        } else if (faType === 'Chemotherapy & Radiation') {
+            // Similarly update for other FA types
+        }
+      }
+        else if (status === 'Pending for Requirements') {
             emailFormat.innerHTML = `
             
             Dear Mr./Ms./Mrs. <input type="text" value=" <?php echo  $record['Lastname']; ?>" <br><br> <br>
@@ -196,18 +225,29 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" /> to proceed with your request.<br><br>
                 Thank you for your cooperation.<br><br>
                 Best regards,<br>
-                <input type="text" name="EmpName" value="" placeholder="Enter employee name" required><br><br>
+                <input type="text" name="EmpName"  value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
                 Provincial Government of Bataan - Special Assistance Program</p>
             `;
         } else if (status === 'Pending for Payout') {
             emailFormat.innerHTML = `
             
             Dear Mr./Ms./Mrs. <input type="text" value=" <?php echo  $record['Lastname']; ?>" <br><br><br>
-                <p>Your assistance request is currently pending for payout.<br>
+                <p>Your assistance request is currently for payout.<br>
                 We are processing your application, and you will receive your financial assistance soon.<br><br>
                 Thank you for your patience and cooperation.<br><br>
                 Best regards,<br>
-                <input type="text" name="EmpName" value="" placeholder="Enter employee name" required><br><br>
+                <input type="text" name="EmpName"  value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+                Provincial Government of Bataan - Special Assistance Program</p>
+            `;
+        }
+        else if (status === 'For Payout') {
+            emailFormat.innerHTML = `
+            
+            Dear Mr./Ms./Mrs. <input type="text" value=" <?php echo  $record['Lastname']; ?>" <br><br><br>
+                <p>Your assistance request is currently for payout on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" /><br>
+                Thank you for your patience and cooperation.<br><br>
+                Best regards,<br>
+                <input type="text" name="EmpName"  value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
                 Provincial Government of Bataan - Special Assistance Program</p>
             `;
         }
@@ -276,7 +316,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     <span class="details">Status</span>
                     <select id="status" name="Status" onchange="handleStatusChange()">
                         <?php
-                        $status = array('Pending for Payout', 'Pending for Requirements', 'For Schedule', 'Done');
+                        $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Payout' ,'For Payout', 'Done');
                         foreach ($status as $stat) {
                             $selected = ($record['Status'] == $stat) ? 'selected' : '';
                             echo "<option $selected>$stat</option>";
@@ -294,7 +334,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             <input type="hidden" name="confirmed" id="confirmed" value="no">
             <br>
 
-           
+            <div id="requirements"></div>
                 <div id="emailFormat" class="emailformat">
                     <!-- Email content will be updated based on the selected status -->
                 </div>
