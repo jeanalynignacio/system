@@ -161,152 +161,62 @@ if($result = mysqli_fetch_assoc($query)){
       </div>
 
       <div class="services">
-           
-        <div class="service">
-          <img
-            src="images/burial.png"
-            style="
-              width: 80px;
-              height: auto;
-              margin-right: 5px;
-              margin-top: 30px;
-              margin-bottom: -30px;
-            "
-          />
-          <h3>Burial Assistance</h3>
-          <p>
-            Funeral and cremation expenses can be high for some people, and
-            burial assistance prpograms are meant to help them pay for their
-            loved ones' funerals and burials. Helping with money during what is
-            often a hard and stressful time is the goal of this service. 
-          </p>
-       
-        </div>
+        <form action="applyingoptions.php" method="POST" class="service">
+          <input type="hidden" name="serviceType" value="Burial">
+          <button type="submit" class="service-button">
+            <img src="images/burial.png" style="width: 80px; height: auto; margin-right: 5px; margin-top: 30px; margin-bottom: -30px;">
+            <h3>Burial Assistance</h3>
+            <p>Funeral and cremation expenses can be high for some people, and burial assistance programs are meant to help them pay for their loved ones' funerals and burials. Helping with money during what is often a hard and stressful time is the goal of this service.</p>
+          </button>
+        </form>
 
-        <div class="service">
-          <img
-            src="images/dialysis.png"
-            style="
-              width: 80px;
-              height: auto;
-              margin-top: 20px;
-              margin-bottom: -20px;
-            "
-          />
-          <h3>Dialysis Patients</h3>
+        <form action="applyingoptions.php" method="POST" class="service">
+          <input type="hidden" name="serviceType" value="dialysis">
+          <button type="submit" class="service-button">
+            <img src="images/dialysis.png" style="width: 80px; height: auto; margin-top: 20px; margin-bottom: -20px;">
+            <h3>Dialysis Patients</h3>
+            <p style="font-size: 12.5px">The SAP's help for dialysis patients is essential for people with kidney failure because it makes sure they get the care they need without having to worry about the high expenses of dialysis. This service aims to enhance their quality of life, ease their financial burdens, and guarantee their ongoing access to medical treatment that they needed.</p>
+          </button>
+        </form>
 
-          <p style="font-size: 12.5px">
-            The SAP's help for dialysis patients is essential for people with
-            kidney failure because it makes sure they get the care they need
-            without having to worry about the high expenses of dialysis. This
-            service aims to enhance their quality of life, ease their financial
-            burdens, and guarantee their ongoing access to medical treatment
-            that they needed.
-          </p>
-          </div>
+        <form action="applyingoptions.php" method="POST" class="service">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <button type="submit" class="service-button">
+            <img src="images/hospital-bills.png" style="width: 72px; height: auto; margin-top: 20px; margin-bottom: -15px;">
+            <h3>Hospital Bills</h3>
+            <p style="font-size: 13px">The service goal is to reduce hospital costs so that people can get the medical treatment they need without worrying about money. The service that can help with hospital bills is a support for people and families in the Philippines who are having a hard time paying for medical treatment and hospitalizations in hospitals.</p>
+          </button>
+        </form>
 
-        <div class="service">
-          <img
-            src="images/hospital-bills.png"
-            style="
-              width: 72px;
-              height: auto;
-              margin-top: 20px;
-              margin-bottom: -15px;
-            "
-          />
-          <h3>Hospital Bills</h3>
-          <p style="font-size: 13px">
-            The service goal is to reduce hospital costs so that people can get
-            the medical treatment they need without worrying about money. The
-            service that can help with hospital bills is a support for people
-            and families in the Philippines who are having a hard time paying
-            for medical treatment and hospitalizations in hospitals.
-          </p>
-         
-        </div>
+        <form action="applyingoptions.php" method="POST" class="service">
+          <input type="hidden" name="serviceType" value="implantbakal">
+          <button type="submit" class="service-button">
+            <h3>Implant (Bakal)</h3>
+            <p>Driven by a dedication to enhancing quality of life and promoting inclusivity, this program provides a glimmer of hope to individuals who may otherwise lack the financial means to access steel implant medical operations.</p>
+          </button>
+        </form>
 
-        <div class="service">
-          <h3>
-            Implant <br />
-            (Bakal)
-          </h3>
-          <p>
-            Driven by a dedication to enhancing quality of life and promoting
-            inclusivity, this program provides a glimmer of hope to individuals
-            who may otherwise lack the financial means to access steel implant
-            medical operations. 
-          </p>
-        
-        </div>
+        <form action="applyingoptions.php" method="POST" class="service">
+          <input type="hidden" name="serviceType" value="laboratories">
+          <button type="submit" class="service-button">
+            <img src="images/labs.png" style="width: 80px; height: auto; margin-top: 10px; margin-bottom: -30px;">
+            <h3>Laboratories</h3>
+            <p style="font-size: 13px">The financial aid offered by PGB-SAP enables the citizens of Bataan to avail high-quality healthcare services at reduced costs, hence enhancing the overall health and well-being of the community. In general, laboratories services promote equitable access to essential laboratory diagnostics, thereby enhancing community health and ensuring timely medical interventions.</p>
+          </button>
+        </form>
 
-        <div class="service">
-          <img
-            src="images/labs.png"
-            style="
-              width: 80px;
-              height: auto;
-              margin-top: 10px;
-              margin-bottom: -30px;
-            "
-          />
-          <h3>Laboratories</h3>
-          <p style="font-size: 13px">
-            The financial aid offered by PGB-SAP enables the citizens of Bataan
-            to avail high-quality healthcare services at reduced costs, hence
-            assuring better health conditions for the community. Minimizing the
-            costs connected with testing in laboratories is important for
-            enhancing the accessibility and cost-efficiency of healthcare.
-          </p>
-         
-        </div>
-
-        <div class="service">
-          <img
-            src="images/medicines.png"
-            style="
-              width: 80px;
-              height: auto;
-              margin-top: 15px;
-              margin-bottom: -8px;
-            "
-          />
-          <h3>Medicines</h3>
-          <p>
-            This service can help people and families who need medications but
-            are unable to afford them. This assistance ensures that financial
-            constraints do not prevent individuals from accessing necessary
-            medications.
-          </p>
-          
-        </div>
-
-        <div class="service">
-          <img
-            src="images/r&chemo.png"
-            style="
-              width: 80px;
-              height: auto;
-              margin-top: 5px;
-              margin-bottom: -30px;
-            "
-          />
-          <h3>
-            Radiation & <br />
-            Chemotherapy
-          </h3>
-          <p style="font-size: 12px; margin-top: -15px">
-            Medicines, treatments, and hospitalizations can be very expensive
-            during cancer treatment, especially radiation therapy and
-            chemotherapy. The goal of the program is to make cancer treatment
-            more accessible so that patients can get the radiation therapy and
-            medicines they need without having to worry about financial
-            problems.
-          </p>
-      
-        </div>
+        <form action="applyingoptions.php" method="POST" class="service">
+          <input type="hidden" name="serviceType" value="medicines">
+          <button type="submit" class="service-button">
+            <img src="images/medical.png" style="width: 60px; height: auto; margin-top: 30px; margin-bottom: -10px;">
+            <h3>Medical Assistance</h3>
+            <p>One of the services that SAP offers is medical aid. This program helps people in the Philippines who have serious medical needs. The goal is to help them get the care they need to improve their health and quality of life. The main goal of this program is to make sure that people with complicated medical needs can get the care they need without facing big financial problems.</p>
+          </button>
+        </form>
       </div>
-       <center> <button class="btn1" onclick="window.location.href = 'applyingoptions.php';">Apply for Assistance</button></center>  
+    </div>
+
+       <!--<center> <button class="btn1" onclick="window.location.href = 'applyingoptions.php';">Apply for Assistance</button></center>  -->
     </div>
     
 <h1 id = "partnered"> Partnered Hospitals inside Bataan </h1>

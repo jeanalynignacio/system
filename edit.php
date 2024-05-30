@@ -55,22 +55,42 @@
         $CityMunicipality=$_POST['CityMunicipality'];
         $Barangay=$_POST['Barangay'];
         $HousenoStreet=$_POST['HousenoStreet'];
-        $Email=$_POST['Email'];
+      
         $Username=$_POST['Username'];
         $Password=$_POST['Password'];
 
-        $query = "UPDATE users SET Lastname='$Lastname', Firstname='$Firstname', Middlename='$Middlename', Birthday='$Birthday', Contactnumber='$Contactnumber', Province='$Province', CityMunicipality='$CityMunicipality', Barangay='$Barangay', HousenoStreet='$HousenoStreet', Email='$Email', Username='$Username', Password='$Password' WHERE Id='$userID'";
+        $query = "UPDATE users SET Lastname='$Lastname', Firstname='$Firstname', Middlename='$Middlename', Birthday='$Birthday', Contactnumber='$Contactnumber', Province='$Province', CityMunicipality='$CityMunicipality', Barangay='$Barangay', HousenoStreet='$HousenoStreet', Username='$Username', Password='$Password' WHERE Id='$userID'";
 
         $result2=mysqli_query($con,$query);
 
         if($result2){  
-            $_SESSION['status']="Information updated successfully!";
-            header("Location: success.php");
-            exit(); // Make sure to stop executing the script after redirecting
+            echo '<body>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script>
+                swal({
+                    title: "Information updated successfully",
+                    icon: "success",
+                    button: "Okay"
+                }).then(function() {
+                    window.location.href="usershomepage.php";
+                });
+            </script>
+        </body>';
+        
         } else {
-            $_SESSION['status']="Update error!" . mysqli_error($con);
-            header("Location: success.php");
-            exit(); // Make sure to stop executing the script after redirecting
+            echo '<body>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        swal({
+            title: "Update error",
+            icon: "error",
+            button: "Okay"
+        }).then(function() {
+            window.location.href="usershomepage.php";
+        });
+    </script>
+</body>';
+
         }
     } 
 }
@@ -251,7 +271,7 @@
                 <div class = "column">
                 <div class="field input">
                     <label for = "Email">Email</label>
-                    <input type="text" name="Email" id="Email" autocomplete="off"value="<?php echo "{$res_ID['Email']}"; ?>">       
+                    <input type="text" name="Email" id="Email" autocomplete="off"value="<?php echo "{$res_ID['Email']}"; ?>" disabled>       
                 </div>
                 <div class="field input">
                     <label for = "Username">Username</label>

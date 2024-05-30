@@ -10,6 +10,18 @@
         header("Location: usershomepage.php");
        exit;
    }
+   if(isset($_POST['serviceType'])){
+    $_SESSION['serviceType'] = $_POST['serviceType'];
+    $serviceType = $_SESSION['serviceType'];
+
+} elseif (!isset($_SESSION['serviceType'])) {
+    echo "Service type is not set.";
+    exit();
+}
+if (isset($_POST['myself']) || isset($_POST['relative'])) {
+    $serviceType = $_SESSION['serviceType'];
+}
+
    
   /*if (isset($_POST['myself'])) {
     
@@ -331,8 +343,8 @@ elseif (isset($_POST['relative'])) {
             <form id="" action="" method="post">
             
             <div class="field">
-                    <input type="submit" class="btn1" name="myself" value="For Myself / Para sa Sarili" required >             
-                </div>
+                    <input type="submit" class="btn1" name="myself" value="For Myself / Para sa Sarili" required >     
+                     </div>
                 
                 <div class="field">
                     <input type="submit" class="btn2" name="relative" value="For my relative / Para sa Kamag-anak" required >                  

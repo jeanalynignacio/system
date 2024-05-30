@@ -45,10 +45,7 @@
                     $Username = $_POST['Username'];
                     $Password = $_POST['Password'];
                     $role = $_POST['role'];
-                    $check_user = "SELECT * FROM employees WHERE Email='$Email' LIMIT 1";
-                    $result = mysqli_query($con, $check_user);
-                    $user = mysqli_fetch_assoc($result);
-                    
+                   
             if(empty($Lastname))
                     {
                       array_push($errors, $lastError = "Lastname is required");
@@ -83,17 +80,17 @@
 
 
 // Use the complete user ID in the INSERT query
-$query ="INSERT INTO employees( Lastname, Firstname, Email, Username, password_hash,role,verification_code,status) VALUES ('$Lastname', '$Firstname','$Email', '$Username', '$Password','$role','$verification_code',0)";
+$query ="INSERT INTO employees( Lastname, Firstname, Username, password_hash,role,verification_code,status) VALUES ('$Lastname', '$Firstname', '$Username', '$Password','$role','$verification_code',0)";
 if(mysqli_query($con, $query)){
   
    echo '<body>
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <script>
-        swal("Registration successful!", "Please verify your email.", "success")
+        swal("Employee account added successfully!", "Please verify your email.", "success")
         </script>';
           echo '<script>
          setTimeout(function(){
-            window.location.href="employee-login.php";
+            window.location.href="employeeRecords.php";
         } , 5000);
       </script>
       </body>';
@@ -108,7 +105,7 @@ if(mysqli_query($con, $query)){
 
 }            ?>
            
-            <header>Sign Up</header>
+            <header>Add employee account</header>
             <form action="" method= "post">
                 <div class="field input">
                     <label for = "Lastname" style="font-size: 18px;">Last Name</label>
@@ -131,7 +128,7 @@ $selectedBarangay = $_POST['role'] ?? 'Select';
                     <select id="cityDropdown" name="role" onchange="populateBarangays()">
                     <option value="Select" <?php if ($selectedRole === 'Select') echo 'selected'; ?>>Select</option>
                     <option value="Admin" <?php if ($selectedRole === 'Admin') echo 'selected'; ?>>Admin</option>
-                    <option value="Employee" <?php if ($selectedRole === 'Employee') echo 'selected'; ?>>Employee</option>
+                    <option value="Community Affairs Officer" <?php if ($selectedRole === 'Community Affairs Officer') echo 'selected'; ?>>Community Affairs Officer</option>
                     
                       </select>  
                       <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $roleError ?></p>
@@ -153,10 +150,9 @@ $selectedBarangay = $_POST['role'] ?? 'Select';
                     <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $passError ?></p>
                   </div>
                 <div class="field">
-                    <input type="submit" class="btn" name="submit" value="Sign Up">                  
+                    <input type="submit" class="btn" name="submit" value="Add account">                  
                 </div>
 
-       
                 <div class="links">
                  </div>
             </form>

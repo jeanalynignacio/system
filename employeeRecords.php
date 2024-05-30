@@ -18,7 +18,7 @@ $res_Fname = $result['Firstname'];
     header("Location: employee-login.php");
 }
 
-$query="SELECT * FROM employees where role='Employee'";
+$query="SELECT * FROM employees where role='Community Affairs Officer'";
         $result = mysqli_query($con, $query);
 
 
@@ -137,7 +137,7 @@ awesome/6.4.0/css/all.min.css"/>
 <div class="header--wrapper">
 <div class="header--title">
 <span> 1Bataan Malasakit - Special Assistance Program </span>
-<h2> Beneficiary's Records </h2>
+<h2> Employee's Records </h2>
 </div>
 <div id="currentDate"></div>
 <div class="user--info">
@@ -151,33 +151,11 @@ awesome/6.4.0/css/all.min.css"/>
 
 </div>
 
-       
-       
-
         <div class="tabular--wrapper">  
         <div class="card--container">
             <h3 class="main--title"> Overall Data
            
-                <!--    <ul class = "drop"> 
-            <li>
-                    <a href = "#"> Assistance <span> <i class="fa-solid fa-caret-down"> </i> </span> </a>
-                    <ul class = "dropdown">
-                    <li><a href="#" onclick="filterByCity('Abucay')">Abucay</a></li>
-                        <li><a href="#" onclick="filterByCity('Bagac')">Bagac</a></li>
-                        <li><a href="#" onclick="filterByCity('Balanga')">Balanga</a></li>
-                        <li><a href="#" onclick="filterByCity('Dinalupihan')">Dinalupihan</a></li>
-                        <li><a href="#" onclick="filterByCity('Hermosa')">Hermosa</a></li>
-                        <li><a href="#" onclick="filterByCity('Limay')">Limay</a></li>
-                        <li><a href="#" onclick="filterByCity('Mariveles')">Mariveles</a></li>
-                        <li><a href="#" onclick="filterByCity('Morong')">Morong</a></li>
-                        <li><a href="#" onclick="filterByCity('Orani')">Orani</a></li>
-                        <li><a href="#" onclick="filterByCity('Orion')">Orion</a></li>
-                        <li><a href="#" onclick="filterByCity('Pilar')">Pilar</a></li>
-                        <li><a href="#" onclick="filterByCity('Samal')">Samal</a></li>
-                    </ul>
-                    </ul>
-                </li>
-            </ul>-->
+             
             </h3>
 
         </div>
@@ -185,6 +163,7 @@ awesome/6.4.0/css/all.min.css"/>
 
 
 <!--<button class="btn1" onclick="window.location.href ='addbeneficiary.php';">Add Beneficiary</button>-->
+<button class="btn1" onclick="window.location.href ='employeeregistration.php';">Add Employee Account</button>
 
 <table>
 <thead>
@@ -192,6 +171,7 @@ awesome/6.4.0/css/all.min.css"/>
 <th>Last Name:</th>
 <th>First Name:</th>
 <th>Email:</th>
+<th>Role:</th>
 
 <th>Action:</th>
 </tr>
@@ -199,7 +179,7 @@ awesome/6.4.0/css/all.min.css"/>
 <tbody>
 <?php
 include("php/config.php");
-$sql = "SELECT * FROM employees where role='Employee'";
+$sql = "SELECT * FROM employees where role='Community Affairs Officer'";
 $result = $con->query($sql);
 if (!$result) {
 die("Invalid query: " . $con->error);
@@ -210,7 +190,7 @@ echo "<tr>
 <td>" . $row["Lastname"]." </td>
 <td>" . $row["Firstname"] . "</td>
 <td>" . $row["Email"] . "</td>
-
+<td>" . $row["role"] . "</td>
 <td>
 <form method='post'
 
@@ -219,7 +199,7 @@ action='editemployee.php'>
 <input type='hidden'
 name='Emp_ID' value='" . $row['Emp_ID'] . "'>
 
-<button type='submit' style='color:green'>Edit</button>
+<button type='submit' style='color:green'>View</button>
 
 </form>
 </td>

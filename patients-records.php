@@ -377,9 +377,7 @@ function employees(){
         window.location = "http://localhost/public_html/employeeRecords.php"
     }
     
-    function medicines() {
-        window.location = "http://localhost/public_html/medicines.php";
-    }
+    
     function profile() {
         window.location = "http://localhost/public_html/profileadmin.php";
     }
