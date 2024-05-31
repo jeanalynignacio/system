@@ -98,13 +98,16 @@ if(isset($_SESSION['Emp_ID'])){
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                         <script>
                         swal("Email added successfully! Please check your email to verify")
-                        </script>';
-                        echo '<script>
-                        setTimeout(function(){
-                            window.location.href="employee-login.php";
-                        }, 5000);
+                        .then((value) => {
+                            if (value) {
+                                window.location.href = "employeeRecords.php";
+                            }
+                        });
                         </script>
                         </body>';
+                        exit();
+
+
                     }
                 } else {
                     array_push($errors, mysqli_error($con));

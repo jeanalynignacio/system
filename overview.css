@@ -55,7 +55,7 @@ html ::-webkit-scrollbar {
 }
 
 .nav-item .nav-link:hover {
-  background: #2b5074;
+  background: #c0dfff;
   border-radius: 5px;
   color: white;
 }

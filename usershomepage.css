@@ -15,14 +15,19 @@ body {
   display: flex;
  justify-content: space-evenly;
  flex-wrap: wrap; 
- margin-left: 15px;
- margin-right: 15px;
+ margin-left: 0px;
+ margin-right: 0px;
+
  
 }
+.all-content {
+  background: #1477d2;
+}
+
 .mySlides {
  display: none;
  height: 700px;
- width:  900px;
+width:1000px;
  overflow: hidden;
  margin-left: 15px;
  margin-right: 15px;
@@ -74,7 +79,7 @@ html ::-webkit-scrollbar {
 
 .nav-item .nav-link:hover
 {
-  background: #2b5074;
+  background: #c0dfff;
   border-radius: 5px;
   color: white;
    padding-left:10px;
@@ -124,6 +129,7 @@ text-align:left;
 .container-fluid .navbar-brand {
   font-size: 18px;
    padding-left:10px;
+   cursor: default;
 }
 /* navbar end */
 
@@ -653,6 +659,7 @@ h1 {
     padding: 0;
   }
 }
+
 .styled {
   font-size: 20px;
   width: 250px;
@@ -693,6 +700,59 @@ h1 {
   transition: 0.5s;
   text-align: center;
   transition: 0.5s;
+}
+/* Style for the form container */
+form.service {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9; /* Background color for the form */
+  border: 1px solid #ccc; /* Border for the form */
+  padding: 10px; /* Padding inside the form */
+  border-radius: 10px; /* Rounded corners for the form */
+  width: 300px; /* Width of the form */
+  margin:10px auto; /* Center the form horizontally */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+}
+
+/* Style for the service button */
+button.service-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background:none; /* Background color for the button */
+  border: none; /* Remove default border */
+  color: white; /* Text color */
+  padding: 13px 2px; /* Padding inside the button */
+  text-align: center; /* Center text */
+  text-decoration: none; /* Remove underline from text */
+  font-size: 16px; /* Font size */
+  margin: 0 0; /* Margin around the button */
+  cursor: pointer; /* Pointer cursor on hover */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s; /* Transition effect for background color */
+}
+
+/* Style for the image inside the button */
+button.service-button img {
+  width: 80px; /* Image width */
+  height: 40; /* Maintain aspect ratio */
+  margin-top: 2px; /* Margin at the top */
+  margin-bottom: 10px; /* Negative margin at the bottom */
+}
+
+/* Style for the heading inside the button */
+button.service-button h3 {
+  margin: 20px 0; /* Margin around the heading */
+  font-size: 16px; /* Font size */
+}
+
+/* Style for the paragraph inside the button */
+button.service-button p {
+  font-size: 13px; /* Font size */
+  text-align: center; /* Center text */
+  margin: 1px 0; /* Margin around the paragraph */
+  padding: 0 2px; /* Padding inside the paragraph */
 }
 
 

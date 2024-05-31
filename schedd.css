@@ -1,4 +1,442 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;1,600&display=swap");
+*  {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Arial";
+  }
+  body {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: flex;
+  }
+  /* navbar start */
+
+  
+html ::-webkit-scrollbar-track {
+  background: #1477d2;
+}
+
+html ::-webkit-scrollbar-thumb {
+  background: #1477d2;
+  border-radius: 10px;
+}
+
+html ::-webkit-scrollbar {
+  width: 10px;
+}
+
+
+  #navbar {
+    background-color: white;
+    height: 150px;
+  }
+  
+  #logo img {
+    border-radius: 10px;
+    width: 60px;
+    margin-left: 5px;
+  }
+  
+  .navbar-nav {
+    margin-left: 100px;
+  }
+  
+  .nav-item .nav-link {
+    color: white;
+    margin-left: 10px;
+    font-weight: bold;
+    transition: 0.5s;
+    padding-left: 10px;
+  }
+  
+  .nav-item .nav-link:hover {
+    background: #c0dfff;
+    border-radius: 5px;
+    color: white;
+    padding-left: 10px;
+  }
+  .profile-button {
+    width: 100%;
+    height: 40px;
+  
+    transition: 0.5s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-top: 2px;
+    color: white;
+    margin-left: 10px;
+    font-weight: bold;
+    transition: 0.5s;
+    text-align: left;
+    padding-left: 10px;
+  }
+  .profile-button:hover {
+    background: #2b5074;
+    width: 100%;
+    height: 40px;
+    border-radius: 4px;
+    color: white;
+    text-align: left;
+    margin-top: 2px;
+    cursor: pointer;
+    padding-left: 10px;
+  }
+  
+  .all-content {
+    width: 100%;
+    background: #1477d2;
+  }
+  
+  #navbar form button {
+    background: black;
+    color: white;
+    border: 1px solid white;
+  }
+  .welcome-message {
+    font-size: 30px;
+    color: #ffd700;
+    margin-left: 70px;
+    margin-top: 50px;
+  }
+  
+  .container-fluid .navbar-brand {
+    font-size: 18px;
+    padding-left: 10px;
+    cursor:default;
+  }
+  
+/* navbar end */
+.container {
+  background: #ffff;
+  background-position: center;
+  height: auto;
+  width: 350px;
+  background-size: 100vh;
+  padding: 25px 30px;
+  border-radius: 20px;
+  font-family: "Montserrat", sans-serif;
+  position: relative;
+  margin-top: 30px;
+}
+
+.container h1 {
+  font-size: 25px;
+  text-align: center;
+  margin-top:50px;
+  color:#e9e2be;
+}
+
+.container form {
+  align-items: center;
+  margin-top: 50px;
+}
+
+.container .form-email {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+  position: relative;
+  color: #fff;
+  font-weight: bolder;
+  margin-bottom: -30px;
+  margin-right: 30px;
+}
+
+input[type="email"] {
+  width: 500px;
+  padding: 10px;
+  margin-bottom: 10px;
+  color: black;
+  font-size: 15px;
+}
+
+button {
+  margin-top: 30px;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 15px;
+  height: 50px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.checklist {
+  list-style-type: none; /* Removes default bullets */
+  font-size: 12px;
+}
+
+.checklist li::before {
+  content: "\2713"; /* Unicode checkmark symbol */
+  display: inline-block;
+  width: 2em; /* Adjust as needed */
+  margin-left: -1em; /* Negative margin to overlap text */
+}
+
+  .sub-menu-wrap {
+    position: absolute;
+    top: 70%;
+    margin-right: 10px;
+    right: 10%;
+    width: 340px;
+    max-height: 0px;
+    overflow: hidden;
+    transition: max-height 0.5s;
+  }
+  .sub-menu-wrap.open-menu {
+    max-height: 300px;
+  }
+  
+  .sub-menu {
+    background: #525252;
+    padding: 5px;
+    margin: 5px;
+    color: rgb(83, 152, 231);
+    border-radius: 10px;
+  }
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
+  .user-pic {
+    width: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 20px;
+    right: 10%;
+  }
+  .user-info h2 {
+    font-weight: 300px;
+    color: rgb(255, 250, 250);
+    font-size: 16px;
+    padding-top: 20px;
+  }
+  .user-info img {
+    width: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+  }
+  
+.okButton1 {
+  background-color: green;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+  display: inline-block;
+}
+/*Optional: Add hover effect */
+.okButton1:hover {
+  background-color: #45a049; 
+}
+  
+  .sub-menu hr {
+    border: 0;
+    height: 1px;
+    width: 100%;
+    background: #ccc;
+    margin: 8px 0 10px;
+  }
+  .btn-edit-profile {
+    background: none;
+    border: 0;
+  }
+  .btn-edit-profile {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #525252;
+    margin: 6px 0;
+    font-size: 14px;
+  }
+  .sub-menu-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #525252;
+    margin: 10px 0;
+    font-size: 14px;
+  }
+  .btn-edit-profile p {
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 12px;
+    margin-top: 20px;
+  }
+  .sub-menu-link p {
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 12px;
+    margin-top: 20px;
+  }
+  .btn-edit-profile img {
+    width: 40px;
+  
+    background: #e5e5e5;
+    border-radius: 50%;
+    padding: 5px;
+    margin-right: 15px;
+    margin-top: 2px;
+  }
+  .sub-menu-link img {
+    width: 40px;
+    background: #e5e5e5;
+    border-radius: 50%;
+    padding: 6px;
+    margin-right: 15px;
+  }
+  
+  .btn-edit-profile:hover p {
+    transform: translateX(5px);
+    font-weight: 700;
+  }
+  .sub-menu-link:hover p {
+    transform: translateX(5px);
+    font-weight: 700;
+    color: #d1ce32;
+  }
+  /* Add this media query for mobile responsiveness */
+  @media only screen and (max-width: 768px) {
+    .sub-menu-wrap {
+      top: 50%; /* Adjust the position for better visibility */
+      right: 5%; /* Adjust the position for better visibility */
+      width: 80%; /* Adjust the width for better fit on small screens */
+      max-height: 0; /* Hide the submenu initially on small screens */
+      overflow: hidden; /* Hide overflow */
+      transition: max-height 0.5s; /* Add transition for smoother animation */
+    }
+  
+    .sub-menu-wrap.open-menu {
+      max-height: 300px; /* Adjust the maximum height for small screens */
+    }
+  
+    .sub-menu {
+      border-radius: 0; /* Remove border radius for better appearance */
+    }
+  }
+  /* navbar end */
+  
+  #home {
+    margin-top: 40px;
+    width: 100%;
+    background: #1477d2;
+  }
+  
+  #home .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 90vh;
+    margin-top: -100px;
+  }
+  #home .box {
+    margin: 120px 10px 20px 20px;
+    background: #fdfdfd;
+  
+    flex-direction: column;
+    padding: 25px 25px;
+    border-radius: 20px;
+    box-shadow: 0 0 128px 0 rgba(0, 0, 0, 0.1),
+      0 32px 64px -48px rgba(0, 0, 0, 0.5);
+  }
+  #home .form-box {
+    width: 450px;
+    margin: 120px 10px 20px 20px;
+  }
+  #home .form-box header {
+    font-size: 20px;
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e6e6e6;
+    margin-bottom: 10px;
+    color: #1477d2;
+  }
+  #home .form-box form .field {
+    display: flex;
+    margin-bottom: 10px;
+    flex-direction: column;
+  }
+  #home .form-box form .input {
+    height: 40px;
+    width: 100%;
+    font-size: 25px;
+    padding: 0 10px;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+  }
+  
+  #home .btn1 {
+    height: 50px;
+    background: #4187c9;
+    border: 0;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+    padding: 0px 10px;
+  }
+  
+  #home .btn1:hover {
+    height: 50px;
+    background: #6d9cc9;
+    border: 0;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+    padding: 0px 10px;
+  }
+  #home .btn2 {
+    height: 50px;
+    background: #4187c9;
+    border: 0;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+    padding: 0px 10px;
+  }
+  
+  #home .btn2:hover {
+    height: 50px;
+    background: #6d9cc9;
+    border: 0;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+    padding: 0px 10px;
+  }
+  .scheduleButton:disabled {
+    background-color: grey;
+    color: white;
+    cursor: not-allowed;
+}
+.scheduleButton {
+    background-color: green;
+    color: white;
+}
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;1,600&display=swap");
 * {
   margin: 0;
   padding: 0;
@@ -503,3 +941,5 @@ button:hover {
 
 
 
+
+  

@@ -7,8 +7,7 @@
 
     }
  
-
-                 if(isset($_SESSION['valid'])){
+ if(isset($_SESSION['valid'])){
             $id = $_SESSION['id'];
             $query = mysqli_query($con, "SELECT * FROM users WHERE Id=$id");
 
@@ -48,14 +47,13 @@ if($result = mysqli_fetch_assoc($query)){
 
     <div class="all-content">
       <!-- navbar !-->
-
+    
       <nav
         class="navbar navbar-expand-lg navbar-light"
-        style="background-color: #1477d2"
-      >
+        style="background-color: white;"  >
         <div class="container-fluid">
-          <a
-            class="navbar-brand"   href="#" id="logo"  style="font-size: 15px; color: white">
+        <a
+            class="navbar-brand"   href="#" id="logo"  style="font-size: 15px; color: #1477d2;">
             <img src="images/background.png" /> Provincial Government of Bataan- Special Assistance Program
           </a>
           <button
@@ -70,14 +68,14 @@ if($result = mysqli_fetch_assoc($query)){
             <span>
               <i
                 class="fa-solid fa-bars"
-                style="color: white; font-size: 23px"
+                style="color: #1477d2; font-size: 23px"
               ></i
             ></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a style = " color: white; padding-left:10px;" class="nav-link" aria-current="page" href="#">
+                <a style = " color: #1477d2; padding-left:10px;" class="nav-link" aria-current="page" href="">
                      Home 
                 </a>
               </li>
@@ -86,7 +84,7 @@ if($result = mysqli_fetch_assoc($query)){
                   class="nav-link"
                   href="#Services"
                   onclick="showServices('header')"
-                  style="color: white; padding-left:10px;"
+                  style="color: #1477d2; padding-left:10px;"
                 >
                   Services Available
                 </a>
@@ -94,7 +92,7 @@ if($result = mysqli_fetch_assoc($query)){
             
               
              <li class="nav-item">
-                <a style = " color: white; padding-left:10px;" class="nav-link"  onclick="toggleMenu()" style="color: white" >Profile </a>
+                <a style = " color: #1477d2; padding-left:10px;" class="nav-link"  onclick="toggleMenu()" style="color: white" >Profile </a>
               </li>
 
 <div class="sub-menu-wrap" id="subMenu">
@@ -188,13 +186,6 @@ if($result = mysqli_fetch_assoc($query)){
           </button>
         </form>
 
-        <form action="applyingoptions.php" method="POST" class="service">
-          <input type="hidden" name="serviceType" value="implantbakal">
-          <button type="submit" class="service-button">
-            <h3>Implant (Bakal)</h3>
-            <p>Driven by a dedication to enhancing quality of life and promoting inclusivity, this program provides a glimmer of hope to individuals who may otherwise lack the financial means to access steel implant medical operations.</p>
-          </button>
-        </form>
 
         <form action="applyingoptions.php" method="POST" class="service">
           <input type="hidden" name="serviceType" value="laboratories">
@@ -208,7 +199,7 @@ if($result = mysqli_fetch_assoc($query)){
         <form action="applyingoptions.php" method="POST" class="service">
           <input type="hidden" name="serviceType" value="medicines">
           <button type="submit" class="service-button">
-            <img src="images/medical.png" style="width: 60px; height: auto; margin-top: 30px; margin-bottom: -10px;">
+            <img src="images/medicines.png" style="width: 60px; height: auto; margin-top: 30px; margin-bottom: -10px;">
             <h3>Medical Assistance</h3>
             <p>One of the services that SAP offers is medical aid. This program helps people in the Philippines who have serious medical needs. The goal is to help them get the care they need to improve their health and quality of life. The main goal of this program is to make sure that people with complicated medical needs can get the care they need without facing big financial problems.</p>
           </button>
