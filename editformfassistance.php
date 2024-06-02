@@ -2,15 +2,34 @@
 session_start();
 include("php/config.php");
 
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
+
+
 // Check if Beneficiary_Id is set in the URL parameter
 if (isset($_POST['Beneficiary_Id'])) {
     // Retrieve the Beneficiary_Id from the URL parameter
     $beneID = $_POST['Beneficiary_Id'];
+    $Status = $_POST['Status'];
 } else {
     echo "User ID is not set.";
     exit();
 }
+if(isset($_SESSION['Emp_ID'])) {
+    $EmpID = $_SESSION['Emp_ID'];
+    $query = mysqli_query($con, "SELECT * FROM employees WHERE Emp_ID=$EmpID");
 
+    if($result = mysqli_fetch_assoc($query)){
+        $res_Id = $result['Emp_ID'];
+        $res_Fname = $result['Firstname'];
+        $res_Lname = $result['Lastname'];
+        $role = $result['role'];
+    }
+} else {
+    header("Location: employee-login.php");
+    exit();
+}
 $SQL = "SELECT b.*, t.*, f.*
         FROM beneficiary b
         INNER JOIN transaction t ON b.Beneficiary_Id = t.Beneficiary_Id
@@ -29,15 +48,16 @@ if (isset($_POST['submit'])) {
     // Check if the user confirmed the update
     if (isset($_POST['confirmed']) && $_POST['confirmed'] === "yes") {
         $beneId = $_POST['Beneficiary_Id'];
-        $Date = $_POST['Date'];
-        $transaction_time = $_POST['transaction_time'];
-        $Given_Sched = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
-        $TransactionType = $_POST['TransactionType'];
+        
         $Amount = $_POST['Amount'];
         $Status = $_POST['Status'];
 
         // Construct the update query
-        $query = "UPDATE financialassistance f
+       
+       
+       
+       
+       $query = "UPDATE financialassistance f
                   INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
                   INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
                   SET t.Date = '$Date',
@@ -101,10 +121,7 @@ if (isset($_POST['submit'])) {
                     <input type="text" required value="<?php echo $res_data['Firstname']; ?>" name="Firstname" disabled/>
                 </div>
 
-                <div class="input-box">
-                    <span class="details"> City </span>
-                    <input type="text" required value="<?php echo $res_data['CityMunicipality']; ?>" name="CityMunicipality" disabled/>
-                </div>
+             
 
                 <div class="input-box">
                     <span class="details"> Transaction Type </span>
@@ -143,6 +160,12 @@ if (isset($_POST['submit'])) {
                     <input type="date" id="calendar" name="Given_Sched" value="<?php echo $res_data['Given_Sched']; ?>"/>
                 </div>
             </div>
+            <div class="input-box">
+                    <span class="details">Given Time </span>
+                    <input type="date" id="calendar" name="Given_Sched" value="<?php echo $res_data['Given_Sched']; ?>"/>
+                </div>
+            </div>
+            
             
             <br>
             <input type="hidden" name="confirmed" id="confirmed" value="no">

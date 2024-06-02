@@ -56,7 +56,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
          //$TransactionType = $_POST['TransactionType'];
        // $FA_Type = $_POST['FA_Type'];
         $Status = $_POST['Status'];
-        
+        $EmpID = $_POST['Emp_ID'];
 
         if ($Status == "For Validation") {
             date_default_timezone_set('Asia/Manila');
@@ -107,7 +107,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             $query = "UPDATE financialassistance f
                       INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
                       INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-                      SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
+                      SET t.Status = '$Status', t.Emp_ID='$EmpID'
                       WHERE b.Beneficiary_Id = '$beneID'";
         }
         // Construct the update query
@@ -158,25 +158,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     </body>
                     </html>
                   
-                   
-                    
                     ";
 
-                } elseif($status == 'Pending for Requirements') {
-                    $mail->Subject = 'Pending for Requirements';
-                    $mail->Body = "
-                        <html>
-                        <body>
-                        <p>Dear Mr./Ms./Mrs. $lastName,</p>
-                        <p>Your assistance request is currently pending for requirements.</p>
-                        <p>Please submit the necessary documents on $Date to proceed with your request.</p>
-                        <p>Thank you for your cooperation.</p>
-                        <p>Best regards,</p>
-                        <p>$employeeName</p>
-                        <p>Provincial Government of Bataan - Special Assistance Program</p>
-                        </body>
-                        </html>
-                    ";
+                
                 } elseif($status == 'Pending for Payout') {
                     $mail->Subject = 'Pending for Payout';
                     $mail->Body = "
@@ -369,8 +353,11 @@ Please note that your reasons may need to be verified to avoid any inconvenience
                     <span class="details" style="color:  #f5ca3b;">Time of Application:</span>
                     <span id="time" style="color:  white;"><?php echo date("h:i A", strtotime($record['transaction_time'])); ?></span>
                     <input type="hidden" required value="<?php echo $record['Beneficiary_ID']; ?>" name="Beneficiary_ID" disabled />
+               <input type="hidden" required value="<?php echo $record['Beneficiary_ID']; ?>" name="Beneficiary_ID" disabled />
+           
                 </div>-->
             </div>
+           
 
             <div class="user-details">
                 <div class="input-box">
