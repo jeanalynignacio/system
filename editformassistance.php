@@ -195,17 +195,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 }
          
 
-<<<<<<< HEAD
-                 $mail->send();
-                echo '<script>alert("Update and email send successful");</script>';
-                echo '<script>
-                        setTimeout(function(){
-                            window.location.href="assistance.php";
-                        }, 3000);
-                      </script>';
-                exit();
-
-=======
                 $mail->send();
                 echo '<body>
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -218,7 +207,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                         });
                         </script>
                         </body>';
->>>>>>> f3e2cb998df9eb664e8cae62f1d9743d8f3d7f79
             } catch (Exception $e) {
                 echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
             }
