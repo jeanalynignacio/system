@@ -195,14 +195,17 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 } 
 
                 $mail->send();
-                echo '<script>alert("Update and email send successful");</script>';
-                echo '<script>
-                        setTimeout(function(){
-                            window.location.href="assistance.php";
-                        }, 3000);
-                      </script>';
-                exit();
-
+                echo '<body>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                        <script>
+                        swal("Update and email send successful","","success")
+                        .then((value) => {
+                            if (value) {
+                                window.location.href = "assistance.php";
+                            }
+                        });
+                        </script>
+                        </body>';
             } catch (Exception $e) {
                 echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
             }
