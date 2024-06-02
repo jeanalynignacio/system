@@ -134,10 +134,10 @@ if($result = mysqli_fetch_assoc($query)){
 
       <div id="home">
       <div class="w3-centerw3-section" >
-        <img class="mySlides" src="images/sap1.png" style="width: auto" height="1000px">
-        <img class="mySlides" src="images/sap2.png" style="width: auto" height="1000px">
-        <img class="mySlides" src="images/sap3.jpg" style="width: auto" height="1000px">
-        <img class="mySlides" src="images/sap4.png" style="width: auto" height="1000px">
+        <img class="mySlides" src="images/sap1.png" style="width: 1200px" height="900px">
+        <img class="mySlides" src="images/sap2.png" style="width: 1200px" height="900px">
+        <img class="mySlides" src="images/sap3.jpg" style="width: 1200px" height="900px">
+        <img class="mySlides" src="images/sap4.png" style="width: 1200px" height="900px">
       </div>
 
         <h3>PGB - Special Assistance Program</h3>
