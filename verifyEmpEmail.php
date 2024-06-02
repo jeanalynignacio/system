@@ -15,17 +15,18 @@ if(isset($_GET['Email']) && isset($_GET['code'])){
             $update = "UPDATE employees SET status = 1 WHERE Email='$result_fetch[Email]'";
             if(mysqli_query($con, $update)){
               
-   echo '<body>
-   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-   <script>
-   swal("Registration successful!", "You may now login", "success")
-   </script>';
-     echo '<script>
-    setTimeout(function(){
-       window.location.href="employee-login.php";
-   } , 5000);
- </script>
- </body>';
+ echo '<body>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                        <script>
+                        swal("Registration successful!", "You may now login","","success")
+                        .then((value) => {
+                            if (value) {
+                                window.location.href = "login.php";
+                            }
+                        });
+                        </script>
+                        </body>'; 
+ 
 } else {
     echo '<div class="alert alert-warning" role="alert">
     An error occurred while updating the status. Please try again later.
