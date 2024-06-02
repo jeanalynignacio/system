@@ -733,6 +733,7 @@ button.service-button {
   transition: background-color 0.3s; /* Transition effect for background color */
 }
 
+
 /* Style for the image inside the button */
 button.service-button img {
   width: 80px; /* Image width */
@@ -756,5 +757,40 @@ button.service-button p {
 }
 
 
+button.hospital-button {
+  background: none;
+  border: #1477d2;
+ }
 
+  form.hospitals {
+    width: 280px;
+    height: 40vh;
+    margin: 8px;
+    background: #1477d2;
+    text-align: center;
+    border-radius: 10px;
+    border: #1477d2;
+    color: black; }
  
+
+/* Style for the image inside the button */
+button.hospital-button img {
+  width: 80px; /* Image width */
+  height: 40; /* Maintain aspect ratio */
+  margin-top: 2px; /* Margin at the top */
+  margin-bottom: 10px; /* Negative margin at the bottom */
+}
+
+/* Style for the heading inside the button */
+button.hospital-button h3 {
+  margin: 20px 0; /* Margin around the heading */
+  font-size: 16px; /* Font size */
+}
+
+/* Style for the paragraph inside the button */
+button.hospital-button p {
+  font-size: 13px; /* Font size */
+  text-align: center; /* Center text */
+  margin: 1px 0; /* Margin around the paragraph */
+  padding: 0 2px; /* Padding inside the paragraph */
+}

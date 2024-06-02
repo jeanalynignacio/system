@@ -26,6 +26,8 @@ $res_profile = $result['userIDpic'];
 
    if(isset($_POST['serviceType'])){
     $_SESSION['serviceType'] = $_POST['serviceType'];
+    $_SESSION['hospitals'] = $_POST['hospitals'];
+   
     $serviceType = $_SESSION['serviceType'];
 
 } elseif (!isset($_SESSION['serviceType'])) {

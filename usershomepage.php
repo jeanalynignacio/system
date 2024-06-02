@@ -213,11 +213,19 @@ if($result = mysqli_fetch_assoc($query)){
 <h1 id = "partnered"> Partnered Hospitals inside Bataan </h1>
 
 <div class="insideHospital">
-    <div class="hospitals">
-      <img src = "images/bdhmc.jpg" alt="" class="card-image">
-      <h3> Bataan Doctor's Hospital & Medical Center </h3>
-    </div>
+    
 
+<form action="applyingoptions.php" method="POST" class="hospitals">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <input type="hidden" name="hospitals" value="Bataan Doctor's Hospital & Medical Center">
+          <button type="submit" class="hospital-button">
+       
+   <img src = "images/bdhmc.jpg" alt="" class="card-image">
+      <h3> Bataan Doctor's Hospital & Medical Center </h3>
+   
+      </button>
+        </form>
+   
   <div class="hospitals">
     <img src = "images/bmcc.png" alt="" class="card-image">
     <h3> Balanga Medical Center Corporation </h3>
