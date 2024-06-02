@@ -240,6 +240,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
     if (status === 'For Schedule') {
         emailFormat.innerHTML = `
+         <div style = "color: white;">
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>I am writing to inform you that your request for scheduling has been approved.<br>
             Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
@@ -251,11 +252,13 @@ Please note that your reasons may need to be verified to avoid any inconvenience
             Best regards,<br>
             <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
             Provincial Government of Bataan - Special Assistance Program</p>
+         </div>
         `;
     } else if (status === 'For Validation') {
         requirements.style.display = 'block'; 
         if (faType === 'Burial') {
             requirements.innerHTML = `
+             <div style = "color: white;">
                 <h3>Requirements for Burial Assistance Validation</h3>
                 <ul>
                     <input type="checkbox" name="requirement" value="Death Certificate"> Death Certificate <br>
@@ -263,10 +266,12 @@ Please note that your reasons may need to be verified to avoid any inconvenience
                     <input type="checkbox" name="requirement" value="Request Letter"> Request Letter <br>
                     <input type="checkbox" name="requirement" value="Photocopy of Beneficiary's ID"> Photocopy of Beneficiary's ID <br>
                     </ul>
+             </div>
             `;
             
         } else if (faType === 'Chemotherapy & Radiation') {
             requirements.innerHTML = `
+             <div style = "color: white;">
                 <h3>Requirements for Chemotherapy & Radiation Assistance Validation</h3>
                 <ul>
                     <li><input type="checkbox" name="requirement" value="Medical Certificate"> Medical Certificate</li>
@@ -274,10 +279,12 @@ Please note that your reasons may need to be verified to avoid any inconvenience
                     <li><input type="checkbox" name="requirement" value="Request Letter"> Request Letter</li>
                     <li><input type="checkbox" name="requirement" value="Photocopy of Beneficiary's ID"> Photocopy of Beneficiary's ID</li>
                 </ul>
+             </div>
             `;
         }
         else if (faType === 'Dialysis') {
             requirements.innerHTML = `
+             <div style = "color: white;">
                 <h3>Requirements for Dialysis</h3>
                 <ul>
                     <li><input type="checkbox" name="requirement" value="Medical Certificate"> Medical Certificate</li>
@@ -285,10 +292,12 @@ Please note that your reasons may need to be verified to avoid any inconvenience
                     <li><input type="checkbox" name="requirement" value="Request Letter"> Request Letter</li>
                     <li><input type="checkbox" name="requirement" value="Photocopy of Beneficiary's ID"> Photocopy of Beneficiary's ID</li>
                 </ul>
+             </div>
             `;
         }
     } else if (status === 'Pending for Requirements') {
         emailFormat.innerHTML = `
+         <div style = "color: white;">
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>Your assistance request is currently pending for requirements.<br>
             Please submit the necessary documents on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
@@ -297,9 +306,11 @@ Please note that your reasons may need to be verified to avoid any inconvenience
             Best regards,<br>
             <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
             Provincial Government of Bataan - Special Assistance Program</p>
+         </div>
         `;
     } else if (status === 'Pending for Payout') {
         emailFormat.innerHTML = `
+         <div style = "color: white;">
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>Your assistance request is currently pending for payout.<br>
             We are processing your application, and you will receive your financial assistance soon.<br><br>
@@ -307,6 +318,7 @@ Please note that your reasons may need to be verified to avoid any inconvenience
             Best regards,<br>
             <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
             Provincial Government of Bataan - Special Assistance Program</p>
+         </div>
         `;
     } else if (status === 'Request for Re-schedule') {
         requirements.style.display = 'block'; 
@@ -316,6 +328,7 @@ Please note that your reasons may need to be verified to avoid any inconvenience
             `;
     } else if (status === 'For Payout') { 
         emailFormat.innerHTML = `
+         <div style = "color: white;">
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>Your assistance request is currently for payout on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
             at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
@@ -323,9 +336,11 @@ Please note that your reasons may need to be verified to avoid any inconvenience
             Best regards,<br>
             <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
             Provincial Government of Bataan - Special Assistance Program</p>
+         </div>
         `;
     }else if (status === 'For Re-schedule') { 
         emailFormat.innerHTML = `
+        <div style = "color: white;">
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>Your assistance request for re-schedule has been accepted. Your new schedule is on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
             at <input type="time" id="time" name="time"  />.<br>
@@ -333,6 +348,7 @@ Please note that your reasons may need to be verified to avoid any inconvenience
             Best regards,<br>
             <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
             Provincial Government of Bataan - Special Assistance Program</p>
+        </div>
         `;
 }
       }
