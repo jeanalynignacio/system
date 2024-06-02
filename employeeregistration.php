@@ -83,18 +83,17 @@
 $query ="INSERT INTO employees( Lastname, Firstname, Username, password_hash,role,verification_code,status) VALUES ('$Lastname', '$Firstname', '$Username', '$Password','$role','$verification_code',0)";
 if(mysqli_query($con, $query)){
   
-   echo '<body>
-        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-        <script>
-        swal("Employee account added successfully!", "Please verify your email.", "success")
-        </script>';
-          echo '<script>
-         setTimeout(function(){
-            window.location.href="employeeRecords.php";
-        } , 5000);
-      </script>
-      </body>';
-       
+    echo '<body>
+     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+       <script>
+        swal("Employee account added successfully!", "Please verify your email.","","success")
+        .then((value) => {
+           if (value) {
+            window.location.href = "employeeRecords.php";
+         }
+     });
+</script>
+</body>'; 
  
 } else {
   // If the query fails, push the error message into the $errors array
