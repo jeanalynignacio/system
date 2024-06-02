@@ -226,77 +226,145 @@ if($result = mysqli_fetch_assoc($query)){
       </button>
         </form>
    
-  <div class="hospitals">
+        <form action="applyingoptions.php" method="POST" class="hospitals">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <input type="hidden" name="hospitals" value="Balanga Medical Center Corporation">
+          <button type="submit" class="hospital-button">
+  
     <img src = "images/bmcc.png" alt="" class="card-image">
     <h3> Balanga Medical Center Corporation </h3>
-  
-  </div>
+    </button>
+        </form>
+   
 
-  <div class="hospitals">
+        <form action="applyingoptions.php" method="POST" class="hospitals">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <input type="hidden" name="hospitals" value="Bataan Peninsula Medical Center">
+          <button type="submit" class="hospital-button">
+  
     <img src = "images/bpmc.png" alt="" class="card-image">
     <h3> Bataan Peninsula Medical Center </h3>
-  </div>
-
-  <div class="hospitals">
-    <img src = "images/bsjmc.jpg" alt="" class="card-image">
+    </button>
+        </form>
+   
+        <form action="applyingoptions.php" method="POST" class="hospitals">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <input type="hidden" name="hospitals" value="Bataan St. Joseph Hospital & Medical Center">
+          <button type="submit" class="hospital-button">
+     <img src = "images/bsjmc.jpg" alt="" class="card-image">
     <h3> Bataan St. Joseph Hospital & Medical Center </h3>
-  </div>
-
-  <div class="hospitals">
-    <img src = "images/icmc.jpg" alt="" class="card-image">
+    </button>
+        </form>
+ 
+        <form action="applyingoptions.php" method="POST" class="hospitals">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <input type="hidden" name="hospitals" value="Isaac & Catalina Medical Center">
+          <button type="submit" class="hospital-button">
+     <img src = "images/icmc.jpg" alt="" class="card-image">
     <h3> Isaac & Catalina Medical Center </h3>
-  </div>
-
-  <div class="hospitals">
-    <img src = "images/mtsamat.png" alt="" class="card-image">
+    </button>
+        </form>
+        <form action="applyingoptions.php" method="POST" class="hospitals">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <input type="hidden" name="hospitals" value="Mt. Samat Medical Center">
+          <button type="submit" class="hospital-button">
+      <img src = "images/mtsamat.png" alt="" class="card-image">
     <h3> Mt. Samat Medical Center </h3>
-  </div>
+    </button>
+        </form>
+ 
 
-  <div class="hospitals">
+        <form action="applyingoptions.php" method="POST" class="hospitals">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <input type="hidden" name="hospitals" value="Orion St. Michael Hospital">
+          <button type="submit" class="hospital-button">
+   
     <img src = "images/bmcc.png" alt="" class="card-image">
     <h3> Orion St. Michael Hospital </h3>
-  </div>
-</div>
+    </button>
+        </form>
+ 
 
 <h1 class ="head2"> Partnered Hospitals outside Bataan </h1>
 
 <div class="outsideHospital">
-    <div class="hospitals">
+<form action="applyingoptions.php" method="POST" class="hospitals">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <input type="hidden" name="hospitals" value="Jose B. Lingad Memorial General Hospital">
+          <button type="submit" class="hospital-button">
+   
       <img src = "images/jbl.jpg" alt="" class="card-image">
       <h3> Jose B. Lingad Memorial General Hospital </h3>
-    </div>
+      </button>
+        </form>
+ 
 
-  <div class="hospitals">
+   <form action="applyingoptions.php" method="POST" class="hospitals">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <input type="hidden" name="hospitals" value="Lung Center of the Philippines">
+          <button type="submit" class="hospital-button">
+   
     <img src = "images/lcotp.png" alt="" class="card-image">
     <h3> Lung Center of the Philippines </h3>
-  </div>
+    </button>
+        </form>
+ 
 
-  <div class="hospitals">
+   <form action="applyingoptions.php" method="POST" class="hospitals">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <input type="hidden" name="hospitals" value="National Children's Hospital">
+          <button type="submit" class="hospital-button">
+   
     <img src = "images/nch.jpg" alt="" class="card-image">
     <h3> National Children's Hospital </h3>
-  </div>
+    </button>
+        </form>
+ 
 
-  <div class="hospitals">
+   <form action="applyingoptions.php" method="POST" class="hospitals">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <input type="hidden" name="hospitals" value="National Kidney & Transplant Institute">
+          <button type="submit" class="hospital-button">
+   
     <img src = "images/nkti.png" alt="" class="card-image">
     <h3> National Kidney & Transplant Institute </h3>
-  </div>
+    </button>
+        </form>
+ 
 
-  <div class="hospitals">
+   <form action="applyingoptions.php" method="POST" class="hospitals">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <input type="hidden" name="hospitals" value="Philippine General Hospital">
+          <button type="submit" class="hospital-button">
+   
     <img src = "images/pgh.png" alt="" class="card-image">
     <h3> Philippine General Hospital </h3>
-  </div>
+    </button>
+        </form>
+ 
 
-  <div class="hospitals">
+   <form action="applyingoptions.php" method="POST" class="hospitals">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <input type="hidden" name="hospitals" value="Philippine Heart Center">
+          <button type="submit" class="hospital-button">
+   
     <img src = "images/phc.jfif" alt="" class="card-image">
     <h3> Philippine Heart Center </h3>
-  </div>
+    </button>
+        </form>
+ 
 
-  <div class="hospitals">
+   <form action="applyingoptions.php" method="POST" class="hospitals">
+          <input type="hidden" name="serviceType" value="hospitalbills">
+          <input type="hidden" name="hospitals" value="The Philippines Children Medical Center">
+          <button type="submit" class="hospital-button">
+   
     <img src = "images/pcmc.jpg" alt="" class="card-image">
     <h3> The Philippines Children Medical Center </h3>
 
-  </div>
-</div>
+    </button>
+        </form>
+ 
 
 <div class="footer" id=footer>
         <h1> Help us improve the PGB-SAP <br/> <input type="button" value="Answer Survey Here" class="styled"/></h1>

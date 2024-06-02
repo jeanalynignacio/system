@@ -214,15 +214,14 @@
             <form action="#" class="form-email" method="POST">
                 <input type="hidden" name="Beneficiary_ID" value="<?php echo $res_Id; ?>">
                 <input type="hidden" name="serviceType" value="<?php echo htmlspecialchars($serviceType); ?>">
-                <input type="text" name="hospitals" value="<?php echo htmlspecialchars($hospitals); ?>">
+                  <input type="hidden" name="hospitals" value="<?php echo htmlspecialchars($hospitals); ?>">
               
                 <div>
                     <label class="bur" style="color:blue; font-size:30px; margin-top:50px;">
                      Please check your requirements if complete you can proceed to requesting schedule<br>
                         <center><h3>(Icheck kung kumpleto ang mga kinakailangan. Kung oo, maaari kang magpatuloy sa paghingi ng iskedyul.)</h3></center>
                     </label><br><br>
-                    <input type="hidden" name="hospitals" value="<?php echo htmlspecialchars($hospitals); ?>">
-              
+                    
                    <!-- <?php if ($serviceType === 'medicines' || $serviceType === 'hospital') : ?>
                         <label>
                             <input type="radio" name="category" value="medicine" onclick="showRequirements('medicine')">
