@@ -240,7 +240,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
     if (status === 'For Schedule') {
         emailFormat.innerHTML = `
-         <div style = "color: white;">
+         <div style = "color: white;"> //white-text
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>I am writing to inform you that your request for scheduling has been approved.<br>
             Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
@@ -252,7 +252,7 @@ Please note that your reasons may need to be verified to avoid any inconvenience
             Best regards,<br>
             <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
             Provincial Government of Bataan - Special Assistance Program</p>
-         </div>
+         </div> //end
         `;
     } else if (status === 'For Validation') {
         requirements.style.display = 'block'; 
