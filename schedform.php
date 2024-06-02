@@ -133,17 +133,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['sendmail'])) {
         $mail->send();
         $_SESSION['Beneficiary_Id'] = $_POST['Beneficiary_Id'];
         echo '<body>
-        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-        <script>
-        swal("Email has been sent to the beneficiary","", "success");
-        </script>';
-        echo '<script>
-        setTimeout(function(){
-            window.location.href="assistance.php";
-        }, 3000);
-        </script>
-        </body>';
-        
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                        <script>
+                        swal("Email has been sent to the beneficiary","","success")
+                        .then((value) => {
+                            if (value) {
+                                window.location.href = "assistance.php";
+                            }
+                        });
+                        </script>
+                        </body>'; 
+       
    
 
     } catch (Exception $e) {

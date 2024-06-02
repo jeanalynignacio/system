@@ -198,7 +198,11 @@ if (isset($_POST['myself'])) {
                         echo '<body>
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                         <script>
+<<<<<<< HEAD
                         swal("Notification", "You already pending for validation. Please wait for the email to know when your schedule of appearance to the office is. Thank you.","info")
+=======
+                        swal("Notification", "You already pending for validations. Please wait for the email to know when your schedule of appearance to the office is. Thank you.","info")
+>>>>>>> f3e2cb998df9eb664e8cae62f1d9743d8f3d7f79
                         .then((value) => {
                             if (value) {
                                 window.location.href = "applyingoptions.php";

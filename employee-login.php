@@ -24,19 +24,19 @@
                            if ($row['status'] == 1){
                                 // Login successful   $_SESSION['Email'] = $Email;
                                 if ($row["role"] == "Admin") {
-                                    echo '<body>
-                                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                                    <script>
-                                    swal("Log in successful!","","success" )
-                                    </script>';
-                                      echo '<script>
-                                     setTimeout(function(){
-                                        window.location.href="dashboard.php";
-                                    } , 2000);
-                                  </script>
-                                  </body>';
-                                  
+                                   echo '<body>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                        <script>
+                        swal("Log in successful!","","success")
+                        .then((value) => {
+                            if (value) {
+                                window.location.href = "dashboard.php";
+                            }
+                        });
+                        </script>
+                        </body>';
                                 } else {
+<<<<<<< HEAD
                                     
                                   echo '<body>
                                   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -49,6 +49,19 @@
                                   } , 3000);
                                 </script>
                                 </body>'; 
+=======
+                                echo '<body>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                        <script>
+                        swal("Log in successful!","","success")
+                        .then((value) => {
+                            if (value) {
+                                window.location.href = "employee_dashboard.php";
+                            }
+                        });
+                        </script>
+                        </body>';
+>>>>>>> f3e2cb998df9eb664e8cae62f1d9743d8f3d7f79
                                 }
                             
                            } else{
@@ -66,19 +79,19 @@
                                 if(is_array($row) && !empty($row)){
                                     $_SESSION['Emp_ID'] = $row['Emp_ID'];
                                
-                                echo '<body>
-                                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                                <script>
-                                swal("Please add your Email")
-                                </script>';
-                                echo '<script>
-                                setTimeout(function(){
-                                    window.location.href="addingemail.php";
-                                }, 3000);
-                                </script>
-                                </body>';
+                                 echo '<body>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                        <script>
+                        swal("Please add your Email","","success")
+                        .then((value) => {
+                            if (value) {
+                                window.location.href = "addingemail.php";
+                            }
+                        });
+                        </script>
+                        </body>';
                               }
-               
+                               
                       }
                                
                       }  else {
@@ -107,32 +120,31 @@
                             $_SESSION['Emp_ID'] = $row['Emp_ID'];
                             $_SESSION['Lastname'] = $row['Lastname'];
                           
-                            if ($row["role"] == "Admin") {
-                                echo '<body>
+                        if ($row["role"] == "Admin") {
+                           echo '<body>
                                 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                                 <script>
-                                swal("Log in successful!","","success" )
-                                </script>';
-                                  echo '<script>
-                                 setTimeout(function(){
-                                    window.location.href="dashboard.php";
-                                } , 2000);
-                              </script>
-                              </body>';
+                                swal("Log in successful!","","success")
+                                .then((value) => {
+                            if (value) {
+                                window.location.href = "dashboard.php";
+                            }
+                        });
+                        </script>
+                        </body>';
                               
                             } else {
-
-                              echo '<body>
-                              <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                              <script>
-                              swal("Log in successful!","","success")
-                              </script>';
-                                echo '<script>
-                               setTimeout(function(){
-                                  window.location.href="dashboard.php";
-                              } ,2000);
-                            </script>
-                            </body>'; 
+                         echo '<body>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                        <script>
+                        swal("Log in successful!","","success")
+                        .then((value) => {
+                            if (value) {
+                                window.location.href = "dashboard.php";
+                            }
+                        });
+                        </script>
+                        </body>';
                             }
                           }
                         else {
