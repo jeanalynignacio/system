@@ -79,17 +79,18 @@
         $result2 = mysqli_query($con, $query2);
         
         if($result1 && $result2) {
-            echo '<body>
-            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-            <script>
-            swal("Thank you for submitting your request. Please wait for an email with your scheduled appointment","","success")
-            </script>';
-            echo '<script>
-             setTimeout(function(){
-                window.location.href="usershomepage.php";
-            }, 3000);
-            </script>
-            </body>'; 
+           echo '<body>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                        <script>
+                        swal("Thank you for submitting your request. Please wait for an email with your scheduled appointment","","success")
+                        .then((value) => {
+                            if (value) {
+                                window.location.href = "usershomepage.php";
+                            }
+                        });
+                        </script>
+                        </body>'; 
+             
             exit();
         } else {
             echo "Error: " . mysqli_error($con);
