@@ -6,6 +6,7 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
+    
 // Check if Beneficiary_Id is set in the URL parameter
 if(isset($_POST['Beneficiary_Id'])) {
     $beneID = $_POST['Beneficiary_Id'];
@@ -52,22 +53,64 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     if(isset($_POST['confirmed']) && $_POST['confirmed'] === "yes") {
         $beneID = $_POST['Beneficiary_Id'];
         //$Date = $_POST['Date'];
-        $transaction_time = $_POST['time'];
-        $Date = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
-        //$TransactionType = $_POST['TransactionType'];
+         //$TransactionType = $_POST['TransactionType'];
        // $FA_Type = $_POST['FA_Type'];
         $Status = $_POST['Status'];
         
+
+        if ($Status == "For Validation") {
+            date_default_timezone_set('Asia/Manila');
+                $Date = date('Y-m-d'); // Set the current date for Given_Sched
+                $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
+    
+                $requirements = isset($_POST['requirement']) ? (array)$_POST['requirement'] : [];
+                $requiredItems = array("Death Certificate", "Barangay Certificate of Indigency", "Request Letter", "Photocopy of Beneficiary's ID");
+                $missingItems = array_diff($requiredItems, $requirements);
+                $Status = empty($missingItems) ? "For Payout" : "Incomplete Requirements";
+    
+                $query = "UPDATE financialassistance f
+                INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+                INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+                SET t.Status = '$Status', t.Emp_ID='$EmpID'
+                WHERE b.Beneficiary_Id = '$beneID'";
+       
+    }
+        elseif ($Status == "For Schedule") {
+
+            $transaction_time = $_POST['time'];
+            $Date = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
+         
+            $Status = "For Validation";
+            $query = "UPDATE financialassistance f
+            INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+            INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+            SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
+            WHERE b.Beneficiary_Id = '$beneID'";
+        }
+        elseif ($Status == "Pending for Payout") {
+            date_default_timezone_set('Asia/Manila');
+            $Date = date('Y-m-d'); // Set the current date for Given_Sched
+            $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
+    
+            $Status = "For Validation";
+            $query = "UPDATE financialassistance f
+            INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+            INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+            SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
+            WHERE b.Beneficiary_Id = '$beneID'";
+        }
+    
+        else{
+            $transaction_time = $_POST['time'];
+            $Date = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
+         
+            $query = "UPDATE financialassistance f
+                      INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+                      INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+                      SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
+                      WHERE b.Beneficiary_Id = '$beneID'";
+        }
         // Construct the update query
-        $query = "UPDATE financialassistance f
-        INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
-        INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-        SET 
-            t.Given_Sched = '$Date',
-            t.Status = '$Status',
-            t.transaction_time='$transaction_time',
-            t.Emp_ID='$EmpID'
-        WHERE b.Beneficiary_Id = '$beneID'";
 
         $result2 = mysqli_query($con, $query);
 
@@ -80,6 +123,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             $lastName = $record['Lastname'];
             $employeeName = $_POST['EmpName'];
             $Email = $record['Email'];
+            $status= $_POST['Status'];
 
             try {
                 // Server settings
@@ -97,23 +141,28 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
                 // Content
                 $mail->isHTML(true); // Set email format to HTML
-                if($Status == 'For Schedule') {
+                if($status == 'For Schedule') {
                     $mail->Subject = 'Schedule for requirements checking';
                     $mail->Body = "
                     <html>
                     <body>
                     <p>Dear Mr./Ms./Mrs. $lastName,</p>
                     <p>I am writing to inform you that your request for scheduling has been approved.</p>
-                    <p>Your schedule has been set for $Date. We kindly expect your presence on the said date.</p>
-                    <p>Thank you for your cooperation.</p>
-                    <p>Best regards,</p>
-                    <p>$employeeName</p>
+                    <p>Your schedule has been set for $Date. We kindly expect your presence on the said date at $transaction_time</p>
+                    <p> We kindly expect your presence on the said date.<br><br></p>
+                    <p>   If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='http://localhost/public_html/requestresched.php'> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.<br> 
+                   Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.</p>
+                    <p>Best regards,<br>$employeeName</p>
+                   
                     <p>Provincial Government of Bataan - Special Assistance Program</p>
                     </body>
                     </html>
+                  
+                   
+                    
                     ";
 
-                } elseif($Status == 'Pending for Requirements') {
+                } elseif($status == 'Pending for Requirements') {
                     $mail->Subject = 'Pending for Requirements';
                     $mail->Body = "
                         <html>
@@ -128,7 +177,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                         </body>
                         </html>
                     ";
-                } elseif($Status == 'Pending for Payout') {
+                } elseif($status == 'Pending for Payout') {
                     $mail->Subject = 'Pending for Payout';
                     $mail->Body = "
                         <html>
@@ -143,9 +192,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                         </body>
                         </html>
                     ";
-                } else {
-                    $mail->Body = "Default message content.";
-                }
+                } 
 
                 $mail->send();
                 echo '<script>alert("Update and email send successful");</script>';
@@ -193,7 +240,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             <p>I am writing to inform you that your request for scheduling has been approved.<br>
             Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
             at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br><br>
-            Thank you for your cooperation.<br><br>
+          <br><br>
+          If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='http://localhost/public_html/requestresched.php'> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.
+Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.
+ 
             Best regards,<br>
             <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
             Provincial Government of Bataan - Special Assistance Program</p>
@@ -204,10 +254,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             requirements.innerHTML = `
                 <h3>Requirements for Burial Assistance Validation</h3>
                 <ul>
-                    <li><input type="checkbox" name="requirement" value="Death Certificate"> Death Certificate</li>
-                    <li><input type="checkbox" name="requirement" value="Barangay Certificate of Indigency"> Barangay Certificate of Indigency</li>
-                    <li><input type="checkbox" name="requirement" value="Request Letter"> Request Letter</li>
-                    <li><input type="checkbox" name="requirement" value="Photocopy of Beneficiary's ID"> Photocopy of Beneficiary's ID</li>
+                    <input type="checkbox" name="requirement" value="Death Certificate"> Death Certificate <br>
+                    <input type="checkbox" name="requirement" value="Barangay Certificate of Indigency"> Barangay Certificate of Indigency <br>
+                    <input type="checkbox" name="requirement" value="Request Letter"> Request Letter <br>
+                    <input type="checkbox" name="requirement" value="Photocopy of Beneficiary's ID"> Photocopy of Beneficiary's ID <br>
                 </ul>
             `;
         } else if (faType === 'Chemotherapy & Radiation') {
@@ -257,7 +307,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         emailFormat.innerHTML = `
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>Your assistance request is currently for payout on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
-            at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />.<br>
+            at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
             Thank you for your patience and cooperation.<br><br>
             Best regards,<br>
             <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
@@ -304,17 +354,17 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             <div class="user-details">
                 <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;">Full Name</span>
-                    <span class="details"><?php echo $record['Firstname'] . " " . $record['Lastname']; ?></span>
+                    <input disabled type = "text" required value = "<?php echo $record['Firstname'] . " " . $record['Lastname']; ?>" > 
                 </div>
 
                 <div class="input-box">
                     <span class="details">Transaction Type</span>
-                    <span class="details"><?php echo $record['TransactionType']; ?></span>
+                    <input disabled type = "text" required value = "<?php echo $record['TransactionType']; ?>">
                 </div>
 
                 <div class="input-box">
                     <span class="details">Financial Assistance Type</span>
-                    <span class="details"><?php echo $record['FA_Type']; ?></span>
+                    <input disabled type = "text" required value = "<?php echo $record['FA_Type']; ?>">
                    <!-- <select name="FA_Type">
                        
                         $FA_type = array('Burial', 'Chemotherapy & Radiation', 'Dialysis', 'Medicine');

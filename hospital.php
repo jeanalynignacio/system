@@ -44,7 +44,7 @@ $res_Fname = $result['Firstname'];
             <li>
                 <a href = "#" onclick="records()">
                     <i class = "fas fa-chart-bar"> </i>
-                    <span> Patient's Records </span>
+                    <span> Beneficiary's Records </span>
                 </a>
             </li>
 
@@ -68,6 +68,12 @@ $res_Fname = $result['Firstname'];
                     <i class="fa-solid fa-capsules"></i>
                     <span>Medicines</span>
             </li>
+            <li>
+                <a href="#" onclick="laboratories()">
+                <i class="fa-solid fa-flask-vial"></i>
+                    <span>Laboratories</span>
+                </a>
+            </li>
 
             <?php if ($role === 'Admin'): ?>
             <li>
@@ -77,6 +83,7 @@ $res_Fname = $result['Firstname'];
                 </a>
             </li>
         <?php endif; ?>
+        
 
             <li class="user" >
             <a href="#" onclick="profile()">
@@ -351,6 +358,9 @@ function employees(){
     
     function medicines() {
         window.location = "http://localhost/public_html/medicines.php";
+    }
+    function laboratories() {
+        window.location = "http://localhost/public_html/laboratories.php";
     }
     function profile() {
         window.location = "http://localhost/public_html/profileadmin.php";

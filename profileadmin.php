@@ -27,7 +27,7 @@ if(isset($_POST['submit'])) {
         $EmpID = $_POST['Emp_ID'];
         $Lastname=$_POST['Lastname'];
         $Firstname=$_POST['Firstname'];
-        $Email=$_POST['Email'];
+      //  $Email=$_POST['Email'];
         $username=$_POST['username'];
         $password=$_POST['password_hash'];
        
@@ -35,7 +35,7 @@ if(isset($_POST['submit'])) {
         $query = "UPDATE employees
             SET Lastname = '$Lastname',
                 Firstname = '$Firstname',
-                Email = '$Email',
+             
                 username = '$username',
                 password_hash = '$password'
             WHERE Emp_ID = '$EmpID'";
@@ -91,7 +91,7 @@ if(isset($_POST['submit'])) {
             <div class="user-details">
                 <div class="input-box">
                     <span class="details">Email</span>
-                    <input type="text" required value="<?php echo $res_Email ?? ''; ?>" id="Email"  name="Email" disabled/>
+                    <input type="text"  required value="<?php echo $res_Email ?? ''; ?>" id="Email"  name="Email" disabled/>
                 </div>
 
                 <div class="input-box">
@@ -112,7 +112,7 @@ if(isset($_POST['submit'])) {
         
                 <!-- Submit button -->
                 <input type="submit" value="Done Edit" name="submit" id="submit"  class="hidden" />
-<input type="button" value="Cancel" name="cancel" id="cancel" onclick="cancelEdit()" class="hidden" />
+<input type="button" value="Cancel" name="cancel" id="cancel" onclick="cancelEdit()"/>
 
 
                
@@ -144,7 +144,7 @@ if(isset($_POST['submit'])) {
         function enableFields() {
         document.getElementById("Lastname").disabled = false;
         document.getElementById("Firstname").disabled = false;
-        document.getElementById("Email").disabled = false;
+        document.getElementById("Email").disabled = true;
         document.getElementById("username").disabled = false;
         document.getElementById("password_hash").disabled = false;
 

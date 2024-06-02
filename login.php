@@ -17,7 +17,7 @@ if(isset($_POST['submit'])){
     }
 
     if(empty($userError) && empty($passError)) {
-        $result = mysqli_query($con, "SELECT * FROM users WHERE BINARY Username = '$Username' AND BINARY Password = '$Password'") or die("Select Error");
+        $result = mysqli_query($con, "SELECT * FROM users WHERE BINARY Username = '$Username' ") or die("Select Error");
         $row = mysqli_fetch_assoc($result);
 
         if(is_array($row) && !empty($row)){
@@ -61,7 +61,7 @@ if(isset($_POST['submit'])){
     $passError = "User not found. Please register.";
 }
 
-}}
+} }
 
 
 

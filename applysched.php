@@ -38,7 +38,7 @@
     if(isset($_POST['submit'])) {
         $serviceType = $_SESSION['serviceType'];
         $BENEID = $_POST['Beneficiary_ID'];
-        $labtype=$_POST['labtype'];
+      
         switch ($serviceType) {
             case 'dialysis':
                 $serviceType= "Dialysis";
@@ -67,7 +67,7 @@
                 $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Schedule', CURDATE(),CURTIME())";
                 break;
                 case 'laboratories':
-                   
+                    $labtype=$_POST['labtype'];
                     $serviceType = "Laboratories";
                     $query = "INSERT INTO laboratories (Beneficiary_ID, LabType) VALUES ('$BENEID', '$labtype')";
                     $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Schedule', CURDATE(),CURTIME())";

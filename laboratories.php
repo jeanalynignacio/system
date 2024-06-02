@@ -29,8 +29,8 @@ $query="SELECT * FROM employees where role='Employee'";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Medicines </title>
-    <link rel = "stylesheet" href = "medicines.css"/>
+    <title> laboratories </title>
+    <link rel = "stylesheet" href = "laboratories.css"/>
     <link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
 <body>
@@ -67,27 +67,26 @@ $query="SELECT * FROM employees where role='Employee'";
                     <span> Hospitals </span>
                 </a>
             </li>
-
-            <li class = "active" onclick="medicines()">
+            <li>
             <a href="#" onclick="medicines()">
                 <i class="fa-solid fa-capsules"></i>
                 <span>Medicines</span></a>
             </li>
-            <li>
+            <li class = "active" onclick="laboratories()">
                 <a href="#" onclick="laboratories()">
                 <i class="fa-solid fa-flask-vial"></i>
                     <span>Laboratories</span>
                 </a>
             </li>
-
             <?php if ($role === 'Admin'): ?>
-            <li >
+                <li>
                 <a href="#" onclick="employees()">
                     <i class="fas fa-users"></i>
                     <span>Employees</span>
                 </a>
             </li>
             
+           
         <?php endif; ?>
         <li class="user" >
             <a href="#" onclick="profile()">
@@ -122,14 +121,14 @@ $query="SELECT * FROM employees where role='Employee'";
         </div>
 
         <div class="card--container">
-            <h3 class="main--title"> Medicines
+            <h3 class="main--title"> Laboratories
                 
             </h3>
         </div>
 
 
         <div class="tabular--wrapper">
-            <h3 class="main--title"> Financial Assistance - Medicines Data </h3>
+            <h3 class="main--title"> Financial Assistance - Laboratories Data </h3>
             <div class="table--container">
                 <table>
                     <thead>
@@ -141,7 +140,7 @@ $query="SELECT * FROM employees where role='Employee'";
                             <th> Municipality: </th>
                             <th> Schedule: <br> (if online) </th>
                             <th> Transaction Type: </th>
-                            <th> Types of Medicines: </th>
+                            <th> Types of Laboratory: </th>
                             <th> Status: </th>
                             <th> Action: </th>
                         </tr>
@@ -149,10 +148,10 @@ $query="SELECT * FROM employees where role='Employee'";
                         <?php
 include("php/config.php");
 
-$sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType, m.MedicineType, t.Status 
-        FROM medicines m
-        INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
-        INNER JOIN transaction t ON t.Beneficiary_Id = m.Beneficiary_ID
+$sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType, l.LabType, t.Status 
+        FROM laboratories l
+        INNER JOIN beneficiary b ON b.Beneficiary_Id = l.Beneficiary_ID
+        INNER JOIN transaction t ON t.Beneficiary_Id = l.Beneficiary_ID
         ORDER BY t.Date ASC"; 
 
 $result = $con->query($sql);
@@ -170,7 +169,7 @@ while ($row = $result->fetch_assoc()) {
             <td>" . $row["CityMunicipality"] . " </td>
             <td>" . $row["Given_Sched"] . " </td>
             <td>" . $row["TransactionType"] . " </td>
-            <td>" . $row["MedicineType"] . " </td>
+            <td>" . $row["LabType"] . " </td>
             <td>" . $row["Status"] . " </td>
             <td>".
             "<form method='post' action='editformmedicines.php'>" .
@@ -227,10 +226,11 @@ function employees(){
 }
 function laboratories() {
         window.location = "http://localhost/public_html/laboratories.php";
-}
-function profile() {
+    }    
+    
+    function profile() {
         window.location = "http://localhost/public_html/profileadmin.php";
-}
+    }
     function logout() {
     var confirmation = confirm("Are you sure you want to Logout?");
     if (confirmation) {

@@ -108,6 +108,12 @@ awesome/6.4.0/css/all.min.css"/>
 <span>Medicines</span>
 </a>
 </li>
+<li>
+<a href="#" onclick="laboratories()">
+  <i class="fa-solid fa-flask-vial"></i>
+     <span>Laboratories</span>
+    </a>
+</li>
 <?php if ($role === 'Admin'): ?>
             <li>
                 <a href="#" onclick="employees()">
@@ -115,6 +121,7 @@ awesome/6.4.0/css/all.min.css"/>
                     <span>Employees</span>
                 </a>
             </li>
+           
         <?php endif; ?>
 
             <li class="user" >
@@ -159,27 +166,8 @@ awesome/6.4.0/css/all.min.css"/>
         <div class="card--container">
             <h3 class="main--title"> Overall Data
            
-                <ul class = "drop"> 
-                <li>
-                    <a href = "#"> Assistance <span> <i class="fa-solid fa-caret-down"> </i> </span> </a>
-                    <ul class = "dropdown">
-                    <li><a href="#" onclick="filterByCity('Abucay')">Abucay</a></li>
-                        <li><a href="#" onclick="filterByCity('Bagac')">Bagac</a></li>
-                        <li><a href="#" onclick="filterByCity('Balanga')">Balanga</a></li>
-                        <li><a href="#" onclick="filterByCity('Dinalupihan')">Dinalupihan</a></li>
-                        <li><a href="#" onclick="filterByCity('Hermosa')">Hermosa</a></li>
-                        <li><a href="#" onclick="filterByCity('Limay')">Limay</a></li>
-                        <li><a href="#" onclick="filterByCity('Mariveles')">Mariveles</a></li>
-                        <li><a href="#" onclick="filterByCity('Morong')">Morong</a></li>
-                        <li><a href="#" onclick="filterByCity('Orani')">Orani</a></li>
-                        <li><a href="#" onclick="filterByCity('Orion')">Orion</a></li>
-                        <li><a href="#" onclick="filterByCity('Pilar')">Pilar</a></li>
-                        <li><a href="#" onclick="filterByCity('Samal')">Samal</a></li>
-                    </ul>
-                    </ul>
-                </li>
-            </ul>
-            </h3>
+                
+            
 
         </div>
 <div class="table--container">
@@ -299,6 +287,9 @@ window.location ="http://localhost/public_html/hospital.php";
 function medicines() {
 window.location ="http://localhost/public_html/medicines.php";
 }
+function laboratories() {
+        window.location = "http://localhost/public_html/laboratories.php";
+    }
 function toggleForm() {
 var form = document.getElementById("addForm");
 if (form.style.display === "none") {

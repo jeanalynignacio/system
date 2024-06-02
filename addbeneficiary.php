@@ -96,123 +96,124 @@ exit();
 <div class="input-box">
 <span class="details"> Contact Number</span>
 <input type="text" required name="Contactnumber" autocomplete=off
-/>
-</div>
+/>  </div>
 <div class="input-box">
-<span class="details">City</span>
-<select id="cityDropdown" name="CityMunicipality"
-onchange="populateBarangays()" required>
-<?php
-$selectedValue = $record['CityMunicipality'];
-$cityOptions = array("Select", "Abucay", "Bagac", "Balanga",
-"Dinalupihan", "Hermosa", "Limay", "Mariveles", "Morong", "Orani", "Orion",
-"Pilar", "Samal");
-foreach ($cityOptions as $option) {
-if ($option == $selectedValue) {
-$selected = 'selected';
-} else {
-$selected = '';
-}
-echo "<option value='" . htmlspecialchars($option) . "'
-$selected>" . htmlspecialchars($option) . "</option>";
-}
+                <?php
+// Define variables to store selected city and barangay
+$selectedCity = $_POST['CityMunicipality'] ?? 'Select';
+$selectedBarangay = $_POST['Barangay'] ?? 'Select';
 ?>
-</select>
-</div>
-<div class="input-box">
-<span class="details">Barangay</span>
-<select id="barangayDropdown" required>
-<?php
-$selectedBrgy = $record['Barangay'];
-foreach ($cityOptions as $option) {
-    if ($option == $selectedBrgy) {
-    $selected = 'selected';
-    } else {
-    $selected = '';
-    }
-    echo "<option value='" . htmlspecialchars($option) . "' $selected>" .
-    htmlspecialchars($option) . "</option>";
-    }
-    ?>
-    </select>
-    </div>
-    <script>
-    window.onload = function() {
-    populateBarangays();
-    }
-    function populateBarangays() {
-    var cityDropdown = document.getElementById("cityDropdown");
-    var barangayDropdown =
-    document.getElementById("barangayDropdown");
-    var selectedCity = cityDropdown.value;
-    var barangays = [];
-    // Clear existing options
-    barangayDropdown.innerHTML = "";
-    if (selectedCity === "Balanga") {
-    barangays = ["Select","Bagong Silang","Bagumbayan",
-    "Cabog-Cabog","Camacho", "Cataning","Central", "Cupang North", "Cupang Proper",
-    "Cupang West","Dangcol","Doña Francisca", "Ibayo","Lote", "Malabia","Munting Batangas","Poblacion", "Pto. Rivas Ibaba", "Pto. Rivas Itaas","San Jose",
-    "Sibacan", "Talisay","Tanato", "Tenejero", "Tortugas","Tuyo"]; // Add barangays
-    for Balanga
-    }
-    if (selectedCity === "Abucay") {
-    barangays = ["Select","Bangkal","Calaylayan",
-    "Capitangan","Gabon", "Laon","Mabatang", "Omboy", "Salian", "Wawa"]; // Add
-    barangays for Balanga
-    }
-    if (selectedCity === "Bagac") {
-    barangays = ["Select","Atilano L.Ricardo","Bagumbayan", "Banawang","Binukawan", "Ibaba","Ibis", "Pag-asa","Parang", "Paysawan","Quinawan", "San Antonio", "Saysain", "Tabing-Ilog"]; // Add
-    barangays for Balanga
-    }
-    if (selectedCity === "Dinalupihan") {
-        barangays = ["Select","Aquino","Bangal", "Bayanbayanan","Bonifacio", "Burgos","Colo", "Daang Bago", "Dalao", "Del Pilar","Gen. Luna", "Gomez", "Happy Valley", "Jose C. Payumo, Jr.","Kataasan","Layac","Luacan","Mabini Ext.","Mabini Proper","Magsaysay","Maligaya","Naparing","New San Jose","Old San Jose","Padre Dandan","Pagalanggang","Pagasa","Payangan","Pentor","Pinulot","Pita","Rizal","Roosevelt","Roxas","Saguing","San Benito","San Isidro","San Pablo","San Ramon","San Simon","Santa Isabel","Santo Niño","Sapang Balas","Torres Bugauen","Tubotubo","Tucop","Zamora"]; // Add barangays for Balanga
-}
-if (selectedCity === "Hermosa") {
-barangays = ["Select","A. Rivera", "Almacen", "Bacong",
-"Balsic", "Bamban", "Burgos-Soliman", "Cataning", "Culis", "Daungan", "Judge Roman Cruz Sr.", "Mabiga", "Mabuco", "Maite", "Mambog-Mandama", "Palihan",
-"Pandatung", "Pulo", "Saba", "Sacrifice Valley", "San Pedro", "Santo Cristo",
-"Sumalo", "Tipo"];
-}
-if (selectedCity === "Limay") {
-barangays = ["Select","Alangan","Duale","Kitang 2 & Luz","Kitang I","Lamao","Landing","Poblacion","Reformista","Saint Francis II","San Francisco de Asis","Townsite","Wawa" ];
-}
-if (selectedCity === "Mariveles") {
-barangays = ["Select","Alas-asin", "Alion", "Alon-Anito","Baseco Country", "Batangas II", "Biaan", "Cabcaben", "Camaya", "Ipag",
-"Lucanin", "Malaya", "Maligaya", "Mt. View", "Poblacion", "San Carlos", "San Isidro", "Sisiman", "Townsite"];
-}
-if (selectedCity === "Morong") {
-barangays = ["Select","Binaritan", "Mabayo", "Nagbalayong",
-"Poblacion", "Sabang"];
-}
-if (selectedCity === "Orani") {
-barangays = ["Select","Apollo", "Bagong Paraiso", "Balut",
-"Bayan", "Calero", "Centro I", "Centro II", "Dona", "Kabalutan", "Kaparangan",
-"Maria Fe", "Masantol", "Mulawin", "Pag-asa", "Paking-Carbonero", "Palihan",
-"Pantalan Bago", "Pantalan Luma", "Parang Parang", "Puksuan", "Sibul", "Silahis",
-"Tagumpay", "Tala", "Talimundoc", "Tapulao", "Tenejero", "Tugatog", "Wawa"];
-}
-if (selectedCity === "Orion") {
-barangays = ["Select","Arellano", "Bagumbayan"," Balagtas","Balut", "Bantan", "Bilolo","Calungusan", "Camachile", "Daang Bago", "Daang Bilolo", "Daang Pare", "General Lim", "Kapunitan", "Lati", "Lusungan", "Puting Buhangin", "Sabatan", "San Vicente", "Santa Elena", "Santo Domingo", "Villa Angeles", "Wakas", "Wawa"];
-}
-if (selectedCity === "Pilar") {
-barangays = ["Select","Ala-uli", "Bagumbayan", "Balut I","Balut II", "Bantan Munti", "Burgos", "Del Rosario", "Diwa", "Landing", "Liyang",
-"Nagwaling", "Panilao", "Pantingan", "Poblacion", "Rizal", "Santa Rosa", "WakasNorth", "Wakas South", "Wawa"];
-}
-if (selectedCity === "Samal") {
-barangays = ["Select","East Calaguiman", "East Daang Bago","Gugo", "Ibaba", "Imelda", "Lalawigan", "Palili", "San Juan", "San Roque", "Santa Lucia", "Sapa", "Tabing Ilog", "West Calaguiman", "West Daang Bago"];
-}
-barangays.forEach(function(Barangay) {
-var option = document.createElement("option");
-option.text = Barangay;
-option.value = Barangay;
-barangayDropdown.add(option);
-var selectedbrgy = "<?php echo "{$record['Barangay']}";
-?>";
-barangayDropdown.value = selectedbrgy;
+                    <span class="details">City/Municipality</span>
+                    <select id="cityDropdown" name="CityMunicipality" onchange="populateBarangays()">
+                    <option value="Select" <?php if ($selectedCity === 'Select') echo 'selected'; ?>>Select</option>
+                    <option value="Abucay" <?php if ($selectedCity === 'Abucay') echo 'selected'; ?>>Abucay</option>
+                    <option value="Bagac" <?php if ($selectedCity === 'Bagac') echo 'selected'; ?>>Bagac</option>
+                    <option value="Balanga" <?php if ($selectedCity === 'Balanga') echo 'selected'; ?>>Balanga</option>
+                    <option value="Dinalupihan" <?php if ($selectedCity === 'Dinalupihan') echo 'selected'; ?>>Dinalupihan</option>
+                    <option value="Hermosa" <?php if ($selectedCity === 'Hermosa') echo 'selected'; ?>>Hermosa</option>
+                    <option value="Limay" <?php if ($selectedCity === 'Limay') echo 'selected'; ?>>Limay</option>
+                    <option value="Mariveles" <?php if ($selectedCity === 'Mariveles') echo 'selected'; ?>>Mariveles</option>
+                    <option value="Morong" <?php if ($selectedCity === 'Morong') echo 'selected'; ?>>Morong</option>
+                    <option value="Orani" <?php if ($selectedCity === 'Orani') echo 'selected'; ?>>Orani</option>
+                    <option value="Orion" <?php if ($selectedCity === 'Orion') echo 'selected'; ?>>Orion</option>
+                    <option value="Pilar" <?php if ($selectedCity === 'Pilar') echo 'selected'; ?>>Pilar</option>
+                    <option value="Samal" <?php if ($selectedCity === 'Samal') echo 'selected'; ?>>Samal</option>
+
+                      </select>  
+                             
+                </div>
+                
+                <div class="input-box">
+               
+                <span class="details">Barangay</span>
+                    <select id="barangayDropdown" name="Barangay" value="Select">
+                        <option value="Select">Select</option> 
+                    </select>
+                  
+
+                    <input type="hidden" id="selectedBarangay" name="selectedBarangay" value="<?php echo htmlspecialchars($selectedBarangay); ?>">
+
+                    
+                </div>
+                
+                <script>
+                function populateBarangays() {
+                    var cityDropdown = document.getElementById("cityDropdown");
+                    var barangayDropdown = document.getElementById("barangayDropdown");
+                    var selectedCity = cityDropdown.value;
+                    var selectedBarangay = document.getElementById("selectedBarangay").value; // Retrieve selected barangay value
+
+
+                    var barangays = [];
+                
+                    // Clear existing options
+                    barangayDropdown.innerHTML = "";
+                    if (selectedCity === "Select") {
+                      barangays = ["Select"]
+                    }
+
+                    if (selectedCity === "Balanga") {
+                        barangays = ["Select","Bagong Silang","Bagumbayan", "Cabog-Cabog","Camacho", "Cataning","Central", "Cupang North", "Cupang Proper", "Cupang West","Dangcol","Doña Francisca", "Ibayo","Lote", "Malabia","Munting Batangas","Poblacion", "Pto. Rivas Ibaba", "Pto. Rivas Itaas","San Jose", "Sibacan", "Talisay","Tanato", "Tenejero", "Tortugas","Tuyo"]; // Add barangays for Balanga
+                    } 
+                    if (selectedCity === "Abucay") {
+                         barangays = ["Select","Bangkal","Calaylayan", "Capitangan","Gabon", "Laon","Mabatang", "Omboy", "Salian", "Wawa"]; // Add barangays for Balanga
+                   
+                    }
+                    if (selectedCity === "Bagac") {
+                              barangays = ["Select","Atilano L. Ricardo","Bagumbayan", "Banawang","Binukawan", "Ibaba","Ibis", "Pag-asa", "Parang", "Paysawan","Quinawan", "San Antonio", "Saysain", "Tabing-Ilog"]; // Add barangays for Balanga
+                    }
+                    if (selectedCity === "Dinalupihan") {
+                              barangays = ["Select","Aquino","Bangal", "Bayan-bayanan","Bonifacio", "Burgos","Colo", "Daang Bago", "Dalao", "Del Pilar","Gen. Luna", "Gomez", "Happy Valley", "Jose C. Payumo, Jr.","Kataasan","Layac","Luacan","Mabini Ext.","Mabini Proper","Magsaysay","Maligaya","Naparing","New San Jose","Old San Jose","Padre Dandan","Pagalanggang","Pag-asa","Payangan","Pentor","Pinulot","Pita","Rizal","Roosevelt","Roxas","Saguing","San Benito","San Isidro","San Pablo","San Ramon","San Simon","Santa Isabel","Santo Niño","Sapang Balas","Torres Bugauen","Tubo-tubo","Tucop","Zamora"]; // Add barangays for Balanga
+                    }
+                    if (selectedCity === "Hermosa") {
+                     barangays = ["Select","A. Rivera", "Almacen", "Bacong", "Balsic", "Bamban", "Burgos-Soliman", "Cataning", "Culis", "Daungan", "Judge Roman Cruz Sr.", "Mabiga", "Mabuco", "Maite", "Mambog-Mandama", "Palihan", "Pandatung", "Pulo", "Saba", "Sacrifice Valley", "San Pedro", "Santo Cristo", "Sumalo", "Tipo"];
+                    }
+                    if (selectedCity === "Limay") {
+                    barangays = ["Select","Alangan","Duale","Kitang 2 & Luz","Kitang I","Lamao","Landing","Poblacion","Reformista","Saint Francis II","San Francisco de Asis","Townsite","Wawa" ];
+                    }
+                    if (selectedCity === "Mariveles") {
+                    barangays = ["Select","Alas-asin", "Alion", "Alon-Anito", "Baseco Country", "Batangas II", "Biaan", "Cabcaben", "Camaya", "Ipag", "Lucanin", "Malaya", "Maligaya", "Mt. View", "Poblacion", "San Carlos", "San Isidro", "Sisiman", "Townsite"];
+                    }
+                    if (selectedCity === "Morong") {
+                     barangays = ["Select","Binaritan", "Mabayo", "Nagbalayong", "Poblacion", "Sabang"];
+                    }
+                    if (selectedCity === "Orani") {
+                    barangays = ["Select","Apollo", "Bagong Paraiso", "Balut", "Bayan", "Calero", "Centro I", "Centro II", "Dona", "Kabalutan", "Kaparangan", "Maria Fe", "Masantol", "Mulawin", "Pag-asa", "Paking-Carbonero", "Palihan", "Pantalan Bago", "Pantalan Luma", "Parang Parang", "Puksuan", "Sibul", "Silahis", "Tagumpay", "Tala", "Talimundoc", "Tapulao", "Tenejero", "Tugatog", "Wawa"];
+                    }
+                    if (selectedCity === "Orion") {
+                    barangays = ["Select","Arellano", "Bagumbayan"," Balagtas", "Balut", "Bantan", "Bilolo","Calungusan", "Camachile", "Daang Bago", "Daang Bilolo", "Daang Pare", "General Lim", "Kapunitan", "Lati", "Lusungan", "Puting Buhangin", "Sabatan", "San Vicente", "Santa Elena", "Santo Domingo", "Villa Angeles", "Wakas", "Wawa"];
+                    }
+                    if (selectedCity === "Pilar") {
+                    barangays = ["Select","Ala-uli", "Bagumbayan", "Balut I", "Balut II", "Bantan Munti", "Burgos", "Del Rosario", "Diwa", "Landing", "Liyang", "Nagwaling", "Panilao", "Pantingan", "Poblacion", "Rizal", "Santa Rosa", "Wakas North", "Wakas South", "Wawa"];
+                    }
+                    if (selectedCity === "Samal") {
+                    barangays = ["Select","East Calaguiman", "East Daang Bago", "Gugo", "Ibaba", "Imelda", "Lalawigan", "Palili", "San Juan", "San Roque", "Santa Lucia", "Sapa", "Tabing Ilog", "West Calaguiman", "West Daang Bago"];
+                    }
+                    // Populate barangay dropdown
+                    barangays.forEach(function(Barangay) {
+                        var option = document.createElement("option");
+                        option.text = Barangay;
+                        option.value = Barangay;
+                        if (Barangay === selectedBarangay) { // Check if the barangay matches the selected barangay value
+                option.selected = true; // Pre-select the option
+            }
+                        barangayDropdown.add(option);
+
+                      });
+                        
+                        // Set the name attribute of the select element to Barangay
 barangayDropdown.setAttribute("name", "Barangay");
-});
-}
-</script>
+                    };
+           
+               
+    
+    window.onload = function () {
+        populateBarangays();
+    };
+
+              
+                </script>
+                
 <div class="input-box">
 <span class="details"> House No/ Street </span>
 <input type="text" required name="HouseNoStreet" autocomplete=off

@@ -108,6 +108,12 @@ awesome/6.4.0/css/all.min.css"/>
 <span>Medicines</span>
 </a>
 </li>
+<li>
+    <a href="#" onclick="laboratories()">
+        <i class="fa-solid fa-flask-vial"></i>
+            <span>Laboratories</span>
+</a>
+    </li>
 <?php if ($role === 'Admin'): ?>
             <li class="active">
                 <a href="#" onclick="employees()">
@@ -115,6 +121,7 @@ awesome/6.4.0/css/all.min.css"/>
                     <span>Employees</span>
                 </a>
             </li>
+            
         <?php endif; ?>
         <li class="user" >
             <a href="#" onclick="profile()">
@@ -263,6 +270,9 @@ window.location ="http://localhost/public_html/hospital.php";
 function medicines() {
 window.location ="http://localhost/public_html/medicines.php";
 }
+function laboratories() {
+window.location = "http://localhost/public_html/laboratories.php";
+    }
 function employees(){
         window.location = "http://localhost/public_html/employeeRecords.php"
     }

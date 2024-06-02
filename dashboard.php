@@ -133,7 +133,7 @@ $totalEntriesSTAT = $row['totalEntriesSTAT'];
             <li>
                 <a href="#" onclick="records()">
                     <i class="fas fa-chart-bar"></i>
-                    <span>Patient's Records</span>
+                    <span>Beneficiary's Records</span>
                 </a>
             </li>
             <li>
@@ -154,6 +154,12 @@ $totalEntriesSTAT = $row['totalEntriesSTAT'];
                     <span>Medicines</span>
                 </a>
             </li>
+            <li>
+                <a href="#" onclick="laboratories()">
+                <i class="fa-solid fa-flask-vial"></i>
+                    <span>Laboratories</span>
+                </a>
+            </li>
             <?php if ($role === 'Admin'): ?>
             <li>
                 <a href="#" onclick="employees()">
@@ -161,6 +167,7 @@ $totalEntriesSTAT = $row['totalEntriesSTAT'];
                     <span>Employees</span>
                 </a>
             </li>
+           
         <?php endif; ?>
 
             <li class="user" >
@@ -386,6 +393,9 @@ $totalEntriesSTAT = $row['totalEntriesSTAT'];
     
     function medicines() {
         window.location = "http://localhost/public_html/medicines.php";
+    }
+    function laboratories() {
+        window.location = "http://localhost/public_html/laboratories.php";
     }
     function profile() {
         window.location = "http://localhost/public_html/profileadmin.php";

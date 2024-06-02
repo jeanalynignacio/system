@@ -43,7 +43,7 @@ $res_Fname = $result['Firstname'];
             <li>
                 <a href = "#" onclick="records()">
                     <i class = "fas fa-chart-bar"> </i>
-                    <span> Patient's Records </span>
+                    <span> Beneficiary's Records </span>
                 </a>
             </li>
 
@@ -68,18 +68,31 @@ $res_Fname = $result['Firstname'];
                 <span>Medicines</span>
 </a>
             </li>
-
-            <li class = "logout">
-                <a href = "#">
-                    <i class = "fas fa-sign-out-alt"> </i>
-                    <span> Logout </span>
+            <li>
+                <a href="#" onclick="laboratories()">
+                <i class="fa-solid fa-flask-vial"></i>
+                    <span>Laboratories</span>
                 </a>
             </li>
 
+            <?php if ($role === 'Admin'): ?>
+            <li>
+                <a href="#" onclick="employees()">
+                    <i class="fas fa-users"></i>
+                    <span>Employees</span>
+                </a>
+            </li>
+        <?php endif; ?>
             <li class = "user">
                 <a href = "#">
                     <i class = "fas fa-user"> </i>
                     <span> Profile </span>
+                </a>
+            </li>
+            <li class = "logout">
+                <a href = "#">
+                    <i class = "fas fa-sign-out-alt"> </i>
+                    <span> Logout </span>
                 </a>
             </li>
         </ul>
@@ -198,7 +211,10 @@ function hospital(){
 }
 
 function medicines(){
-    window.location = "http://localhost/public_html/fa-medicines.php"
+    window.location = "http://localhost/public_html/medicines.php"
+}
+function laboratories(){
+    window.location = "http://localhost/public_html/laboratories.php"
 }
 
 function burial(){

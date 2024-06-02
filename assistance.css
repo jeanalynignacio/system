@@ -292,11 +292,11 @@ ul li:hover ul.dropdown {
 }
 
 .table--container {
-  width: 105%;
+  width: 100%;
 }
 
 table {
-  width: 100%;
+  width: 102%;
   border-collapse: collapse;
 }
 
@@ -308,7 +308,6 @@ thead {
 th {
   padding: 15px;
   text-align: left;
- 
 }
 
 tbody {
@@ -334,6 +333,7 @@ tfoot {
 tfoot td {
   padding: 15px;
 }
+
 
 .table--container button {
   color: green;
