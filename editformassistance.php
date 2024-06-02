@@ -192,9 +192,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                         </body>
                         </html>
                     ";
-                } 
+                }
+         
 
-                $mail->send();
+                 $mail->send();
                 echo '<script>alert("Update and email send successful");</script>';
                 echo '<script>
                         setTimeout(function(){
@@ -258,8 +259,9 @@ Please note that your reasons may need to be verified to avoid any inconvenience
                     <input type="checkbox" name="requirement" value="Barangay Certificate of Indigency"> Barangay Certificate of Indigency <br>
                     <input type="checkbox" name="requirement" value="Request Letter"> Request Letter <br>
                     <input type="checkbox" name="requirement" value="Photocopy of Beneficiary's ID"> Photocopy of Beneficiary's ID <br>
-                </ul>
+                    </ul>
             `;
+            
         } else if (faType === 'Chemotherapy & Radiation') {
             requirements.innerHTML = `
                 <h3>Requirements for Chemotherapy & Radiation Assistance Validation</h3>
@@ -303,7 +305,13 @@ Please note that your reasons may need to be verified to avoid any inconvenience
             <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
             Provincial Government of Bataan - Special Assistance Program</p>
         `;
-    } else if (status === 'For Payout') {
+    } else if (status === 'Request for Re-schedule') {
+        requirements.style.display = 'block'; 
+        requirements.innerHTML = `
+                <h3 >Open gmail to check the email of beneficiary </h3>
+                <a href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox" target="_blank">Open Gmail</a>
+            `;
+    } else if (status === 'For Payout') { 
         emailFormat.innerHTML = `
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>Your assistance request is currently for payout on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
@@ -313,8 +321,18 @@ Please note that your reasons may need to be verified to avoid any inconvenience
             <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
             Provincial Government of Bataan - Special Assistance Program</p>
         `;
-    }
+    }else if (status === 'For Re-schedule') { 
+        emailFormat.innerHTML = `
+            Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
+            <p>Your assistance request for re-schedule has been accepted. Your new schedule is on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
+            at <input type="time" id="time" name="time"  />.<br>
+            Thank you for your patience and cooperation.<br><br>
+            Best regards,<br>
+            <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+            Provincial Government of Bataan - Special Assistance Program</p>
+        `;
 }
+      }
 
     function cancelEdit() {
             window.history.back();
@@ -380,7 +398,7 @@ Please note that your reasons may need to be verified to avoid any inconvenience
                     <span class="details">Status</span>
                     <select id="status" name="Status" onchange="handleStatusChange()">
                         <?php
-                        $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Payout' ,'For Payout', 'Done');
+                        $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Payout' ,'For Payout','Request for Re-schedule','For Re-schedule', 'Done');
                         foreach ($status as $stat) {
                             $selected = ($record['Status'] == $stat) ? 'selected' : '';
                             echo "<option $selected>$stat</option>";

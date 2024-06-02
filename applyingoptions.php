@@ -174,6 +174,23 @@ if (isset($_POST['myself'])) {
                         </body>';
                         exit();
                     }
+                    $query4 = "SELECT * FROM transaction WHERE Beneficiary_Id = $beneficiaryId AND Status = 'Request for Re-schedule' ";
+                    $result4 = mysqli_query($con, $query4);
+
+                    if  (mysqli_num_rows($result4) > 0) {
+                        echo '<body>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                        <script>
+                        swal("Notification", "You already request for rescheduling. Please wait to an email to know if it is accepted or not.")
+                        .then((value) => {
+                            if (value) {
+                                window.location.href = "applyingoptions.php";
+                            }
+                        });
+                        </script>
+                        </body>';
+                        exit();
+                    }
                     $query4 = "SELECT * FROM transaction WHERE Beneficiary_Id = $beneficiaryId AND Status = 'For Validation' ";
                     $result4 = mysqli_query($con, $query4);
 
@@ -181,7 +198,7 @@ if (isset($_POST['myself'])) {
                         echo '<body>
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                         <script>
-                        swal("Notification", "You already pending for validationx. Please wait for the email to know when your schedule of appearance to the office is. Thank you.","info")
+                        swal("Notification", "You already pending for validation. Please wait for the email to know when your schedule of appearance to the office is. Thank you.","info")
                         .then((value) => {
                             if (value) {
                                 window.location.href = "applyingoptions.php";

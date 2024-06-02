@@ -46,7 +46,7 @@
                                     echo '<script>
                                    setTimeout(function(){
                                       window.location.href="employee_dashboard.php";
-                                  } , 5000);
+                                  } , 3000);
                                 </script>
                                 </body>'; 
                                 }

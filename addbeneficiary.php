@@ -41,6 +41,7 @@ Email,time,Date,Representative_ID) VALUES ('$Lastname', '$Firstname',
 '$Barangay', '$HousenoStreet', '$Email','$time', '$Date',NULL)";
 $result2=mysqli_query($con,$query);
 if ($result2) {
+  
 header("Location: patients-records.php");
 exit();
 } else {
