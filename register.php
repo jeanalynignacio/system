@@ -184,8 +184,8 @@ require 'PHPMailer/src/SMTP.php';
         //Content
         $mail->isHTML(true); // Set email format to HTML
         $mail->Subject = 'Email Verification';
-        $mail->Body = "Good Day! Click the following link to verify your email:
-             <a href='https://pgb-sap.000webhostapp.com/verify.php?Email=$Email&code=$verification_code'> Verify </a>
+        $mail->Body = "Good Day! this is your veri code
+            $verification_code 
              <p> If you did not request this email, do not click the link. Please ignore this email.</p>";
           
     
@@ -197,7 +197,7 @@ require 'PHPMailer/src/SMTP.php';
         </script>';
           echo '<script>
          setTimeout(function(){
-            window.location.href="login.php";
+            window.location.href="verification.php";
         } , 5000);
       </script>
       </body>';
