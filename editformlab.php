@@ -28,10 +28,10 @@ if(isset($_SESSION['Emp_ID'])) {
   exit();
 }
 
-    $SQL = "SELECT b.*, t.*, m.*
+    $SQL = "SELECT b.*, t.*, l.*
             FROM beneficiary b
             INNER JOIN transaction t ON b.Beneficiary_Id = t.Beneficiary_Id
-            INNER JOIN medicines m ON b.Beneficiary_Id = m.Beneficiary_ID
+            INNER JOIN laboratories l ON b.Beneficiary_Id = l.Beneficiary_ID
             WHERE b.Beneficiary_Id = '$beneID'";
 
     $result = mysqli_query($con, $SQL);
@@ -61,16 +61,16 @@ if ($Status == "For Validation") {
   date_default_timezone_set('Asia/Manila');
  $Date = date('Y-m-d'); // Set the current date for Given_Sched
  $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
- $billamount=$_POST['billamount'];
- $MedicineType=$_POST['MedicineType'];
+ 
+ $LabType=$_POST['LabType'];
 
-$query = "UPDATE medicines m
-      INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
-      INNER JOIN transaction t ON t.Beneficiary_Id = m.Beneficiary_ID
+$query = "UPDATE laboratories l
+      INNER JOIN beneficiary b ON b.Beneficiary_Id = l.Beneficiary_ID
+      INNER JOIN transaction t ON t.Beneficiary_Id = l.Beneficiary_ID
       SET t.Given_Sched  = '$Date',
           t.Given_Time = '$transaction_time',
           t.Emp_ID='$EmpID',
-          m.MedicineType = '$MedicineType',
+          l.LabType = '$LabType',
           t.Status = '$Status'
       
       WHERE b.Beneficiary_Id = '$beneID'";
@@ -82,9 +82,9 @@ $transaction_time = $_POST['time'];
 $Date = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
 
 $Status = "For Validation";
-$query = "UPDATE medicines m
-      INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
-      INNER JOIN transaction t ON t.Beneficiary_Id = m.Beneficiary_ID
+$query = "UPDATE laboratories l
+      INNER JOIN beneficiary b ON b.Beneficiary_Id = l.Beneficiary_ID
+      INNER JOIN transaction t ON t.Beneficiary_Id = l.Beneficiary_ID
       SET t.Given_Sched  = '$Date',
           t.Given_Time = '$transaction_time',
           t.Emp_ID='$EmpID',
@@ -100,9 +100,9 @@ $transaction_time = date('H:i:s'); // Set the current date and time for transact
 $Status = "For Validation";
 
 
-$query = "UPDATE medicines m
-      INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
-      INNER JOIN transaction t ON t.Beneficiary_Id = m.Beneficiary_ID
+$query = "UPDATE laboratories l
+      INNER JOIN beneficiary b ON b.Beneficiary_Id = l.Beneficiary_ID
+      INNER JOIN transaction t ON t.Beneficiary_Id = l.Beneficiary_ID
       SET t.Given_Sched  = '$Date',
           t.Given_Time = '$transaction_time',
           t.Emp_ID='$EmpID',
@@ -117,9 +117,9 @@ $transaction_time = $_POST['time'];
 $Date = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
 
 $Status = "For Validation";
-$query = "UPDATE medicines m
-INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
-INNER JOIN transaction t ON t.Beneficiary_Id = m.Beneficiary_ID
+$query = "UPDATE laboratories l
+INNER JOIN beneficiary b ON b.Beneficiary_Id = l.Beneficiary_ID
+INNER JOIN transaction t ON t.Beneficiary_Id = l.Beneficiary_ID
 SET t.Given_Sched  = '$Date',
     t.Given_Time = '$transaction_time',
     t.Emp_ID='$EmpID',
@@ -135,9 +135,9 @@ date_default_timezone_set('Asia/Manila');
 $Date = date('Y-m-d'); // Set the current date for Given_Sched
 $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
 
-$query = "UPDATE medicines m
-INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
-INNER JOIN transaction t ON t.Beneficiary_Id = m.Beneficiary_ID
+$query = "UPDATE laboratories l
+INNER JOIN beneficiary b ON b.Beneficiary_Id = l.Beneficiary_ID
+INNER JOIN transaction t ON t.Beneficiary_Id = l.Beneficiary_ID
 SET t.Given_Sched  = '$Date',
     t.Given_Time = '$transaction_time',
     t.Emp_ID='$EmpID',
@@ -259,7 +259,7 @@ $Status = $_POST['Status'];
                  swal("Update and email send successful","","success")
                  .then((value) => {
                      if (value) {
-                         window.location.href = "medicines.php";
+                         window.location.href = "laboratories.php";
                      }
                  });
                  </script>
@@ -274,7 +274,7 @@ $Status = $_POST['Status'];
      swal("Updated successfully","","success")
      .then((value) => {
          if (value) {
-             window.location.href = "medicines.php";
+             window.location.href = "laboratories.php";
          }
      });
      </script>
@@ -282,7 +282,7 @@ $Status = $_POST['Status'];
 
  } else {
      echo "Error updating records: " . mysqli_error($con);
-     header("Location: medicines.php");
+     header("Location: laboratories.php");
      exit();
  }
 }
@@ -298,7 +298,7 @@ $Status = $_POST['Status'];
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit Form</title>
-    <link rel="stylesheet" href="editformmedicines.css" />
+    <link rel="stylesheet" href="editformlab.css" />
   </head>
   
   <body>
@@ -311,13 +311,14 @@ $Status = $_POST['Status'];
 
    
       
-        <div class="user-details1">
+            <div class="user-details">
                 <div class="input-box">
                     <span class="details" style="color:#f5ca3b;">Date of Application:</span>
                     <span id="calendar" style="color:white; margin-top:10px;"><?php echo $record['Date']; ?></span>
                 </div>
-        </div>
-        <div class="user-details">
+            </div>
+
+            <div class="user-details">
                 <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;">Full Name</span>
                     <input disabled type = "text" required name="EmpName" value = "<?php echo $record['Firstname'] . " " . $record['Lastname']; ?>" > 
@@ -327,15 +328,15 @@ $Status = $_POST['Status'];
                     <span class="details" style="color:  #f5ca3b;">Transaction Type</span>
                     <input disabled type = "text" required value = "<?php echo $record['TransactionType']; ?>">
                 </div>
-        </div>
-        
+            </div>
+
         <div class="user-details">
                 <div class="input-box">
-                    <span class="details"style="color:  #f5ca3b;"> Types of Medicines </span>
-                    <input disabled type="text" required value="<?php echo $record['MedicineType']; ?>" name="MedicineType"/>
+                    <span class="details"> Types of Laboratory </span>
+                    <input disabled type="text" required value="<?php echo $record['LabType']; ?>" name="LabType"/>
                 </div>
-     
-                <div class="input-box">
+
+            <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;">Status</span>
                     <select id="status" name="Status" onchange="handleStatusChange()">
                         <?php
@@ -346,22 +347,28 @@ $Status = $_POST['Status'];
                         }
                         ?>
                     </select>
-                </div>
-        </div>
+             </div>
                    <input type="hidden" name="confirmed" id="confirmed" value="no">
        
        
             <div id="requirements" style="display: none;"></div>
             <div id="emailFormat" class="emailformat">
                     <!-- Email content will be updated based on the selected status -->
-            </div>
+                </div>
+           
+              
+                </div>
            
                 <div class="button-row">
-                    <input type="submit" value="Submit" name="submit" onclick="showConfirmation()" />
-                    <input type="button" value="Cancel" name="cancel" onclick="cancelEdit()" />
+                <input type="submit" value="Submit" name="submit" onclick="showConfirmation()" />
+                <input type="button" value="Cancel" name="cancel" onclick="cancelEdit()" />
                 </div>
+        
+        
       </form>
     </div>
+   
+
     <script>
   function handleStatusChange() {
 

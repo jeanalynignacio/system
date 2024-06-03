@@ -13,7 +13,6 @@ body {
   justify-content: center;
   align-items: center;
   padding: 10px;
-
 }
 
 .container {
@@ -30,7 +29,7 @@ body {
 }
 
 .container form {
-  margin-top: 50px;
+  margin-top: 40px;
   margin-left: 25px;
 }
 
@@ -42,17 +41,27 @@ body {
   font-weight: bolder;
   margin-bottom: -30px;
   margin-left: 220px;
+  margin-top: 5px;
 }
 
-.container form .user-details {
+.container form .user-details1 {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   margin: 20px 0 12px 0;
+ 
+ 
+}
+.container form .user-details {
+  display: flex;
+  flex-wrap: column;
+  margin-bottom: 15px;
 }
 form .user-details .input-box {
   margin: 5px;
-  width: calc(100% / 2 - 30px);
+  width: 100%;
+  margin-right: 30px;
+
 }
 
 .user-details .input-box .details {
@@ -60,13 +69,14 @@ form .user-details .input-box {
   font-weight: 250;
   margin-bottom: 5px;
   font-size: 15px;
-  color: #ffffff;
+  color: #f5ca3b;
   margin-top:20px;
+  margin-right: 15px;
 }
 
 .user-details .input-box input {
   height: 35px;
-  width: 250px;
+  width: 100%;
   padding: 10px;
   outline: none;
   border-radius: 8px;
@@ -88,8 +98,8 @@ form .user-details .input-box {
 }
 
 .user-details .input-box input:disabled {
-  background-color:  #fff; /* Example background color */
-  color: #000000; /* Example text color */
+  background-color:  #fff; 
+  color: #000000;
    border-color: #003399;
 }
 
@@ -98,12 +108,13 @@ form .user-details .input-box {
 
 form input[type="date"] {
   padding: 10px;
+  height:20px;
 }
 
 /* select box */
 .input-box select {
   height: 35px;
-  width: 250px;
+  width: 100%;
   outline: none;
   color: black;
   cursor: pointer;
@@ -121,13 +132,13 @@ form input[type="date"] {
 .container .button-row {
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .container .button-row input,
 .container .cancel input {
   height: 30px;
-  width: 150px;
+  width: 180px;
   outline: none;
   color: #fdfdfd;
   border: none;
@@ -137,19 +148,12 @@ form input[type="date"] {
   border-radius: 5px;
   font-family: arial;
   cursor: pointer;
-  margin-top: 30px;
-
- 
-
+  margin-top: 40px;
 }
-
-
-
 
 .container .button-row input[type="submit"] {
   background-color: #003399;
-  
-  
+  margin-left:20px;
 }
 
 .button-row input[type="button"] {
@@ -158,11 +162,11 @@ form input[type="date"] {
 
 }
 .button-row input[type="submit"]:hover {
-  background-color: #7095c9; /* Change background color on hover */
+  background-color: #7095c9;
 }
 
 .button-row input[type="button"]:hover {
-  background-color: #b9b9b9; /* Change background color on hover */
+  background-color: #b9b9b9;
 }
 
 
@@ -182,53 +186,8 @@ form input[type="date"] {
     max-height: 300px;
     overflow-y: scroll;
   }
-
+  
   .user-details::-webkit-scrollbar {
     width: 0;
   }
 }
-/* CSS for email header */
-.email-header {
-  font-size: 18px;
-  color: #ffffff;
-  margin-bottom: 10px;
-}
-
-/* CSS for email link */
-.email-link {
-  display: inline-block;
-  background-color: #007bff;
-  color: #fff;
-  padding: 10px 15px;
-  text-decoration: none;
-  border-radius: 5px;
-  margin-top: 10px;
-}
-
-.email-link:hover {
-  background-color: #0056b3;
-}
-
-/* CSS for email body */
-.email-body {
-  font-size: 16px;
-  color: #333;
-  line-height: 1.5;
-}
-
-/* CSS for input fields */
-.date-input,
-.time-input,
-.emp-name-input {
-  border: 1px solid #ccc;
-  padding: 5px;
-  font-size: 14px;
-  margin-top: 5px;
-  display: block;
-}
-
-.date-input,
-.time-input {
-  margin-bottom: 10px;
-}
-

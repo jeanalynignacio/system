@@ -14,7 +14,7 @@ body {
 }
 .input-container input[type="password"], 
 .input-container input[type="text"] {
-  width: 88%;
+  width: calc(100% - 20px);
   padding-right: 40px; /* Add padding to make space for the icon */
   height: 35px;
   border-radius: 8px;
@@ -24,16 +24,13 @@ body {
 }
 .toggle-password {
   position: absolute;
-  right: 10px;
- 
+  right: 20px;
   transform: translateY(-50%);
   cursor: pointer;
   margin-right:60px;
   margin-top: 20px;
-
-
-
 }
+
 label{
   color: #fff;
   margin-top: 20px;
@@ -44,7 +41,7 @@ label{
   margin-left: 20px;
 }
 .container {
-  max-width: 30%;
+  max-width: 90%;
   background: #1477d2;
   background-position: center;
   height: AUTO;
@@ -53,7 +50,7 @@ label{
   padding: 25px 30px;
   border-radius: 20px;
   font-family: "Montserrat", sans-serif;
-  position: absolute;
+  position: relative;
 }
 
 .container form {
@@ -61,14 +58,11 @@ label{
 }
 
 .container .title {
-  font-size: 30px;
+  font-size: 24px;
   font-weight: 500;
-  position: absolute;
   color: #fff;
-  font-weight: bolder;
-  margin-bottom: 100px;
-  align-items: center;
-  margin-left:40px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .container form .user-details {
@@ -81,24 +75,21 @@ label{
 
 form .user-details .input-box {
   margin: 10px;
-  width: calc(100% / 2 - 30px);
+  width: 100%;
 }
 
 .user-details .input-box .details {
   margin-top: 10px;
-  display: grid;
+  display: block;
   font-weight: 250;
   margin-bottom: 5px;
   font-size: medium;
   color: #fff;
-
- 
-  
 }
 
 .user-details .input-box input {
   height: 35px;
-  width: 250px;
+  width: calc(100% - 20px);
   padding: 10px;
   outline: none;
   border-radius: 8px;
@@ -126,7 +117,7 @@ form input[type="date"] {
 /* select box */
 .input-box select {
   height: 35px;
-  width: 250px;
+  width: calc(100-20%); 
   outline: none;
   color: black;
   cursor: pointer;
@@ -142,12 +133,13 @@ form input[type="date"] {
 /* button */
 
 .container .button {
-  height: 10%;
+  height: auto;
+  text-align: center;
 }
 
 .container .button input {
-  height: 30px;
-  width: 150px;
+  height: 40px;
+  width: calc(100%-20px);
   outline: none;
   color: #fff;
   border: none;
@@ -171,15 +163,19 @@ form input[type="date"] {
 
 /* responsive */
 
-@media (max-width: 584px) {
+@media (max-width: 768px) {
   .container {
-    max-width: 100%;
+    max-width: 90%;
+    padding: 20px; /* Adjust padding for smaller screens */
+  }
+
+  .container .title {
+    font-size: 24px; /* Adjust font size for smaller screens */
+    margin-bottom: 20px;
   }
 
   form .user-details .input-box {
-    margin-bottom: 15px;
-    width: 100%;
-    font-size: medium;
+    width: 100%; /* Make input boxes full width */
   }
 
   .container form .user-details {
@@ -189,5 +185,24 @@ form input[type="date"] {
 
   .user-details::-webkit-scrollbar {
     width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 15px; /* Adjust padding for very small screens */
+  }
+
+  .container .title {
+    font-size: 20px; /* Adjust font size for very small screens */
+  }
+
+  .input-container input[type="password"], 
+  .input-container input[type="text"] {
+    font-size: 14px; /* Adjust font size for very small screens */
+  }
+
+  .toggle-password {
+    margin-top: 15px; /* Adjust margin for better alignment */
   }
 }

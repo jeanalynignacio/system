@@ -149,7 +149,7 @@ else {
 
         <div class="input-box">
           <label>Reason for re-scheduling</label>
-          <textarea name="reason" required value=""> </textarea>
+          <textarea name="reason" required value=""></textarea>
           <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $lastError ?></p> 
 
         </div>

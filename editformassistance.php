@@ -272,43 +272,56 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
    
 </head>
 <body>
-    <div class="container">
-        <div class="title">Edit form</div>
+<div class="container">
+        <div class="title" style = "margin-top: -10px;">Edit form</div>
         <form id="editForm" method="post">
             <input type="hidden" name="Beneficiary_Id" value="<?php echo $beneID; ?>">
             <input type="hidden" name="Emp_ID" value="<?php echo $EmpID; ?>">
 
-            <div class="user-details1">
+            <div class="user-details">
                 <div class="input-box">
                     <span class="details" style="color:#f5ca3b;">Date of Application:</span>
                     <span id="calendar" style="color:white; margin-top:10px;"><?php echo $record['Date']; ?></span>
-                    </div>
-
-         
-</div>
-         
+                </div>
+               <!-- <div class="input-box">
+                    <span class="details" style="color:  #f5ca3b;">Time of Application:</span>
+                    <span id="time" style="color:  white;"><?php echo date("h:i A", strtotime($record['transaction_time'])); ?></span>
+                    <input type="hidden" required value="<?php echo $record['Beneficiary_ID']; ?>" name="Beneficiary_ID" disabled />
+                </div>-->
+            </div>
 
             <div class="user-details">
                 <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;">Full Name</span>
-                    <input disabled type = "text" required name="EmpName" value = "<?php echo $record['Firstname'] . " " . $record['Lastname']; ?>" > 
-               
-                <div class="input-box" >
-                    <span class="details"style="color:  #f5ca3b; width:100px;">Transaction Type</span>
+                    <input disabled type = "text" required value = "<?php echo $record['Firstname'] . " " . $record['Lastname']; ?>" > 
+                </div>
+
+                <div class="input-box">
+                    <span class="details">Transaction Type</span>
                     <input disabled type = "text" required value = "<?php echo $record['TransactionType']; ?>">
                 </div>
-
+            </div>
+            
+             <div class="user-details">
                 <div class="input-box">
-                    <span class="details" style="color:  #f5ca3b;">Financial Assistance Type</span>
+                    <span class="details">Financial Assistance Type</span>
                     <input disabled type = "text" required value = "<?php echo $record['FA_Type']; ?>">
-                 
+                   <!-- <select name="FA_Type">
+                       
+                        $FA_type = array('Burial', 'Chemotherapy & Radiation', 'Dialysis', 'Medicine');
+                        foreach ($FA_type as $FA) {
+                            $selected = ($record['FA_Type'] == $FA) ? 'selected' : '';
+                            echo "<option $selected>$FA</option>";
+                        }
+                        ?>
+                    </select>-->
                 </div>
 
                 <div class="input-box">
-                    <span class="details" style="color:  #f5ca3b;">Status</span>
+                    <span class="details">Status</span>
                     <select id="status" name="Status" onchange="handleStatusChange()">
                         <?php
-                        $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Payout' ,'For Payout','Request for Re-schedule','For Re-schedule', 'Done');
+                        $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Payout' ,'For Payout', 'Done');
                         foreach ($status as $stat) {
                             $selected = ($record['Status'] == $stat) ? 'selected' : '';
                             echo "<option $selected>$stat</option>";
@@ -327,7 +340,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             <br>
 
             <div id="requirements" style="display: none;"></div>
-       <div id="emailFormat" class="emailformat">
+            <div id="emailFormat" class="emailformat">
                     <!-- Email content will be updated based on the selected status -->
                 </div>
            
