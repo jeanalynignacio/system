@@ -382,6 +382,7 @@ Please note that your reasons may need to be verified to avoid any inconvenience
         requirements.style.display = 'block'; 
         if (faType === 'Burial') {
             requirements.innerHTML = `
+            
              <div style = "color: white;">
                 <h3>Requirements for Burial Assistance Validation</h3>
                 <ul>
@@ -407,10 +408,10 @@ Please note that your reasons may need to be verified to avoid any inconvenience
                 <h3>REQUIREMENTS FOR CHEMOTHERAPY & RADIATION ASSISTANCE VALIDATIONS</h3>
                 <ul>
                     <li><input type="checkbox" name="requirement" value="Medical Abstract"> Medical Abstract</li>
-                    <li><input type="checkbox" name="requirement" value="Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)"> Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)</li>
-                    <li><input type="checkbox" name="requirement" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)</li>
-                    <li><input type="checkbox" name="requirement" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia</li>
-                    <li><input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad</li>
+                    <li><input type="checkbox" name="requirement" value="Request Letter from Barangay Health Center"> Request Letter from Barangay Health Center</li>
+                    <li><input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente"> Xerox Valid ID ng Pasyente</li>
+                    <li><input type="checkbox" name="requirement" value="Xerox Valid ID ng Maglalakad"> Xerox Valid ID ng Maglalakad</li>
+                    <li><input type="checkbox" name="requirement" value="BRGY. INDIGENCY (PASYENTE)</li>
                 </ul>
                 <h3>SUPPORTING DOCUMENTS</h3>
                     <ul style = "text-align: left; margin-left:60px">

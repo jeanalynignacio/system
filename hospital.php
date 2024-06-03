@@ -252,8 +252,7 @@ $res_Fname = $result['Firstname'];
                         <tr>
                             <th> Date: </th>
                             <th> Time: </th>
-                            <th> Beneficiary Id: </th>
-                            <th> Beneficiary Name: </th>
+                              <th> Beneficiary Name: </th>
                             <th> Transaction Type: </th>
                             <th> Hospital Name: </th>
                             <th> Total Hospital Bill: </th>
@@ -305,8 +304,7 @@ while ($row = $result->fetch_assoc()) {
     echo "<tr>
             <td>" . $row["Date"] . " </td>
             <td>" . $row["transaction_time"] . " </td>
-            <td>" . $row["Beneficiary_Id"] . " </td>
-            <td>" . $row["Lastname"] . ", " . $row["Firstname"] . " </td>
+               <td>" . $row["Lastname"] . ", " . $row["Firstname"] . " </td>
             <td>" . $row["TransactionType"] . " </td>
             <td>" . $row["PartneredHospital"] . " </td>
             <td>" . $row["billamount"] . " </td>

@@ -204,6 +204,15 @@ if($result = mysqli_fetch_assoc($query)){
             <p>One of the services that SAP offers is medical aid. This program helps people in the Philippines who have serious medical needs. The goal is to help them get the care they need to improve their health and quality of life. The main goal of this program is to make sure that people with complicated medical needs can get the care they need without facing big financial problems.</p>
           </button>
         </form>
+
+        <form action="applyingoptions.php" method="POST" class="service">
+          <input type="hidden" name="serviceType" value="Radiation & Chemotherapy" >
+          <button type="submit" class="service-button">
+           
+            <h3>Radiation & Chemotherapy</h3>
+            <p>Medicines, treatments, and hospitalizations can be very expensive during cancer treatment, especially radiation therapy and chemotherapy. The goal of the program is to make cancer treatment more accessible so that patients can get the radiation therapy and medicines they need without having to worry about financial problems.</p>
+          </button>
+        </form>
       </div>
     </div>
 

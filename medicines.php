@@ -136,7 +136,6 @@ $query="SELECT * FROM employees where role='Employee'";
                         <tr>
                             <th> Date: </th>
                             <th> Time: </th>
-                            <th> Beneficiary No: </th>
                             <th> Name: </th>
                             <th> Municipality: </th>
                             <th> Schedule: <br> (if online) </th>
@@ -165,8 +164,7 @@ while ($row = $result->fetch_assoc()) {
     echo "<tr>
             <td>" . $row["Date"] . " </td>
             <td>" . $row["transaction_time"] . " </td>
-            <td>" . $row["Beneficiary_Id"] . " </td>
-            <td>" . $row["Lastname"] . ", " . $row["Firstname"] . " </td>
+             <td>" . $row["Lastname"] . ", " . $row["Firstname"] . " </td>
             <td>" . $row["CityMunicipality"] . " </td>
             <td>" . $row["Given_Sched"] . " </td>
             <td>" . $row["TransactionType"] . " </td>

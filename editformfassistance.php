@@ -391,16 +391,23 @@ function handleStatusChange() {
        } else if (status === 'For Validation') {
            requirements.style.display = 'block';
            requirements.innerHTML = `
-               <div style="color: white;">
-                   
-                   <h3>Requirements for Burial Assistance Validation</h3>
-                   <ul>
-                       <input type="checkbox" name="requirement" value="Death Certificate"> Death Certificate <br>
-                       <input type="checkbox" name="requirement" value="Barangay Certificate of Indigency"> Barangay Certificate of Indigency <br>
-                       <input type="checkbox" name="requirement" value="Request Letter"> Request Letter <br>
-                       <input type="checkbox" name="requirement" value="Photocopy of Beneficiary's ID"> Photocopy of Beneficiary's ID <br>
-                   </ul>
-               </div>
+           <div style = "color: white;">
+                <h3>Requirements for Burial Assistance Validation</h3>
+                <ul>
+                    <input type="checkbox" name="requirement" value="Registered Death Certificate (2 PHOTOCOPIES)"> Registered Death Certificate (2 PHOTOCOPIES) <br>
+                    <input type="checkbox" name="requirement" value="Funeral Contract with Balance (2 PHOTOCOPIES)"> Funeral Contract with Balance (2 PHOTOCOPIES) <br>
+                    <input type="checkbox" name="requirement" value="Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY)"> Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY) <br>
+                    <input type="checkbox" name="requirement" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia <br>
+                    <input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad <br>
+                    <input type="checkbox" name="requirement" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad) <br>
+                    </ul>
+                    <h3>SUPPORTING DOCUMENTS</h3>
+                    <ul style = "text-align: left; margin-left:60px">
+                    <input type="checkbox" name="requirement" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
+                    <input type="checkbox" name="requirement" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
+                    <input type="checkbox" name="requirement" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
+                    </ul>
+             </div>
            `;
        } else if (status === 'Pending for Payout') {
            emailFormat.innerHTML = `

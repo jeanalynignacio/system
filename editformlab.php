@@ -399,13 +399,22 @@ $Status = $_POST['Status'];
                 requirements.innerHTML = `
                     <div style="color: white;">
                         
-                        <h3>Requirements for Burial Assistance Validation</h3>
+                        <h3>Requirements for Laboratory Assistance Validation</h3>
                         <ul>
-                            <input type="checkbox" name="requirement" value="Death Certificate"> Death Certificate <br>
-                            <input type="checkbox" name="requirement" value="Barangay Certificate of Indigency"> Barangay Certificate of Indigency <br>
-                            <input type="checkbox" name="requirement" value="Request Letter"> Request Letter <br>
-                            <input type="checkbox" name="requirement" value="Photocopy of Beneficiary's ID"> Photocopy of Beneficiary's ID <br>
+                            <input type="checkbox" name="requirement" value="Death Laboratories result"> Laboratories result <br>
+                            <input type="checkbox" name="requirement" value="Request Letter from Barangay Health Center"> Request Letter from Barangay Health Center <br>
+                            <input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente"> Xerox Valid ID ng Pasyente <br>
+                            <input type="checkbox" name="requirement" value="Xerox Valid ID ng Maglalakad"> Xerox Valid ID ng Maglalakad <br>
+                            <input type="checkbox" name="requirement" value="BRGY. INDIGENCY (PASYENTE)"> BRGY. INDIGENCY (PASYENTE) <br>
+          
                         </ul>
+                        <h3>SUPPORTING DOCUMENTS</h3>
+                         <ul style = "text-align: left; margin-left:60px" >
+                            <input type="checkbox" name="requirement" value="XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE) <br>
+                            <input type="checkbox" name="requirement" value="XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE)"> XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE) <br>
+                            <input type="checkbox" name="requirement" value="BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE <br>
+                           
+                    
                     </div>
                 `;
             } else if (status === 'Pending for Payout') {

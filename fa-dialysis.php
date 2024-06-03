@@ -138,10 +138,9 @@ $res_Fname = $result['Firstname'];
                         <tr>
                             <th> Date: </th>
                             <th> Time: </th>
-                            <th> Beneficiary No: </th>
-                            <th> Name: </th>
+                            <th> Beneficiary Name: </th>
                             <th> Municipality: </th>
-                            <th> Schedule: <br> (if online) </th>
+                            <th> Schedule:  </th>
                             <th> Transaction Type: </th>
                             <th> Amount Received: </th>
                             <th> Status: </th>
@@ -156,7 +155,7 @@ $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.First
         INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
         where FA_type= 'Dialysis'
-        ORDER BY t.Date DESC"; 
+        ORDER BY t.Date ASC"; 
 
 $result = $con->query($sql);
 
@@ -168,7 +167,6 @@ while ($row = $result->fetch_assoc()) {
     echo "<tr>
             <td>" . $row["Date"] . " </td>
             <td>" . $row["transaction_time"] . " </td>
-            <td>" . $row["Beneficiary_Id"] . " </td>
             <td>" . $row["Lastname"] . ", " . $row["Firstname"] . " </td>
             <td>" . $row["CityMunicipality"] . " </td>
             <td>" . $row["Given_Sched"] . " </td>

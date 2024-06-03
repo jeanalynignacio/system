@@ -160,9 +160,11 @@ $query = "INSERT INTO users (Lastname, Firstname, Middlename, Birthday, Contactn
 if(mysqli_query($con, $query)){
   if ($result) {
     //send verification email
-    require 'PHPMailer/src/Exception.php';
-    require 'PHPMailer/src/PHPMailer.php';
-    require 'PHPMailer/src/SMTP.php';
+   
+ require 'PHPMailer/src/Exception.php';
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+
    
     $mail = new PHPMailer(true);
 
@@ -182,23 +184,23 @@ if(mysqli_query($con, $query)){
         //Content
         $mail->isHTML(true); // Set email format to HTML
         $mail->Subject = 'Email Verification';
-        $mail->Body = "Click the following link to verify your email:
-             <a href='http://localhost/public_html/verify.php?Email=$Email&code=$verification_code'> Verify </a>";
+        $mail->Body = "Good Day! Click the following link to verify your email:
+             <a href='https://pgb-sap.000webhostapp.com/verify.php?Email=$Email&code=$verification_code'> Verify </a>
+             <p> If you did not request this email, do not click the link. Please ignore this email.</p>";
           
     
        if($mail->send()){
         echo '<body>
-                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                        <script>
-                        swal("Registration successful!", "Please verify your email.","","success")
-                        .then((value) => {
-                            if (value) {
-                                window.location.href = "login.php";
-                            }
-                        });
-                        </script>
-                        </body>'; 
-             
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+        swal("Registration successful!", "Please verify your email.", "success")
+        </script>';
+          echo '<script>
+         setTimeout(function(){
+            window.location.href="login.php";
+        } , 5000);
+      </script>
+      </body>';
        }
       }
       }else{
