@@ -88,7 +88,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             date_default_timezone_set('Asia/Manila');
             $Date = date('Y-m-d'); // Set the current date for Given_Sched
             $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
-    
             $Status = "For Validation";
             $query = "UPDATE financialassistance f
             INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
@@ -209,7 +208,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     ";
                 }elseif($status == 'For Re-schedule') {
                     $employeeName = $_POST['EmpName'];
-                    $mail->Subject = 'For Payout';
+                    $mail->Subject = 'Re-schedule';
                     $mail->Body = "
                         <html>
                         <body>
@@ -283,20 +282,19 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 <div class="input-box">
                     <span class="details" style="color:#f5ca3b;">Date of Application:</span>
                     <span id="calendar" style="color:white; margin-top:10px;"><?php echo $record['Date']; ?></span>
-                </div>
+                    </div>
 
          
-            </div>
-           
+</div>
+         
 
             <div class="user-details">
                 <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;">Full Name</span>
                     <input disabled type = "text" required name="EmpName" value = "<?php echo $record['Firstname'] . " " . $record['Lastname']; ?>" > 
                
-
                 <div class="input-box" >
-                    <span class="details"style="color:  #f5ca3b;">Transaction Type</span>
+                    <span class="details"style="color:  #f5ca3b; width:100px;">Transaction Type</span>
                     <input disabled type = "text" required value = "<?php echo $record['TransactionType']; ?>">
                 </div>
 
@@ -357,8 +355,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>I am writing to inform you that your request for scheduling has been approved.<br>
             Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
-            at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br><br>
-          <br><br>
+            at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br>
+          <br>
           If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='http://localhost/public_html/requestresched.php' style = "color:  #3cd82e;"> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.
 Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.
  
@@ -412,17 +410,17 @@ Please note that your reasons may need to be verified to avoid any inconvenience
         }
         else if (faType === 'Dialysis') {
             requirements.innerHTML = `
-             <div style = "color: white;">
-                <h3>REQUIREMENTS FOR DIALYSIS</h3>
-                <ul>
-                    <li><input type="checkbox" name="requirement" value="Medical Abstract"> Medical Abstract</li>
-                    <li><input type="checkbox" name="requirement" value="Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)"> Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)</li>
-                    <li><input type="checkbox" name="requirement" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)</li>
-                    <li><input type="checkbox" name="requirement" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia</li>
-                    <li><input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad</li>
-                </ul>
-                <h3>SUPPORTING DOCUMENTS</h3>
-                    <ul style = "text-align: left; margin-left:60px">
+             <div style = "color: white; margin-top:14px;">
+                <h3 style = "color: gold;" >REQUIREMENTS FOR DIALYSIS</h3>
+                <ul style = "text-align: left; margin-left:60px"><br>
+                       <input type="checkbox" name="requirement" value="Medical Abstract"> Medical Abstract<br>
+                    <input type="checkbox" name="requirement" value="Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)"> Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)<br>
+                   <input type="checkbox" name="requirement" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)<br>
+                    <input type="checkbox" name="requirement" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia<br>
+                   <input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad<br>
+                </ul><br>
+                <h3  style = "color: gold;">SUPPORTING DOCUMENTS</h3>
+                    <ul style = "text-align: left; margin-left:60px"><br>
                     <input type="checkbox" name="requirement" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
                     <input type="checkbox" name="requirement" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
                     <input type="checkbox" name="requirement" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>

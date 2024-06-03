@@ -151,7 +151,7 @@ else{
 // Construct the update query
 
 $result2=mysqli_query($con,$query);
-      // Execute the update query
+      
      // Execute the update query
 if ($result2) {
 
@@ -238,7 +238,7 @@ if ($result2) {
                     ";
                 }elseif($status == 'For Re-schedule') {
                     $employeeName = $_POST['EmpName'];
-                    $mail->Subject = 'For Payout';
+                    $mail->Subject = 'For Re-schedule';
                     $mail->Body = "
                         <html>
                         <body>
@@ -309,35 +309,6 @@ if ($result2) {
       <input type="hidden" name="Beneficiary_Id" value="<?php echo $beneID; ?>">
       <input type="hidden" name="Emp_ID" value="<?php echo $EmpID; ?>">
 
-      
-       
-              
-            <!--   $query = mysqli_query($con, "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, t.TransactionType, h.PartneredHospital, h.billamount, t.Status,t.Given_Sched  FROM hospitalbill h INNER JOIN beneficiary b ON b.Beneficiary_Id = h.Beneficiary_ID INNER JOIN transaction t ON t.Beneficiary_Id = h.Beneficiary_ID WHERE b.Beneficiary_Id='$beneID'" );
-              
-               while($result = mysqli_fetch_assoc($query)){
-                   $res_Date = $result['Date'];
-                   $res_transaction_time = $result['transaction_time'];
-                   $res_beneID = $result['Beneficiary_Id'];
-                   $res_Lname = $result['Lastname'];
-                   $res_Fname = $result['Firstname'];
-                   $res_transactype = $result['TransactionType'];
-                   $res_hospitalname = $result['PartneredHospital'];
-                   $res_bill = $result['billamount'];
-                   $res_Status = $result['Status'];
-                   $res_Given_Sched = $result['Given_Sched'];
-                 
-               }
-                    ?>  
-                
-                 
-        <div class="user-details">
-        <div class="input-box">
-                    <span class="details" style="color:#f5ca3b;">Date of Application:</span>
-                    <span id="calendar" style="color:white; margin-top:10px;"><?php echo $record['Date']; ?></span>
-                </div>
-                -->
-     
-        
                 <div class="user-details1">
                 <div class="input-box">
                     <span class="details" style="color:#f5ca3b;">Date of Application:</span>
@@ -345,63 +316,23 @@ if ($result2) {
                 </div>
 
          
-      
- 
-
                 <div class="user-details">
                 <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;">Full Name</span>
                     <input disabled type = "text" required name="EmpName" value = "<?php echo $record['Firstname'] . " " . $record['Lastname']; ?>" > 
-                </div>
+               
 
           <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;">Transaction Type</span>
                     <input disabled type = "text" required value = "<?php echo $record['TransactionType']; ?>">
                 </div>
+                
                 <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;">Hospital</span>
                     <input disabled type = "text" required value = "<?php echo $record['PartneredHospital']; ?>">
                  
                 </div>
-          <!--<div class="input-box">
-            <span class="details"> Hospital </span>
-            <select name="PartneredHospital">
-         
-// Array of hospitals
-$hospitals = array(
-    'Bataan Doctors Hospital & Medical Center',
-    'Balanga Medical Center Corporation',
-    'Bataan Peninsula Medical Center',
-    'Bataan St. Joseph Hospital & Medical Center',
-    'Isaac & Catalina Medical Center',
-    'Mt. Samat Medical Center',
-    'Orion St. Michael Hospital',
-    'Jose B. Lingad Memorial General Hospital',
-    'Lung Center of the Philippines',
-    'National Children\'s Hospital',
-    'National Kidney & Transplant Institute',
-    'Philippine General Hospital',
-    'Philippine Heart Center',
-    'The Philippines Children Medical Center'
-  
-);
-
-// Loop through the array to generate options
-foreach ($hospitals as $hospital) {
-    // Check if the current hospital matches the record's hospital
-    $selected = ($record['PartneredHospital'] == $hospital) ? 'selected' : '';
-    // Output the option with hospital name and selected attribute if matched
-    echo "<option $selected>$hospital</option>";
-}
-?>
-            </select>
-                 </div>
-                    <div class="user-details">
-                   <div class="input-box">
-            <span class="details">Status </span>
-            <select name="Status">
-           
-// Array of hospitals-->
+       
 <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;">Status</span>
                     <select id="status" name="Status" onchange="handleStatusChange()">
@@ -414,10 +345,6 @@ foreach ($hospitals as $hospital) {
                         ?>
                     </select>
                 </div>
-            
-    
-
-          
             
           </div>
           <input type="hidden" name="confirmed" id="confirmed" value="no">
@@ -437,6 +364,7 @@ foreach ($hospitals as $hospital) {
             
         </form>
     </div>
+    
   <script>
           function cancelEdit() {
           // Redirect to the previous page

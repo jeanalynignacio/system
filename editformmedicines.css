@@ -17,17 +17,16 @@ body {
 }
 
 .container {
-  max-width: 700px;
-  width: 100%;
   background-color: rgb(50, 102, 155);
   background-position: center;
-  height: 100vh;
-  width: 90vh;
-  background-size: 90vh;
+  height: 120vh;
+  width: 100vh;
+  background-size: 100VH;
   padding: 25px 30px;
   border-radius: 20px;
   font-family: "Montserrat", sans-serif;
   position: relative;
+  margin-top: 150px;
 }
 
 .container form {
@@ -188,3 +187,48 @@ form input[type="date"] {
     width: 0;
   }
 }
+/* CSS for email header */
+.email-header {
+  font-size: 18px;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+/* CSS for email link */
+.email-link {
+  display: inline-block;
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 15px;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.email-link:hover {
+  background-color: #0056b3;
+}
+
+/* CSS for email body */
+.email-body {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* CSS for input fields */
+.date-input,
+.time-input,
+.emp-name-input {
+  border: 1px solid #ccc;
+  padding: 5px;
+  font-size: 14px;
+  margin-top: 5px;
+  display: block;
+}
+
+.date-input,
+.time-input {
+  margin-bottom: 10px;
+}
+

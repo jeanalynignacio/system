@@ -190,7 +190,7 @@ while ($row = $result->fetch_assoc()) {
             "<form method='post' action='editformassistance.php'>" .
             "<input type='hidden' name='Beneficiary_Id' value='" . $row['Beneficiary_Id'] . "'>" .
             "<input type='hidden' name='Status' value='" . $row['Status'] . "'>" .
-            "<button type='submit'>Edit</button>" .
+            "<button type='submit'>View</button>" .
            
        
             "</form>" .

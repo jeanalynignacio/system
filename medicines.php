@@ -175,7 +175,8 @@ while ($row = $result->fetch_assoc()) {
             <td>".
             "<form method='post' action='editformmedicines.php'>" .
             "<input type='hidden' name='Beneficiary_Id' value='" . $row['Beneficiary_Id'] . "'>" .
-            "<button type='submit'>Edit</button>" .
+            "<input type='hidden' name='Status' value='" . $row['Status'] . "'>" .
+            "<button type='submit'>View</button>" .
             "</form>" .
             "</td>   </tr>";
 }

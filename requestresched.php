@@ -32,15 +32,22 @@ use PHPMailer\PHPMailer\PHPMailer;
 
   $result=mysqli_query($con,$SQL);
    $res_ID= $result->fetch_assoc();
-   
-
-
+   $Errors = "";
+   $lastError = "";
    if(isset($_POST['submit'])){
-    $Lastname = $_POST['Lastname'];
-    $Firstname = $_POST['Firstname'];
+   
    $reason =$_POST['reason'];
    $beneID =$_POST['ID'];
 $Email=$_POST['email'];
+
+
+$errors = array();
+if (empty($reason)) {
+  array_push($errors, "Reason should not be empty. Please provide a reason to proceed");
+} 
+else {
+    
+    
    $query = "UPDATE transaction 
    SET Status = 'Request for Re-schedule'
    WHERE Beneficiary_Id = '$beneID'";
@@ -78,7 +85,7 @@ $Email=$_POST['email'];
       swal("Email sent successfully!", "Please wait for an email notification to know if your request is accepted or not.", "success")
       .then((value) => {
           if (value) {
-              window.location.href = "usershomepage.php";
+              <?php echo $reason ?>
           }
       });
       </script>
@@ -91,7 +98,7 @@ $Email=$_POST['email'];
   }
 }
 
-    
+}   
    
 ?>
 <!DOCTYPE html>
@@ -112,7 +119,8 @@ $Email=$_POST['email'];
           <div class="input-box">
             <label>Last Name</label>
             <input name="Lastname"
-              type="text"
+            disabled 
+            type="text"
               placeholder="Enter last name"
               required value="<?php echo "{$res_ID['Lastname']}"; ?>"
               style="color: black; background: white; border-color: gray"
@@ -123,12 +131,13 @@ $Email=$_POST['email'];
             <label>First Name</label>
             <input  name="Firstname"
               type="text"
-              placeholder="Enter First name"
+             disabled
               required value="<?php echo "{$res_ID['Firstname']}"; ?>"
               style="color: black; background: white; border-color: gray"
             />
             <input  name="email"
               type="hidden"
+            
               value="<?php echo "{$res_ID['Email']}"; ?>"
                  />
                  <input  name="ID"
@@ -140,7 +149,9 @@ $Email=$_POST['email'];
 
         <div class="input-box">
           <label>Reason for re-scheduling</label>
-          <textarea name="reason" required> </textarea>
+          <textarea name="reason" required value=""> </textarea>
+          <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $lastError ?></p> 
+
         </div>
 
         <div class="column">
