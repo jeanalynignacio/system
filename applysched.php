@@ -26,12 +26,12 @@
     $res_profile = $result['userIDpic'];
     }
     }
+    if(isset($_SESSION['hospitals'])){
+        $hospitals = $_SESSION['hospitals'];
+   }
 
     if(isset($_SESSION['serviceType'])){
         $serviceType = $_SESSION['serviceType'];
-        $hospitals = $_SESSION['hospitals'];
-
-
         
     }else{
         echo "Service type not set.";
@@ -40,7 +40,6 @@
 
     if(isset($_POST['submit'])) {
         $serviceType = $_SESSION['serviceType'];
-        $hospitals = $_SESSION['hospitals'];
         $BENEID = $_POST['Beneficiary_ID'];
       
         switch ($serviceType) {
@@ -68,6 +67,7 @@
                 $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Schedule', CURDATE(),CURTIME())";
                 break;
             case 'hospitalbills':
+                $hospitals = $_SESSION['hospitals'];
                 $hospitals=$_POST['hospitals'];
                 $escaped_hospitals = addslashes($hospitals);
 
@@ -76,7 +76,7 @@
                 $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Schedule', CURDATE(),CURTIME())";
                 break;
                 case 'laboratories':
-                    $labtype=$_POST['labtype'];
+                    $labtype=$_POST['labType'];
                     $serviceType = "Laboratories";
                     $query = "INSERT INTO laboratories (Beneficiary_ID, LabType) VALUES ('$BENEID', '$labtype')";
                     $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Schedule', CURDATE(),CURTIME())";
@@ -222,20 +222,7 @@
                         <center><h3>(Icheck kung kumpleto ang mga kinakailangan. Kung oo, maaari kang magpatuloy sa paghingi ng iskedyul.)</h3></center>
                     </label><br><br>
                     
-                   <!-- <?php if ($serviceType === 'medicines' || $serviceType === 'hospital') : ?>
-                        <label>
-                            <input type="radio" name="category" value="medicine" onclick="showRequirements('medicine')">
-                            ASSISTANCE FOR MEDICINES
-                        </label><br>
-                        <label>
-                            <input type="radio" name="category" value="medicine" onclick="showRequirements('medicine')">
-                            ASSISTANCE FOR LABORATORIES
-                        </label><br>
-                        <label>
-                            <input type="radio" name="category" value="medicine" onclick="showRequirements('medicine')">
-                            ASSISTANCE FOR HOSPITAL BILLS
-                        </label><br>
-                    <?php endif; ?> -->
+                  
                    
 
                     <?php if ($serviceType === 'medicines') : ?>
@@ -246,7 +233,7 @@
                         </label><br>-->
                         <input type="text" name="medType" placeholder="Medicine Type" autocomplete="off"  required>                      
               
-                  <h1>FINANCIAL ASSISTANCE FOR MEDICINES REQUIREMENTS</h1>
+                  <h1>ASSISTANCE FOR MEDICINES REQUIREMENTS</h1>
                     <ul style = "text-align: left; margin-left:60px">
                         <input type="checkbox" onclick="checkAllChecked()"> Updated Medical Certificate/Medical Abstract (1 ORIGINAL, 1 PHOTOCOPY)<br>
                         <input type="checkbox" onclick="checkAllChecked()"> Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)<br>
@@ -282,26 +269,7 @@
                 </div>
                 <?php endif; ?>
 
-                <!--<div id="implant" class="requirements" style="display: none;">
-                    <h1>REQUIREMENTS FOR IMPLANT BAKAL</h1>
-                    <ul style = "text-align: left; margin-left:60px" >
-                        <input type="checkbox" onclick="checkAllChecked()"> Request ng Doctor para sa Implant (may pirma at license # ng Doctor)<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> Quotation at halaga ng Bakal (may pirma at license # ng Doctor)
-                        <input type="checkbox" onclick="checkAllChecked()"> Medical Abstract (may pirma at license # ng Doctor)<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia<br>
-                        
-                    </ul>
-                    <h1>SUPPORTING DOCUMENTS</h1>
-                    <ul style = "text-align: left; margin-left:60px">
-                        <input type="checkbox" onclick="checkAllChecked()"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> Xerox ng Marriage Certificate (Kung asawa ang pasyente)<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> Affidavit of Cohabitation kung mag live-in partner o katunayag nagsasama ngunit hindi pa kasal<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> Xerox ng Cedula<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> Xerox Valid ID ng Naglalakad<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> Authorization Letter ng Pasyente
-                    </ul>
-                </div> -->
+              
                 <?php if ($serviceType === 'hospitalbills') : ?>
                      
                     <h1>GUARANTEE LETTER FOR HOSPITAL BILL</h1>
@@ -325,48 +293,55 @@
                     </ul>
                 </div>
                 <?php endif; ?>
-               <!-- <div id="implant" class="requirements" style="display: none;">
-                    <h1>GUARANTEE LETTER FOR HOSPITAL BILL(DSWD)- ICMC/CENTRO/BPMC</h1>
-                    <ul style = "text-align: left; margin-left:60px" >
-                        <input type="checkbox" onclick="checkAllChecked()"> FINAL BILL (MAY PIRMA NG BILLING CLERK) WITH DISCHARGE DATE<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> MEDICAL ABSTRACT AND MEDICAL CERTIFICATE (MAY PANGALAN PIRMA AT LICENSE # NG DOCTOR)
-                        <input type="checkbox" onclick="checkAllChecked()"> PROMISSORY NOTE (NAKA NOTARYO)<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> REFERRAL LETTER
-                        <input type="checkbox" onclick="checkAllChecked()"> SULAT (SULAT KAMAY) NA HUMIHINGI NG TULONG KAY GOV. JOET S. GARCIA
-                        <input type="checkbox" onclick="checkAllChecked()"> XEROX VALID ID NG PASYENTE W/ 3 SIGNATURES
-                        <input type="checkbox" onclick="checkAllChecked()"> XEROX VALID ID NG MAGLALAKAD AT PATIENT
-                        <input type="checkbox" onclick="checkAllChecked()"> BRGY. INDIGENCY (PASYENTE) & BRGY. INDIGENCY (NAGLALAKAD)
-                        <input type="checkbox" onclick="checkAllChecked()"> SOCIAL CASE STUDY (MSWDO)
-                    <h1>SUPPORTING DOCUMENTS</h1>
-                    <ul style = "text-align: left; margin-left:60px">
-                        <input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE CERTIFICATE KUNG ASAWA ANG PASYENTE)<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE<br>  
-                    </ul>
-                </div>
-                <div id="implant" class="requirements" style="display: none;">
-                    <h1>GUARANTEE LETTER FOR HOSPITAL BILL(DSWD)-ST. JOSEPH</h1>
-                    <ul style = "text-align: left; margin-left:60px" >
-                        <input type="checkbox" onclick="checkAllChecked()"> FINAL BILL (MAY PIRMA NG BILLING CLERK) W/O DISCHARGE DATE<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> MEDICAL ABSTRACT AND MEDICAL CERTIFICATE (MAY PANGALAN PIRMA AT LICENSE # NG DOCTOR)
-                        <input type="checkbox" onclick="checkAllChecked()"> CERTIFICATION OF CONFINEMENT (STILL ADMITTED)<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> SULAT (SULAT KAMAY) NA HUMIHINGI NG TULONG KAY GOV. JOET S. GARCIA
-                        <input type="checkbox" onclick="checkAllChecked()"> XEROX VALID ID NG PASYENTE W/ 3 SIGNATURES
-                        <input type="checkbox" onclick="checkAllChecked()"> XEROX VALID ID NG MAGLALAKAD
-                        <input type="checkbox" onclick="checkAllChecked()"> BRGY. INDIGENCY (PASYENTE) & BRGY. INDIGENCY (MAGLALAKAD)
-                        <input type="checkbox" onclick="checkAllChecked()"> SOCIAL CASE STUDY (MSWDO)
-                    <h1>SUPPORTING DOCUMENTS</h1>
-                    <ul style = "text-align: left; margin-left:60px">
-                        <input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE CERTIFICATE KUNG ASAWA ANG PASYENTE<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE<br>  
-                    </ul>
-                </div>-->
-                   
 
 
+                <?php if ($serviceType === 'laboratories') : ?>
+                    <input type="text" name="labType" placeholder="Laboratory Type" autocomplete="off"  required>     
+                     <h1>ASSISTANCE FOR LABORATORIES</h1>
+                     <ul style = "text-align: left; margin-left:60px" >
+                         <input type="checkbox" onclick="checkAllChecked()"> Laboratories result<br>
+                         <input type="checkbox" onclick="checkAllChecked()"> Request Letter from Barangay Health Center<br>
+                         <input type="checkbox" onclick="checkAllChecked()"> Xerox Valid ID ng Pasyente<br>
+                         <input type="checkbox" onclick="checkAllChecked()"> Xerox Valid ID ng Maglalakad<br>
+                         <input type="checkbox" onclick="checkAllChecked()"> BRGY. INDIGENCY (PASYENTE)<br>
+                         
+                 </ul>
+                         <h1>SUPPORTING DOCUMENTS</h1>
+                         <ul style = "text-align: left; margin-left:60px" >
+                    
+                         <input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)<br>
+                         <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE)<br>
+                         <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE<br>
+                         <input type="checkbox" onclick="checkAllChecked()"> AFFIDAVIT OF COHABITATION KUNG MAG LIVE IN PARTNER O KATUNAYAN NAG SASAMA NGUNIT HINDI PA KASAL<br>       
+                     
+                     </ul>
+                 </div>
+                 <?php endif; ?>
+                 <?php if ($serviceType === 'dialysis') : ?>
+                     
+                     <h1>GUARANTEE LETTER FOR LABORATORIES</h1>
+                     <ul style = "text-align: left; margin-left:60px" >
+                         <input type="checkbox" onclick="checkAllChecked()"> Laboratories result<br>
+                         <input type="checkbox" onclick="checkAllChecked()"> Request Letter from Barangay Health Center<br>
+                         <input type="checkbox" onclick="checkAllChecked()"> Xerox Valid ID ng Pasyente<br>
+                         <input type="checkbox" onclick="checkAllChecked()"> Xerox Valid ID ng Maglalakad<br>
+                         <input type="checkbox" onclick="checkAllChecked()"> BRGY. INDIGENCY (PASYENTE)<br>
+                         
+                 </ul>
+                         <h1>SUPPORTING DOCUMENTS</h1>
+                         <ul style = "text-align: left; margin-left:60px" >
+                    
+                         <input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)<br>
+                         <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE)<br>
+                         <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE<br>
+                         <input type="checkbox" onclick="checkAllChecked()"> AFFIDAVIT OF COHABITATION KUNG MAG LIVE IN PARTNER O KATUNAYAN NAG SASAMA NGUNIT HINDI PA KASAL<br>       
+                     
+                     </ul>
+                 </div>
+                 <?php endif; ?>
 
-               
+              
+            
                 <div class="sub">
                     <!--<input class="applysched" type="submit" value="Apply for Schedule" name="submit">-->
                     <center><button type="submit" id="scheduleButton" name="submit" class="scheduleButton" disabled >Get a schedule</button><br>      </center>

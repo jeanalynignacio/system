@@ -36,20 +36,6 @@
                         </script>
                         </body>';
                                 } else {
-<<<<<<< HEAD
-                                    
-                                  echo '<body>
-                                  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                                  <script>
-                                  swal("Log in successful!","","success")
-                                  </script>';
-                                    echo '<script>
-                                   setTimeout(function(){
-                                      window.location.href="employee_dashboard.php";
-                                  } , 3000);
-                                </script>
-                                </body>'; 
-=======
                                 echo '<body>
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                         <script>
@@ -61,7 +47,6 @@
                         });
                         </script>
                         </body>';
->>>>>>> f3e2cb998df9eb664e8cae62f1d9743d8f3d7f79
                                 }
                             
                            } else{

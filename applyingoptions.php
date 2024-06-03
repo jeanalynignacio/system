@@ -22,11 +22,12 @@ $res_Lname = $result['Lastname'];
 $res_profile = $result['userIDpic'];
 }
 }
-    
-
+if(isset($_POST['hospitals'])){
+$_SESSION['hospitals'] = $_POST['hospitals'];
+}
    if(isset($_POST['serviceType'])){
     $_SESSION['serviceType'] = $_POST['serviceType'];
-    $_SESSION['hospitals'] = $_POST['hospitals'];
+    
    
     $serviceType = $_SESSION['serviceType'];
 
@@ -39,42 +40,7 @@ if (isset($_POST['myself']) || isset($_POST['relative'])) {
 }
 
    
-  /*if (isset($_POST['myself'])) {
-    
-    $userId = $_SESSION['id'];
-    $threeMonthsAgo = date('Y-m-d', strtotime('-3 months'));
 
-    // Query to find the beneficiary
-    $query = "SELECT * FROM beneficiary WHERE Representative_ID = $userId";
-    $result = mysqli_query($con, $query);
-
-
-    if (mysqli_num_rows($result) > 0) {
-        // Beneficiary found, get beneficiary ID
-        $row = mysqli_fetch_assoc($result);
-        $beneficiaryId = $row['Beneficiary_Id'];
-
-        // Check for transactions with status 'Done' in the last 3 months
-        $query = "SELECT * FROM transaction WHERE Beneficiary_Id = $beneficiaryId AND Status = 'Done' AND Given_Sched >= '$threeMonthsAgo'";
-        $result = mysqli_query($con, $query);
-
-        if (mysqli_num_rows($result) > 0) {
-            echo "<script>alert('You cannot apply at this time.');</script>";
-        } else {
-            // Check for transactions with status 'For Schedule'
-            $query = "SELECT * FROM transaction WHERE Beneficiary_Id = $beneficiaryId AND Status = 'For Schedule'";
-            $result = mysqli_query($con, $query);
-
-            if (mysqli_num_rows($result) > 0) {
-                echo "<script>alert('You already requested a schedule. Please wait for the email to know when your schedule of appearance to the office is. Thank you');</script>";
-            } else {
-                // No conflicting transactions found, proceed with the application process
-                header("Location: applysched.php");
-                exit();
-            }
-        }
-    } 
-}*/
 if (isset($_POST['myself'])) {
     $userId = $_SESSION['id'];
     $threeMonthsAgo = date('Y-m-d', strtotime('-3 months'));
@@ -200,11 +166,7 @@ if (isset($_POST['myself'])) {
                         echo '<body>
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                         <script>
-<<<<<<< HEAD
                         swal("Notification", "You already pending for validation. Please wait for the email to know when your schedule of appearance to the office is. Thank you.","info")
-=======
-                        swal("Notification", "You already pending for validations. Please wait for the email to know when your schedule of appearance to the office is. Thank you.","info")
->>>>>>> f3e2cb998df9eb664e8cae62f1d9743d8f3d7f79
                         .then((value) => {
                             if (value) {
                                 window.location.href = "applyingoptions.php";

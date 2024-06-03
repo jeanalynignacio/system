@@ -63,15 +63,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 $Date = date('Y-m-d'); // Set the current date for Given_Sched
                 $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
     
-                $requirements = isset($_POST['requirement']) ? (array)$_POST['requirement'] : [];
-                $requiredItems = array("Death Certificate", "Barangay Certificate of Indigency", "Request Letter", "Photocopy of Beneficiary's ID");
-                $missingItems = array_diff($requiredItems, $requirements);
-                $Status = empty($missingItems) ? "For Payout" : "Incomplete Requirements";
-    
+               
                 $query = "UPDATE financialassistance f
                 INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
                 INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-                SET t.Status = '$Status', t.Emp_ID='$EmpID'
+                SET t.Status = '$Status', t.Emp_ID='$EmpID',t.Given_Sched = '$Date',
+            t.Given_Time = '$transaction_time'
                 WHERE b.Beneficiary_Id = '$beneID'";
        
     }
@@ -100,10 +97,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             WHERE b.Beneficiary_Id = '$beneID'";
         }
         elseif ($Status == "For Re-schedule") {
-            date_default_timezone_set('Asia/Manila');
-            $Date = date('Y-m-d'); // Set the current date for Given_Sched
-            $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
-    
+            $transaction_time = $_POST['time'];
+            $Date = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
+         
             $Status = "For Validation";
             $query = "UPDATE financialassistance f
             INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
@@ -121,7 +117,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             $query = "UPDATE financialassistance f
                       INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
                       INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-                      SET t.Status = '$Status', t.Emp_ID='$EmpID'
+                      SET  t.Given_Sched = '$Date',
+        t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
                       WHERE b.Beneficiary_Id = '$beneID'";
         }
         // Construct the update query
@@ -166,7 +163,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     <body>
                     <p>Dear Mr./Ms./Mrs. $lastName,</p>
                     <p>I am writing to inform you that your request for scheduling has been approved.</p>
-                    <p>Your schedule has been set for $Date. We kindly expect your presence on the said date at $transaction_time</p>
+                    <p>Your schedule has been set for $Date at $transaction_time. We kindly expect your presence on the said date.</p>
                     <p> We kindly expect your presence on the said date.<br><br></p>
                     <p>   If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='http://localhost/public_html/requestresched.php'> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.<br> 
                    Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.</p>
@@ -175,7 +172,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     <p>Provincial Government of Bataan - Special Assistance Program</p>
                     </body>
                     </html>
-                  
                     ";
 
                 
@@ -194,6 +190,37 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                         <p>Provincial Government of Bataan - Special Assistance Program</p>
                         </body>
                         </html>
+                    ";
+                }elseif($status == 'For Payout') {
+                    $employeeName = $_POST['EmpName'];
+                    $mail->Subject = 'For Payout';
+                    $mail->Body = "
+                        <html>
+                        <body>
+                        <p>Dear Mr./Ms./Mrs. $lastName,</p>
+                        <p>Your assistance request is currently for payout on $Date at $transaction_time.</p>
+                        Kindly proceed to PGB-Hermosa Branch<br>
+                        <p>Thank you for your patience and cooperation.</p>
+                        <p>Best regards,</p>
+                        <p>$employeeName</p>
+                        <p>Provincial Government of Bataan - Special Assistance Program</p>
+                        </body>
+                        </html>
+                    ";
+                }elseif($status == 'For Re-schedule') {
+                    $employeeName = $_POST['EmpName'];
+                    $mail->Subject = 'For Payout';
+                    $mail->Body = "
+                        <html>
+                        <body>
+                        <p>Dear Mr./Ms./Mrs. $lastName,</p>
+                        <p>Your request for re-schedule has been accepted. Your new schedule is on $Date at $transaction_time.</p>
+                        <p> We kindly expect your presence on the said date.<br><br></p>
+<p>Best regards,<br>$employeeName</p>
+                   
+                    <p>Provincial Government of Bataan - Special Assistance Program</p>
+                    </body>
+                    </html>
                     ";
                 }
          
@@ -258,13 +285,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     <span id="calendar" style="color:white; margin-top:10px;"><?php echo $record['Date']; ?></span>
                 </div>
 
-               <!-- <div class="input-box">
-                    <span class="details" style="color:  #f5ca3b;">Time of Application:</span>
-                    <span id="time" style="color:  white;"><?php echo date("h:i A", strtotime($record['transaction_time'])); ?></span>
-                    <input type="hidden" required value="<?php echo $record['Beneficiary_ID']; ?>" name="Beneficiary_ID" disabled />
-               <input type="hidden" required value="<?php echo $record['Beneficiary_ID']; ?>" name="Beneficiary_ID" disabled />
-           
-                </div>-->
+         
             </div>
            
 
@@ -272,29 +293,21 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;">Full Name</span>
                     <input disabled type = "text" required name="EmpName" value = "<?php echo $record['Firstname'] . " " . $record['Lastname']; ?>" > 
-                </div>
+               
 
-                <div class="input-box">
-                    <span class="details">Transaction Type</span>
+                <div class="input-box" >
+                    <span class="details"style="color:  #f5ca3b;">Transaction Type</span>
                     <input disabled type = "text" required value = "<?php echo $record['TransactionType']; ?>">
                 </div>
 
                 <div class="input-box">
-                    <span class="details">Financial Assistance Type</span>
+                    <span class="details" style="color:  #f5ca3b;">Financial Assistance Type</span>
                     <input disabled type = "text" required value = "<?php echo $record['FA_Type']; ?>">
-                   <!-- <select name="FA_Type">
-                       
-                        $FA_type = array('Burial', 'Chemotherapy & Radiation', 'Dialysis', 'Medicine');
-                        foreach ($FA_type as $FA) {
-                            $selected = ($record['FA_Type'] == $FA) ? 'selected' : '';
-                            echo "<option $selected>$FA</option>";
-                        }
-                        ?>
-                    </select>-->
+                 
                 </div>
 
                 <div class="input-box">
-                    <span class="details">Status</span>
+                    <span class="details" style="color:  #f5ca3b;">Status</span>
                     <select id="status" name="Status" onchange="handleStatusChange()">
                         <?php
                         $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Payout' ,'For Payout','Request for Re-schedule','For Re-schedule', 'Done');
@@ -361,10 +374,18 @@ Please note that your reasons may need to be verified to avoid any inconvenience
              <div style = "color: white;">
                 <h3>Requirements for Burial Assistance Validation</h3>
                 <ul>
-                    <input type="checkbox" name="requirement" value="Death Certificate"> Death Certificate <br>
-                    <input type="checkbox" name="requirement" value="Barangay Certificate of Indigency"> Barangay Certificate of Indigency <br>
-                    <input type="checkbox" name="requirement" value="Request Letter"> Request Letter <br>
-                    <input type="checkbox" name="requirement" value="Photocopy of Beneficiary's ID"> Photocopy of Beneficiary's ID <br>
+                    <input type="checkbox" name="requirement" value="Registered Death Certificate (2 PHOTOCOPIES)"> Registered Death Certificate (2 PHOTOCOPIES) <br>
+                    <input type="checkbox" name="requirement" value="Funeral Contract with Balance (2 PHOTOCOPIES)"> Funeral Contract with Balance (2 PHOTOCOPIES) <br>
+                    <input type="checkbox" name="requirement" value="Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY)"> Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY) <br>
+                    <input type="checkbox" name="requirement" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia <br>
+                    <input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad <br>
+                    <input type="checkbox" name="requirement" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad) <br>
+                    </ul>
+                    <h3>SUPPORTING DOCUMENTS</h3>
+                    <ul style = "text-align: left; margin-left:60px">
+                    <input type="checkbox" name="requirement" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
+                    <input type="checkbox" name="requirement" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
+                    <input type="checkbox" name="requirement" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
                     </ul>
              </div>
             `;
@@ -372,26 +393,40 @@ Please note that your reasons may need to be verified to avoid any inconvenience
         } else if (faType === 'Chemotherapy & Radiation') {
             requirements.innerHTML = `
              <div style = "color: white;">
-                <h3>Requirements for Chemotherapy & Radiation Assistance Validation</h3>
+                <h3>REQUIREMENTS FOR CHEMOTHERAPY & RADIATION ASSISTANCE VALIDATIONS</h3>
                 <ul>
-                    <li><input type="checkbox" name="requirement" value="Medical Certificate"> Medical Certificate</li>
-                    <li><input type="checkbox" name="requirement" value="Barangay Certificate of Indigency"> Barangay Certificate of Indigency</li>
-                    <li><input type="checkbox" name="requirement" value="Request Letter"> Request Letter</li>
-                    <li><input type="checkbox" name="requirement" value="Photocopy of Beneficiary's ID"> Photocopy of Beneficiary's ID</li>
+                    <li><input type="checkbox" name="requirement" value="Medical Abstract"> Medical Abstract</li>
+                    <li><input type="checkbox" name="requirement" value="Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)"> Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)</li>
+                    <li><input type="checkbox" name="requirement" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)</li>
+                    <li><input type="checkbox" name="requirement" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia</li>
+                    <li><input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad</li>
                 </ul>
+                <h3>SUPPORTING DOCUMENTS</h3>
+                    <ul style = "text-align: left; margin-left:60px">
+                    <input type="checkbox" name="requirement" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
+                    <input type="checkbox" name="requirement" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
+                    <input type="checkbox" name="requirement" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
+                    </ul>
              </div>
             `;
         }
         else if (faType === 'Dialysis') {
             requirements.innerHTML = `
              <div style = "color: white;">
-                <h3>Requirements for Dialysis</h3>
+                <h3>REQUIREMENTS FOR DIALYSIS</h3>
                 <ul>
-                    <li><input type="checkbox" name="requirement" value="Medical Certificate"> Medical Certificate</li>
-                    <li><input type="checkbox" name="requirement" value="Barangay Certificate of Indigency"> Barangay Certificate of Indigency</li>
-                    <li><input type="checkbox" name="requirement" value="Request Letter"> Request Letter</li>
-                    <li><input type="checkbox" name="requirement" value="Photocopy of Beneficiary's ID"> Photocopy of Beneficiary's ID</li>
+                    <li><input type="checkbox" name="requirement" value="Medical Abstract"> Medical Abstract</li>
+                    <li><input type="checkbox" name="requirement" value="Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)"> Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)</li>
+                    <li><input type="checkbox" name="requirement" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)</li>
+                    <li><input type="checkbox" name="requirement" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia</li>
+                    <li><input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad</li>
                 </ul>
+                <h3>SUPPORTING DOCUMENTS</h3>
+                    <ul style = "text-align: left; margin-left:60px">
+                    <input type="checkbox" name="requirement" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
+                    <input type="checkbox" name="requirement" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
+                    <input type="checkbox" name="requirement" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
+                    </ul>
              </div>
             `;
         }
@@ -420,6 +455,7 @@ Please note that your reasons may need to be verified to avoid any inconvenience
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>Your assistance request is currently for payout on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
             at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
+            Kindly proceed to PGB-Hermosa Branch<br>
             Thank you for your patience and cooperation.<br><br>
             Best regards,<br>
             <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
@@ -430,13 +466,13 @@ Please note that your reasons may need to be verified to avoid any inconvenience
         emailFormat.innerHTML = `
         <div style = "color: white;">
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-            <p>Your assistance request for re-schedule has been accepted. Your new schedule is on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
+            <p>Your request for re-schedule has been accepted. Your new schedule is on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
             at <input type="time" id="time" name="time"  />.<br>
-            Thank you for your patience and cooperation.<br><br>
+            We kindly expect your presence on the said date.<br><br>
             Best regards,<br>
             <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
             Provincial Government of Bataan - Special Assistance Program</p>
-        </div>
+         </div> 
         `;
 }
       }

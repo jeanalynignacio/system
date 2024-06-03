@@ -179,7 +179,7 @@ if($result = mysqli_fetch_assoc($query)){
 
         <form action="applyingoptions.php" method="POST" class="service">
           <input type="hidden" name="serviceType" value="hospitalbills">
-          <button type="submit" class="service-button">
+          <button type="submit" class="service-button" disabled style="cursor:default;">
             <img src="images/hospital-bills.png" style="width: 72px; height: auto; margin-top: 20px; margin-bottom: -15px;">
             <h3>Hospital Bills</h3>
             <p style="font-size: 13px">The service goal is to reduce hospital costs so that people can get the medical treatment they need without worrying about money. The service that can help with hospital bills is a support for people and families in the Philippines who are having a hard time paying for medical treatment and hospitalizations in hospitals.</p>
@@ -284,7 +284,7 @@ if($result = mysqli_fetch_assoc($query)){
     </button>
         </form>
  
-
+        </div>
 <h1 class ="head2"> Partnered Hospitals outside Bataan </h1>
 
 <div class="outsideHospital">
@@ -365,7 +365,8 @@ if($result = mysqli_fetch_assoc($query)){
     </button>
         </form>
  
-
+   
+    </div>
 <div class="footer" id=footer>
         <h1> Help us improve the PGB-SAP <br/> <input type="button" value="Answer Survey Here" class="styled"/></h1>
          <div class="Location">
