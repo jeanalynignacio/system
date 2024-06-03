@@ -9,6 +9,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 if(isset($_POST['Beneficiary_Id'])) {
     // Retrieve the Beneficiary_Id from the URL parameter
     $beneID = $_POST['Beneficiary_Id'];
+    $Status = $_POST['Status'];
   } else {
     echo "User ID is not set.";
 }
@@ -332,7 +333,7 @@ $Status = $_POST['Status'];
 
         <div class="user-details">
                 <div class="input-box">
-                    <span class="details"> Types of Laboratory </span>
+                    <span class="details" style="color:  #f5ca3b;"> Types of Laboratory </span>
                     <input disabled type="text" required value="<?php echo $record['LabType']; ?>" name="LabType"/>
                 </div>
 

@@ -270,17 +270,29 @@ $totalEntriesSTAT = $row['totalEntriesSTAT'];
                         </tr>
                     </thead>
                     <tbody>
+                   
                         <?php
+                   
+                       
                         while($row = $transactionResult->fetch_assoc()) {
+                            $beneficiary_id = $row["Beneficiary_Id"];
+                            $SQL = "SELECT * FROM beneficiary WHERE Beneficiary_Id='$beneficiary_id'";
+                            $result = mysqli_query($con, $SQL);
+                        
+                            if ($result) {
+                                $beneficiary = $result->fetch_assoc();
+                                
+                        
                             echo "<tr>
                             <td>". $row["Date"] ."</td>
                             <td>". $row["transaction_time"] ."</td>
-                            <td>". $row["Beneficiary_Id"] ."</td>
+                            <td>". $beneficiary["Lastname"]  . ", " . $beneficiary["Firstname"] . " </td>
                             <td>". $row["TransactionType"] ."</td>
                             <td>". $row["AssistanceType"] ."</td>
                             <td>". $row["Status"] ."</td>
                             </tr>";
                         }
+                    }
                         ?>
                     </tbody>
                 </table>

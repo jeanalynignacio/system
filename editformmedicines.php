@@ -479,7 +479,7 @@ $Status = $_POST['Status'];
                 document.getElementById("confirmed").value = "no";
             }
         }
-    
+        window.onload = handleStatusChange;
     </script>
 
 </body>
