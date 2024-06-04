@@ -184,9 +184,8 @@ require 'PHPMailer/src/SMTP.php';
         //Content
         $mail->isHTML(true); // Set email format to HTML
         $mail->Subject = 'Email Verification';
-        $mail->Body = "Good Day! this is your veri code
-            $verification_code 
-             <p> If you did not request this email, do not click the link. Please ignore this email.</p>";
+        $mail->Body = "Good Day! this is your verification code: $verification_code 
+             <p> If you did not request for this code. Please ignore this email.</p>";
           
     
        if($mail->send()){

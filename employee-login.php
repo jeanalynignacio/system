@@ -24,29 +24,31 @@
                            if ($row['status'] == 1){
                                 // Login successful   $_SESSION['Email'] = $Email;
                                 if ($row["role"] == "Admin") {
-                                   echo '<body>
-                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                        <script>
-                        swal("Log in successful!","","success")
-                        .then((value) => {
-                            if (value) {
-                                window.location.href = "dashboard.php";
-                            }
-                        });
-                        </script>
-                        </body>';
+                                    echo '<body>
+                                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                                    <script>
+                                    swal("Log in successful!", "", "success")
+                                    </script>';
+                                      echo '<script>
+                                     setTimeout(function(){
+                                        window.location.href="dashboard.php";
+                                    } , 2000);
+                                  </script>
+                                  </body>';
+                                  
                                 } else {
-                                echo '<body>
-                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                        <script>
-                        swal("Log in successful!","","success")
-                        .then((value) => {
-                            if (value) {
-                                window.location.href = "employee_dashboard.php";
-                            }
-                        });
-                        </script>
-                        </body>';
+                                    
+                                  echo '<body>
+                                  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                                  <script>
+                                  swal("Log in successful!", "", "success")
+                                  </script>';
+                                    echo '<script>
+                                   setTimeout(function(){
+                                      window.location.href="dashboard.php";
+                                  } , 5000);
+                                </script>
+                                </body>'; 
                                 }
                             
                            } else{
@@ -64,19 +66,19 @@
                                 if(is_array($row) && !empty($row)){
                                     $_SESSION['Emp_ID'] = $row['Emp_ID'];
                                
-                                 echo '<body>
-                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                        <script>
-                        swal("Please add your Email","","success")
-                        .then((value) => {
-                            if (value) {
-                                window.location.href = "addingemail.php";
-                            }
-                        });
-                        </script>
-                        </body>';
+                                echo '<body>
+                                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                                <script>
+                                swal("Please add your Email", "", "info")
+                                </script>';
+                                echo '<script>
+                                setTimeout(function(){
+                                    window.location.href="addingemail.php";
+                                }, 3000);
+                                </script>
+                                </body>';
                               }
-                               
+               
                       }
                                
                       }  else {
@@ -103,33 +105,34 @@
                             $_SESSION['username'] = $row['username'];
                             $_SESSION['password'] = $row['password_hash'];
                             $_SESSION['Emp_ID'] = $row['Emp_ID'];
-                            $_SESSION['Lastname'] = $row['Lastname'];
+                            $_SESSION['valid'] = $row['Lastname'];
                           
-                        if ($row["role"] == "Admin") {
-                           echo '<body>
+                            if ($row["role"] == "Admin") {
+                                echo '<body>
                                 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                                 <script>
-                                swal("Log in successful!","","success")
-                                .then((value) => {
-                            if (value) {
-                                window.location.href = "dashboard.php";
-                            }
-                        });
-                        </script>
-                        </body>';
+                                swal("Log in successful!", "", "success")
+                                </script>';
+                                  echo '<script>
+                                 setTimeout(function(){
+                                    window.location.href="dashboard.php";
+                                } , 5000);
+                              </script>
+                              </body>';
                               
                             } else {
-                         echo '<body>
-                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                        <script>
-                        swal("Log in successful!","","success")
-                        .then((value) => {
-                            if (value) {
-                                window.location.href = "dashboard.php";
-                            }
-                        });
-                        </script>
-                        </body>';
+
+                              echo '<body>
+                              <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                              <script>
+                              swal("Log in successful!", "", "success")
+                              </script>';
+                                echo '<script>
+                               setTimeout(function(){
+                                  window.location.href="dashboard.php";
+                              } , 5000);
+                            </script>
+                            </body>'; 
                             }
                           }
                         else {
@@ -150,7 +153,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit Form</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="employee-login.css" />
 </head>
 <style>
@@ -165,45 +167,27 @@
         <form action="#" method="POST">
             <div class="user-details">
                 <div class="input-box">
-                    <span class="details" style="margin-top:30px;"> Username </span>
+                    <span class="details"> Username </span>
                     <input type="text" name="username" id="username" autocomplete="off" value="<?php echo $_POST['username'] ?? ''; ?>" required>
                     <p style="color:red;"><?php echo $userError ?></p>  
                 </div>
             </div>
-           
-            <div class="field input input-container">
-                    <label for="password">Password</label>
-                    <input type="password" name="password" id="password" autocomplete="off" value="<?php echo $_POST['password'] ?? ''; ?>" required > 
-                    <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility()"></i>
+            <div class="user-details">
+                <div class="input-box">
+                    <span class="details"> Password </span>
+                    <input type="password" name="password" id="password" autocomplete="off" required>  
                     <p style="color:red;"><?php echo $passError ?></p>                    
                 </div>
-                <?php if(isset($logError)): ?>
-            <div class="message">
-                <p style="color:red; margin-top:20px;"><?php echo $logError; ?></p>
             </div>
-            <?php endif; ?>
-
-
             <div class="button">
                 <input type="submit" class="btn" name="submit" value="Login" required>  
             </div>
-           
+            <?php if(isset($logError)): ?>
+            <div class="message">
+                <p style="color:red;"><?php echo $logError; ?></p>
+            </div>
+            <?php endif; ?>
         </form>
     </div>
-    <script>
-        function togglePasswordVisibility() {
-            const passwordField = document.getElementById('password');
-            const togglePassword = document.querySelector('.toggle-password');
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                togglePassword.classList.remove('fa-eye');
-                togglePassword.classList.add('fa-eye-slash');
-            } else {
-                passwordField.type = 'password';
-                togglePassword.classList.remove('fa-eye-slash');
-                togglePassword.classList.add('fa-eye');
-            }
-        }
-    </script>
 </body>
 </html>

@@ -91,7 +91,9 @@ if(isset($_SESSION['Emp_ID'])){
                     // Content
                     $mail->isHTML(true); // Set email format to HTML
                     $mail->Subject = 'Email Verification';
-                    $mail->Body = "Click the following link to verify your email: <a href='http://localhost/public_html/verifyEmpEmail.php?Email=$Email&code=$verification_code'> Verify </a>";
+                    $mail->Body = "Good Day! this is your verification code: $verification_code 
+                    <p> If you did not request for this code. Please ignore this email.</p>";
+                 
     
                     if($mail->send()){
                         echo '<body>
@@ -100,7 +102,7 @@ if(isset($_SESSION['Emp_ID'])){
                         swal("Email added successfully! Please check your email to verify")
                         .then((value) => {
                             if (value) {
-                                window.location.href = "employeeRecords.php";
+                                window.location.href = "verifyEmpEmail.php";
                             }
                         });
                         </script>

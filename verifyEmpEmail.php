@@ -1,66 +1,121 @@
 <?php 
-    session_start();
+session_start();
+include("php/config.php");
 
-    include("php/config.php");
-if(isset($_GET['Email']) && isset($_GET['code'])){
-    $query = "SELECT * FROM employees where Email='$_GET[Email]' AND verification_code='$_GET[code]'";
+if (isset($_POST['submit'])) {
+    $code =  $_POST['code'];
+  
+    $query = "SELECT * FROM employees WHERE verification_code='$code'";
     $result = mysqli_query($con, $query);
-    if($result)
-    {
-        if(mysqli_num_rows($result)==1)
-        {                                                                                                                   
-        $result_fetch=mysqli_fetch_assoc($result);
-        if($result_fetch['status']==0)
-        {
-            $update = "UPDATE employees SET status = 1 WHERE Email='$result_fetch[Email]'";
-            if(mysqli_query($con, $update)){
-              
- echo '<body>
-                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                        <script>
-                        swal("Registration successful!", "You may now login","","success")
-                        .then((value) => {
-                            if (value) {
-                                window.location.href = "login.php";
-                            }
-                        });
+    if ($result) {
+        if (mysqli_num_rows($result) == 1) {                                                                                                                   
+            $result_fetch = mysqli_fetch_assoc($result);
+            if ($result_fetch['status'] == 0) {
+                $update = "UPDATE employees SET status = 1 WHERE verification_code='$code'";
+                if (mysqli_query($con, $update)) {
+                    echo '<body>
+                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script>
+                    swal("Email verified successfully!", "", "success")
+                    </script>';
+                      echo '<script>
+                     setTimeout(function(){
+                        window.location.href="employee-login.php";
+                    } , 2000);
+                  </script>
+                  </body>'; 
+                } else {
+                   
+                          echo '<body>
+                          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                          <script>
+                          swal("An error occurred while updating the status.", "Please try again later.", "error")
+                          </script>';
+                            echo '<script>
+                           setTimeout(function(){
+                              window.location.href="employee-login.php";
+                          } , 2000);
                         </script>
-                        </body>'; 
- 
-} else {
-    echo '<div class="alert alert-warning" role="alert">
-    An error occurred while updating the status. Please try again later.
-    </div>';
-}
-} else {
-    echo '<!DOCTYPE html>
-    <html>
-    <head>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    </head>
-    <body>
-        <div class="alert alert-warning" role="alert">
-            Your account is already verified. You can <a href="employee-login.php" class="alert-link">login here</a>.
-        </div>
-    </body>
-    </html>';
-}
-} else {
-echo '<div class="alert alert-danger" role="alert">
-Invalid verification link or account already verified. Please <a href="employee-login.php" class="alert-link">login here</a>.
-</div>';
-}
-} else {
-echo '<div class="alert alert-danger" role="alert">
-Email verification failed! Please try again later.
-</div>';
-}
-} else {
-echo '<div class="alert alert-danger" role="alert">
-Invalid request. Please check your verification link.
-</div>';
+                        </body>';
+                }
+            } else {
+                echo '<body>
+                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                <script>
+                swal(" Your account is already verified.", "You can now log in.", "info")
+                </script>';
+                  echo '<script>
+                 setTimeout(function(){
+                    window.location.href="employee-login.php";
+                } , 2000);
+              </script>
+              </body>';
+            }
+        } else {
+            echo '<body>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script>
+            swal(" Invalid verification code", "Please enter correct verification code.", "info")
+            </script>';
+              echo '<script>
+             setTimeout(function(){
+                window.location.href="verifyEmpEmail.php";
+            } , 2000);
+          </script>
+          </body>';
+        }
+    } else {
+        echo '<div class="alert alert-danger" role="alert">
+                Email verification failed! Please try again later.
+              </div>';
+              echo '<body>
+              <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+              <script>
+              swal("Email verification failed!", "Please try again later.", "error")
+              </script>';
+                echo '<script>
+               setTimeout(function(){
+                  window.location.href="employee-login.php";
+              } , 2000);
+            </script>
+            </body>';
+    }
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>Verification</title>
+</head>
+<body>
+    <div class="container">
+        <div class="box form-box">
+            <center><header>Verification</header></center>
+            <form id="" action="" method="post">
+                <div class="field input">
+                    <label for="username">Enter verification code here</label>
+                    <input type="text" required name="code" id="code" autocomplete="off">
+                     
+                </div>
+                
+                <div class="field">
+                    <input type="submit" class="btn" name="submit" value="Verify" required >  
+                    
+                </div>
+                <?php if(isset($errorMessage)): ?>
+                <div class="message">
+                    <p><?php echo $errorMessage ?></p>
+                </div>
+                <?php endif; ?>
+               
+            </form>
+        </div>
+    </div>
+   
+</body>
+</html>

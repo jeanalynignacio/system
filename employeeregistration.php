@@ -33,7 +33,7 @@
                     $Errors = "";
 
                     $otp_str = str_shuffle("0123456789");
-                    $verification_code= substr($otp_str, 0, 7);
+                    $verification_code= substr($otp_str, 0, 6);
                  
                     if(isset($_POST['submit'])){
                     // receive all input values from the form
@@ -41,7 +41,7 @@
                
                     $Lastname = $_POST['Lastname'];
                     $Firstname = $_POST['Firstname'];
-                     $Email = NULL;
+                     $Email = '';
                     $Username = $_POST['Username'];
                     $Password = $_POST['Password'];
                     $role = $_POST['role'];
@@ -80,21 +80,20 @@
 
 
 // Use the complete user ID in the INSERT query
-$query ="INSERT INTO employees( Lastname, Firstname, Username, password_hash,role,verification_code,status) VALUES ('$Lastname', '$Firstname', '$Username', '$Password','$role','$verification_code',0)";
+$query ="INSERT INTO employees( Lastname, Firstname, Username,Email, password_hash,role,verification_code,status) VALUES ('$Lastname', '$Firstname', '$Username','$Email', '$Password','$role','$verification_code',0)";
 if(mysqli_query($con, $query)){
   
-    echo '<body>
-     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-       <script>
-        swal("Employee account added successfully!", "Please verify your email.","","success")
-        .then((value) => {
-           if (value) {
-            window.location.href = "employeeRecords.php";
-         }
-     });
+  echo '<body>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script>
+  swal("Employee account added successfully", "", "success")
+  </script>';
+    echo '<script>
+   setTimeout(function(){
+      window.location.href="employeeRecords.php";
+  } ,3000);
 </script>
-</body>'; 
- 
+</body>';
 } else {
   // If the query fails, push the error message into the $errors array
   array_push($errors, mysqli_error($con));

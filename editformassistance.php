@@ -78,6 +78,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             $Date = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
          
             $Status = "For Validation";
+              $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
+            $overlapResult = mysqli_query($con, $overlapQuery);
+
+            if(mysqli_num_rows($overlapResult) > 0) {
+                echo "The selected date and time are already booked. Please choose a different time.";
+                exit();
+            }
             $query = "UPDATE financialassistance f
             INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
             INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
@@ -89,6 +96,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             $Date = date('Y-m-d'); // Set the current date for Given_Sched
             $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
             $Status = "For Validation";
+
+            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
+            $overlapResult = mysqli_query($con, $overlapQuery);
+
+            if(mysqli_num_rows($overlapResult) > 0) {
+                echo "The selected date and time are already booked. Please choose a different time.";
+                exit();
+            }
             $query = "UPDATE financialassistance f
             INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
             INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
@@ -100,6 +115,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             $Date = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
          
             $Status = "For Validation";
+
+            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
+            $overlapResult = mysqli_query($con, $overlapQuery);
+
+            if(mysqli_num_rows($overlapResult) > 0) {
+                echo "The selected date and time are already booked. Please choose a different time.";
+                exit();
+            }
             $query = "UPDATE financialassistance f
             INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
             INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
@@ -113,6 +136,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             $Date = date('Y-m-d'); // Set the current date for Given_Sched
             $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
     
+            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
+            $overlapResult = mysqli_query($con, $overlapQuery);
+
+            if(mysqli_num_rows($overlapResult) > 0) {
+                echo "The selected date and time are already booked. Please choose a different time.";
+                exit();
+            }
             $query = "UPDATE financialassistance f
                       INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
                       INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
