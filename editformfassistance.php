@@ -32,7 +32,7 @@ if(isset($_SESSION['Emp_ID'])) {
               FROM beneficiary b
               INNER JOIN transaction t ON b.Beneficiary_Id = t.Beneficiary_Id
               INNER JOIN financialassistance f ON b.Beneficiary_Id = f.Beneficiary_ID
-              WHERE b.Beneficiary_Id = '$beneID' && f.FA_Type ='Burial'";
+              WHERE b.Beneficiary_Id = '$beneID'";
   
       $result = mysqli_query($con, $SQL);
      
@@ -73,7 +73,7 @@ if(isset($_SESSION['Emp_ID'])) {
            
             t.Status = '$Status'
         
-        WHERE b.Beneficiary_Id = '$beneID' && f.FA_Type ='Burial'";
+        WHERE b.Beneficiary_Id = '$beneID'";
    
   }
   elseif ($Status == "For Schedule") {
@@ -91,7 +91,7 @@ if(isset($_SESSION['Emp_ID'])) {
      
       t.Status = '$Status'
   
-  WHERE b.Beneficiary_Id = '$beneID' && f.FA_Type ='Burial'";
+  WHERE b.Beneficiary_Id = '$beneID'";
 
   }
   elseif ($Status == "Pending for Payout") {
@@ -110,7 +110,7 @@ if(isset($_SESSION['Emp_ID'])) {
            
             t.Status = '$Status'
         
-        WHERE b.Beneficiary_Id = '$beneID' && f.FA_Type ='Burial'";
+        WHERE b.Beneficiary_Id = '$beneID' ";
    
   }
   elseif ($Status == "For Re-schedule") {
@@ -127,7 +127,7 @@ if(isset($_SESSION['Emp_ID'])) {
      
       t.Status = '$Status'
   
-  WHERE b.Beneficiary_Id = '$beneID' && f.FA_Type ='Burial'";
+  WHERE b.Beneficiary_Id = '$beneID' ";
 
   }
   
@@ -146,7 +146,7 @@ if(isset($_SESSION['Emp_ID'])) {
      
       t.Status = '$Status'
   
-  WHERE b.Beneficiary_Id = '$beneID' && f.FA_Type ='Burial'";
+  WHERE b.Beneficiary_Id = '$beneID' ";
 
   }
   // Construct the update query
@@ -261,7 +261,7 @@ if(isset($_SESSION['Emp_ID'])) {
                    swal("Update and email send successful","","success")
                    .then((value) => {
                        if (value) {
-                           window.location.href = "fa-burial.php";
+                           window.location.href = "assistance.php";
                        }
                    });
                    </script>
@@ -276,7 +276,7 @@ if(isset($_SESSION['Emp_ID'])) {
        swal("Updated successfully","","success")
        .then((value) => {
            if (value) {
-               window.location.href = "fa-burial.php";
+               window.location.href = "assistance.php";
            }
        });
        </script>
@@ -284,7 +284,7 @@ if(isset($_SESSION['Emp_ID'])) {
   
    } else {
        echo "Error updating records: " . mysqli_error($con);
-       header("Location: fa-burial.php");
+       header("Location: assistance.php");
        exit();
    }
   }

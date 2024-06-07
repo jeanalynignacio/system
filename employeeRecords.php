@@ -36,7 +36,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 1; // Get current page nu
 $offset = ($current_page - 1) * $records_per_page;
 
 
-$sql = "SELECT COUNT(*) AS totalEntries FROM employees";
+$sql = "SELECT COUNT(*) AS totalEntries FROM employees where role='Community Affairs Officer' ";
 $result = $con->query($sql);
 
 if (!$result) {
@@ -53,12 +53,13 @@ $recordsPerPage = 10;
 $totalPages = ceil($totalEntries / $recordsPerPage);
 $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($currentPage - 1) * $recordsPerPage;
-$sql = "SELECT * FROM employees where role='Employee'  LIMIT $recordsPerPage OFFSET $offset";
+$sql = "SELECT * FROM employees where role='Community Affairs Officer'  LIMIT $recordsPerPage OFFSET $offset";
 $transactionResult = $con->query($sql);
 
 if (!$transactionResult) {
     die("Invalid query: " . $con->error);
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -312,6 +313,7 @@ return month + " " + day + ", " + year;
 }
 // Update the current date element with the current date
 document.getElementById("currentDate").innerText = getCurrentDate();
+
 function search() {
 // Get the search input value
 var input = document.getElementById("Search").value.toUpperCase();
@@ -323,40 +325,22 @@ for (var i = 0; i < rows.length; i++) {
 var row = rows[i];
 // Get the cells containing the Date, Beneficiary ID, Name, City, Assistance Type, Status, Schedule, and Transaction Type
 
-var dateCell = row.cells[0];
-var transaction_timeCell = row.cells[1];
-var beneficiaryIdCell = row.cells[2];
-var nameCell = row.cells[3];
-var cityCell = row.cells[4];
-var assistanceTypeCell = row.cells[5];
-var statusCell = row.cells[6];
-var schedCell = row.cells[7];
-var transactionTypeCell = row.cells[8];
-if (dateCell && transaction_timeCell && beneficiaryIdCell && nameCell && cityCell && assistanceTypeCell && statusCell && schedCell && transactionTypeCell) {
+var lnamecell = row.cells[0];
+var fnamecell = row.cells[1];
+var emailcell = row.cells[2];
+if (lnamecell && fnamecell && emailcell ) {
 
 // Get the text content of the cells and convert them to uppercase
 
-var dateText = dateCell.textContent.toUpperCase();
-var transaction_timeText =
-transaction_timeCell.textContent.toUpperCase();
-var beneficiaryIdText =
-beneficiaryIdCell.textContent.toUpperCase();
+var lnametext = lnamecell.textContent.toUpperCase();
+var fnametext =
+fnamecell.textContent.toUpperCase();
+var emailtext =
+emailcell.textContent.toUpperCase();
 
-var nameText = nameCell.textContent.toUpperCase();
-var cityText = cityCell.textContent.toUpperCase();
-var assistanceTypeText =
-assistanceTypeCell.textContent.toUpperCase();
-
-var statusText = statusCell.textContent.toUpperCase();
-var schedText = schedCell.textContent.toUpperCase();
-var transactionTypeText =
-transactionTypeCell.textContent.toUpperCase();
 
 // Check if the search input value matches any of the columns
-if (dateText.indexOf(input) > -1 || transaction_timeText.indexOf(input) > -1 || beneficiaryIdText.indexOf(input) > -1
-|| nameText.indexOf(input) > -1 || cityText.indexOf(input) > -1 ||
-assistanceTypeText.indexOf(input) > -1 || statusText.indexOf(input) > -1 ||
-schedText.indexOf(input) > -1 || transactionTypeText.indexOf(input) > -1) {
+if (lnametext.indexOf(input) > -1 || fnametext.indexOf(input) > -1 || emailtext.indexOf(input) > -1) {
 // If there's a match, display the table row
 row.style.display = "";
 } else {

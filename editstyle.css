@@ -108,6 +108,71 @@ body {
 .btn:hover {
   background: rgb(83, 202, 83);
 }
+.cancelbtn{
+height: 35px;
+  width: 200px;
+  background: rgb(75, 75, 75);
+  border: 0;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 30px;
+  margin-left: 140%;
+  
+}
+
+/* button */
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.button-row input,
+.cancel input  {
+  height: 35px;
+  width: 200px;
+  outline: none;
+  color: #fdfdfd;
+  border: none;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  border-radius: 5px;
+  font-family: arial;
+  cursor: pointer;
+  margin-top: 30px;
+
+ 
+
+}
+
+
+.container .button-row input[type="submit"] {
+  background: darkgreen;
+  
+}
+.button-row input[type="button"] {
+  background-color: #727272;
+  margin-left: 20px;
+
+}
+.button-row input[type="submit"]:hover {
+  background: rgb(83, 202, 83);}
+
+.button-row input[type="button"]:hover {
+  background-color: #b9b9b9; /* Change background color on hover */
+}
+/* Hide the cancel and submit buttons initially */
+#cancel.hidden, #submit.hidden {
+  display: none;
+}
+
+.cancelbtn:hover {
+  background: rgb(116, 116, 116);
+}
 
 .error {
   text-align: center;
@@ -117,7 +182,16 @@ body {
   border: 1px solid #313131;
   border-radius: 5px;
   margin-bottom: 10px;
-  color: red;
+  color: rgb(146, 16, 16);
+}
+
+.toggle-password {
+  position: fixed;
+  right: 5px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  margin-right: 200px;
+  margin-top: 35px;
 }
 
 #barangayDropdown {

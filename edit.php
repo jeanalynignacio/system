@@ -35,13 +35,14 @@
         echo "User ID is not set.";
     }
     
-    
+  
   $SQL="SELECT * FROM users WHERE Id='$Id'";
+  $errors = []; // Initialize $errors as an empty array
 
   $result=mysqli_query($con,$SQL);
    $res_ID= $result->fetch_assoc();
-   
-                
+   $passError = "";
+   $Errors = ""; 
              if(isset($_POST['update'])) {
     
     if(isset($_POST['confirmed']) && $_POST['confirmed'] === "yes") {
@@ -51,7 +52,7 @@
         $Middlename=$_POST['Middlename'];
         $Birthday=$_POST['Birthday'];
         $Contactnumber=$_POST['Contactnumber'];
-        $Province=$_POST['Province'];
+      
         $CityMunicipality=$_POST['CityMunicipality'];
         $Barangay=$_POST['Barangay'];
         $HousenoStreet=$_POST['HousenoStreet'];
@@ -59,7 +60,16 @@
         $Username=$_POST['Username'];
         $Password=$_POST['Password'];
 
-        $query = "UPDATE users SET Lastname='$Lastname', Firstname='$Firstname', Middlename='$Middlename', Birthday='$Birthday', Contactnumber='$Contactnumber', Province='$Province', CityMunicipality='$CityMunicipality', Barangay='$Barangay', HousenoStreet='$HousenoStreet', Username='$Username', Password='$Password' WHERE Id='$userID'";
+
+        if(empty($Password))
+        {
+            array_push($errors, $passError = "Password is required");
+        } elseif (!preg_match('/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9]).{8,}$/', $Password)) {
+            array_push($errors, $passError = "Password must be at least 8 characters long and contain at least one number, one uppercase letter, one lowercase letter, and one special character.");
+        }
+
+        if (empty($errors)) {
+        $query = "UPDATE users SET Lastname='$Lastname', Firstname='$Firstname', Middlename='$Middlename', Birthday='$Birthday', Contactnumber='$Contactnumber',  CityMunicipality='$CityMunicipality', Barangay='$Barangay', HousenoStreet='$HousenoStreet', Username='$Username', Password='$Password' WHERE Id='$userID'";
 
         $result2=mysqli_query($con,$query);
 
@@ -94,6 +104,7 @@
         }
     } 
 }
+             }
 ?>
 
 
@@ -102,6 +113,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+   
     <link rel="stylesheet" href="editstyle.css">
     <title>Change Profile</title>
 </head>
@@ -147,7 +161,7 @@
                 </div>
                 <div class="field input">
                     <label for = "Province">Province</label>
-                    <input type="text" name="Province" id="Province" value="Bataan"value="<?php echo "{$res_ID['Middlename']}"; ?>" required>
+                    <input type="text" disabled name="Province" id="Province" value="Bataan"value="<?php echo "{$res_ID['Middlename']}"; ?>" required>
                 </div>
                 </div>
                 <div class = "column">
@@ -280,17 +294,29 @@
                 <div class="field input">
                     <label for = "Password">Password</label>
                     <input type="password" name="Password" id="Password" autocomplete="off"value="<?php echo "{$res_ID['Password']}"; ?>" required>           
+                    <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility()"></i>
+                  
+                    <p style="color:  rgb(146, 16, 16); font-size: 18px;"><?php echo $passError ?></p>                    
+              
                 </div>
                 </div>
                 <input type="hidden" name="confirmed" id="confirmed" value="no">
-                <div class="field">
+                <div class="button-row">
+                <input type="button" class="cancelbtn"  name="update" value="Cancel" id="cancel" onclick="cancelEdit()">
+          
                 <input type="submit" class="btn"  name="update" value="Update" onclick="showConfirmation()" required>
+               
             </form>
         </div>
     </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+   
     <script>
-  
+  function cancelEdit() {
+            // Redirect to the previous page <script type="text/javascript">
+            window.history.back();
+        }
 
     function validateForm() {
     // Perform form validation here
@@ -304,6 +330,20 @@
     });
     return isValid;
 }
+
+function togglePasswordVisibility() {
+            const passwordField = document.getElementById('Password');
+            const togglePassword = document.querySelector('.toggle-password');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                togglePassword.classList.remove('fa-eye');
+                togglePassword.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'Password';
+                togglePassword.classList.remove('fa-eye-slash');
+                togglePassword.classList.add('fa-eye');
+            }
+        }
 
 function showConfirmation() {
     if (!validateForm()) {

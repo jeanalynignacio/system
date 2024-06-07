@@ -98,9 +98,8 @@ if($result = mysqli_fetch_assoc($query)){
 <div class="sub-menu-wrap" id="subMenu">
     <div class="sub-menu">
         <div class="user-info">
-             <img src="profile_images/<?php echo $res_profile; ?>" style="height: 50px; width: 50px;" alt="fas fa-user">
-
-            <h2><?php echo $res_Fname; ?>, <?php echo $res_Lname; ?></h2>
+        <img src="images/profile.png">
+            <h2><?php echo $res_Fname; ?> <?php echo $res_Lname; ?></h2>
   
             </div>
             <hr>

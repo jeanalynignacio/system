@@ -57,18 +57,19 @@ if(isset($_POST['submit'])) {
             <?php foreach($res_data as $record): ?>
                 <div class="input-box">
                     <span class="details"style="font-size:20px;">Last Name:  </span>
-                    <span><?php echo $record['Lastname']; ?></span>
-                    <input type="hidden" style="font-size:15px;"name="Lastname" value="<?php echo $record['Lastname']; ?>">
+                   z
+                   <input type="text"  class="details"name="Lastname" value="<?php echo $record['Lastname']; ?>">
+                
                 </div>
                 <div class="input-box">
                     <span class="details" style="font-size:20px;">First Name:  </span>
-                    <span><?php echo $record['Firstname']; ?></span>
-                    <input type="hidden" name="Firstname" value="<?php echo $record['Firstname']; ?>">
+                  
+                    <input type="text" name="Firstname" value="<?php echo $record['Firstname']; ?>">
                 </div>
                 <div class="input-box">
                     <span class="details" style="font-size:20px;">Email:  </span>
-                    <span style="font-size:20px;"><?php echo $record['Email']; ?></span>
-                    <input type="hidden" name="Email" value="<?php echo $record['Email']; ?>">
+                   
+                    <input type="text" name="Email" value="<?php echo $record['Email']; ?>">
                 </div>
                 <div class="input-box" >
                     <span class="details"style="font-size:20px;">Role:  </span>

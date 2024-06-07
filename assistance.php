@@ -212,49 +212,58 @@ while ($row = $result->fetch_assoc()) {
 <script type = "text/javascript">
 
 
-
 function search() {
-    // Get the search input value
-    var input = document.getElementById("Search").value.toUpperCase();
-    // Get the table rows
-    var rows = document.querySelectorAll(".table--container table tbody tr");
+// Get the search input value
+var input = document.getElementById("Search").value.toUpperCase();
+// Get the table rows
+var rows = document.querySelectorAll(".table--container table tbody tr");
 
-    // Loop through all table rows
-    for (var i = 0; i < rows.length; i++) {
-        var row = rows[i];
-        // Get the cells containing the Date, Beneficiary ID, Name, City, Assistance Type, Status, Schedule, and Transaction Type
-        var dateCell = row.cells[0];
-        var transation_timeCell = row.cells[1];
-        var beneficiaryIdCell = row.cells[2];
-        var nameCell = row.cells[3];
-        var cityCell = row.cells[4];
-        var schedCell = row.cells[5];
-        var transactionTypeCell = row.cells[6];
-        var assistanceTypeCell = row.cells[7];
-        var statusCell = row.cells[8];
-        
-        if (dateCell && transaction_timeCell && beneficiaryIdCell && nameCell && cityCell && assistanceTypeCell && statusCell && schedCell && transactionTypeCell) {
-            // Get the text content of the cells and convert them to uppercase
-            var dateText = dateCell.textContent.toUpperCase();
-            var transaction_timeText = transactin_timeCell.textContent.toUpperCase();
-            var beneficiaryIdText = beneficiaryIdCell.textContent.toUpperCase();
-            var nameText = nameCell.textContent.toUpperCase();
-            var cityText = cityCell.textContent.toUpperCase();
-            var assistanceTypeText = assistanceTypeCell.textContent.toUpperCase();
-            var statusText = statusCell.textContent.toUpperCase();
-            var schedText = schedCell.textContent.toUpperCase();
-            var transactionTypeText = transactionTypeCell.textContent.toUpperCase();
+// Loop through all table rows
+for (var i = 0; i < rows.length; i++) {
+var row = rows[i];
+// Get the cells containing the Date, Beneficiary ID, Name, City, Assistance Type, Status, Schedule, and Transaction Type
 
-            // Check if the search input value matches any of the columns
-            if (dateText.indexOf(input) > -1 || transaction_timeText.indexOf(input) > -1 || beneficiaryIdText.indexOf(input) > -1 || nameText.indexOf(input) > -1 || cityText.indexOf(input) > -1 || assistanceTypeText.indexOf(input) > -1 || statusText.indexOf(input) > -1 || schedText.indexOf(input) > -1 || transactionTypeText.indexOf(input) > -1) {
-                // If there's a match, display the table row
-                row.style.display = "";
-            } else {
-                // If there's no match, hide the table row
-                row.style.display = "none";
-            }
-        }
-    }
+var dateCell = row.cells[0];
+var transaction_timeCell = row.cells[1];
+
+var nameCell = row.cells[2];
+var cityCell = row.cells[3];
+var assistanceTypeCell = row.cells[7];
+var statusCell = row.cells[8];
+var schedCell = row.cells[4];
+var transactionTypeCell = row.cells[6];
+if (dateCell && transaction_timeCell  && nameCell && cityCell && assistanceTypeCell && statusCell && schedCell && transactionTypeCell) {
+
+// Get the text content of the cells and convert them to uppercase
+
+var dateText = dateCell.textContent.toUpperCase();
+var transaction_timeText =
+transaction_timeCell.textContent.toUpperCase();
+
+
+var nameText = nameCell.textContent.toUpperCase();
+var cityText = cityCell.textContent.toUpperCase();
+var assistanceTypeText =
+assistanceTypeCell.textContent.toUpperCase();
+
+var statusText = statusCell.textContent.toUpperCase();
+var schedText = schedCell.textContent.toUpperCase();
+var transactionTypeText =
+transactionTypeCell.textContent.toUpperCase();
+
+// Check if the search input value matches any of the columns
+if (dateText.indexOf(input) > -1 || transaction_timeText.indexOf(input) > -1
+|| nameText.indexOf(input) > -1 || cityText.indexOf(input) > -1 ||
+assistanceTypeText.indexOf(input) > -1 || statusText.indexOf(input) > -1 ||
+schedText.indexOf(input) > -1 || transactionTypeText.indexOf(input) > -1) {
+// If there's a match, display the table row
+row.style.display = "";
+} else {
+// If there's no match, hide the table row
+row.style.display = "none";
+}
+}
+}
 }
     function dashboard(){
     window.location = "http://localhost/public_html/dashboard.php"
