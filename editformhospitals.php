@@ -304,14 +304,14 @@ if ($result2) {
   <body>
     
     <div class="container">
-      <div class="title"> Edit form </div>
+      <div class="title" style="margin-bottom:10px; margin-left:270px;"> Edit form </div>
       <form id="editForm"  method="post"> <!-- Changed method to POST -->
       <input type="hidden" name="Beneficiary_Id" value="<?php echo $beneID; ?>">
       <input type="hidden" name="Emp_ID" value="<?php echo $EmpID; ?>">
 
                 <div class="user-details1">
                 <div class="input-box">
-                    <span class="details" style="color:#f5ca3b;">Date of Application:</span>
+                    <span class="details" style="margin-top:20px; color:#f5ca3b;">Date of Application:</span>
                     <span id="calendar" style="color:white; margin-top:10px;"><?php echo $record['Date']; ?></span>
                 </div>
 
@@ -320,7 +320,7 @@ if ($result2) {
                 <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;">Full Name</span>
                     <input disabled type = "text" required name="EmpName" value = "<?php echo $record['Firstname'] . " " . $record['Lastname']; ?>" > 
-               
+                    </div> 
 
           <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;">Transaction Type</span>
@@ -399,17 +399,17 @@ if ($result2) {
   
     if (status === 'For Schedule') {
         emailFormat.innerHTML = `
-         <div style = "color: white;"> 
+         <div style = "color: black; padding:15px; background:white; margin-top:20px;"> 
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>I am writing to inform you that your request for scheduling has been approved.<br>
             Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
             at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br><br>
           <br><br>
-          If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='http://localhost/public_html/requestresched.php' style = "color:  #3cd82e;"> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.
+          If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='http://localhost/public_html/requestresched.php' style = "color:  blue;"> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.
   Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.
   
             Best regards,<br>
-            <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+            <input type="text" name="EmpName" style="margin-top:15px;" style="margin-top:15px;"  value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
             Provincial Government of Bataan - Special Assistance Program</p>
          </div> 
         `;
@@ -417,15 +417,14 @@ if ($result2) {
         requirements.style.display = 'block'; 
         
             requirements.innerHTML = `
-             <div style = "color: white;">
+             <div style = "color: black; padding:15px; background:white; margin-top:20px;">
              <div class="input-box">
-            <span class="details" style="color:  #f5ca3b;"> Hospital Bill Amount </span>
+            <span class="details" style="color:  blue;"> Hospital Bill Amount </span>
             <input type="text" style="padding:10px; height:30px;"required value="<?php echo $record['billamount']; ?>" name="billamount" />
     
           </div>
-  
-                <h3>Requirements for Burial Assistance Validation</h3>
-                <ul>
+                <h3 style = "color: blue;">REQUIREMENTS FOR BURIAL ASSISTANCE VALIDATION</h3>
+                <ul style = "text-align: left; margin-left:40px" >
                     <input type="checkbox" name="requirement" value="Final Bill w/ Discharge Date (May pirma ng Billing Clerk)/Promissory Note"> Final Bill w/ Discharge Date (May pirma ng Billing Clerk)/Promissory Note <br>
                     <input type="checkbox" name="requirement" value="Medical Abstract/Medical Certificate (May Pangalan Pirma at License # ng Doctor)"> Medical Abstract/Medical Certificate (May Pangalan Pirma at License # ng Doctor) <br>
                     <input type="checkbox" name="requirement" value="Sulat (Sulat Kamay) na Humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (Sulat Kamay) na Humihingi ng tulong kay Gov. Joet S. Garcia <br>
@@ -435,8 +434,8 @@ if ($result2) {
                     <input type="checkbox" name="requirement" value="SOCIAL CASE STUDY (MSWDO)"> SOCIAL CASE STUDY (MSWDO) <br>
                    
                     </ul>
-                    <h3>SUPPORTING DOCUMENTS</h3>
-                    <ul style = "text-align: left; margin-left:60px" >
+                    <h3 style = "color: blue;">SUPPORTING DOCUMENTS</h3>
+                    <ul style = "text-align: left; margin-left:40px" >
                     <input type="checkbox" name="requirement" value="XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE) <br>
                     <input type="checkbox" name="requirement" value="XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE)"> XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE) <br>
                     <input type="checkbox" name="requirement" value="BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE <br>
@@ -447,13 +446,13 @@ if ($result2) {
     
     } else if (status === 'Pending for Payout') {
         emailFormat.innerHTML = `
-         <div style = "color: white;">
+         <div style = "color: black; padding:15px; background:white; margin-top:20px;">
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>Your assistance request is currently pending for payout.<br>
             We are processing your application, and you will receive your financial assistance soon.<br><br>
             Thank you for your patience and cooperation.<br><br>
             Best regards,<br>
-            <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+            <input type="text" name="EmpName" style="margin-top:15px;" style="margin-top:15px;"  value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
             Provincial Government of Bataan - Special Assistance Program</p>
          </div>
         `;
@@ -465,27 +464,26 @@ if ($result2) {
             `;
     } else if (status === 'For Payout') { 
         emailFormat.innerHTML = `
-         <div style = "color: white;">
+         <div style = "color: black; padding:15px; background:white; margin-top:20px;">
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>Your assistance request is currently for payout on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
             at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
             Kindly proceed to PGB-Hermosa Branch<br>
             Thank you for your patience and cooperation.<br><br>
             Best regards,<br>
-            <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-            Provincial Government of Bataan - Special Assistance Program</p>
+            <input type="text" name="EmpName" style="margin-top:15px;" style="margin-top:15px;"  value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+             Provincial Government of Bataan - Special Assistance Program</p>
          </div>
         `;
     }else if (status === 'For Re-schedule') { 
         emailFormat.innerHTML = `
-        <div style = "color: white;">
+        <div style = "color: black; padding:15px; background:white; margin-top:20px;">
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>Your request for re-schedule has been accepted. Your new schedule is on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
             at <input type="time" id="time" name="time"  />.<br>
             We kindly expect your presence on the said date.<br><br>
             Best regards,<br>
-            <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-            Provincial Government of Bataan - Special Assistance Program</p>
+            <input type="text" name="EmpName" style="margin-top:15px;" style="margin-top:15px;"  value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>   Provincial Government of Bataan - Special Assistance Program</p>
          </div> 
         `;
   }

@@ -75,7 +75,14 @@ body{
     padding: 0px 10px;
 }
 
-
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    margin-right: 470px;
+    margin-top: 47px;
+  }
 
 .error
 {

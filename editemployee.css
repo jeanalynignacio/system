@@ -20,8 +20,8 @@ body {
   width: 100%;
   background-color: rgb(50, 102, 155);
   background-position: center;
-  height: 80vh;
-  width: 100vh;
+  height: 100vh;
+  width: 90vh;
   background-size: 90vh;
   padding: 25px 30px;
   border-radius: 20px;
@@ -30,7 +30,7 @@ body {
 }
 
 .container form {
-  margin-top: 60px;
+  margin-top: 50px;
   margin-left: 25px;
 }
 
@@ -41,7 +41,7 @@ body {
   color: #ffffff;
   font-weight: bolder;
   margin-bottom: -30px;
-  margin-left: 35px;
+  margin-left:170px;
 }
 
 .container form .user-details {
@@ -120,7 +120,8 @@ form input[type="date"] {
 .container .button-row {
   display: flex;
   justify-content: space-between;
-  margin-top: 5px;
+  margin-top: 15px;
+
 }
 
 .container .button-row input,
@@ -137,11 +138,12 @@ form input[type="date"] {
   font-family: arial;
   cursor: pointer;
   margin-top: 40px;
+
 }
 
 .container .button-row input[type="submit"] {
   background-color: #003399;
-  margin-left: 300px;
+  margin-left: 200px;
 }
 
 .button-row input[type="button"] {

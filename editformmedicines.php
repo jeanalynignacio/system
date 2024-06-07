@@ -374,25 +374,25 @@ $Status = $_POST['Status'];
             
             if (status === 'For Schedule') {
                 emailFormat.innerHTML = `
-                    <div style="color: white;">
+                    <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                         <p>I am writing to inform you that your request for scheduling has been approved.<br>
                         Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" />
                         at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br><br>
-                        If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this <a href='http://localhost/public_html/requestresched.php' style="color:  #3cd82e;">link.</a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.
+                        If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this <a href='http://localhost/public_html/requestresched.php' style="color:  blue;">link.</a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.
                         Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.
                         Best regards,<br>
-                        <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+                        <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
                         Provincial Government of Bataan - Special Assistance Program</p>
                     </div>
                 `;
             } else if (status === 'For Validation') {
                 requirements.style.display = 'block';
                 requirements.innerHTML = `
-                    <div style="color: white;">
+                    <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         
-                        <h3>Requirements for Medicines Assistance Validation</h3>
-                        <ul>
+                        <h3 style = "color: blue;">REQUIREMENTS FOR MEDICINES ASSISTANCE VALIDATION</h3>
+                        <ul style = "text-align: left; margin-left:60px">
                             <input type="checkbox" name="requirement" value="Updated Medical Certificate/Medical Abstract (1 ORIGINAL, 1 PHOTOCOPY)"> Updated Medical Certificate/Medical Abstract (1 ORIGINAL, 1 PHOTOCOPY) <br>
                             <input type="checkbox" name="requirement" value="Barangay Certificate of Indigency">  Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES) <br>
                             <input type="checkbox" name="requirement" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia <br>
@@ -400,7 +400,7 @@ $Status = $_POST['Status'];
                             <input type="checkbox" name="requirement" value="Brgy. Indigency (Pasyente) / Brgy. Indigency (Representative)"> Brgy. Indigency (Pasyente) / Brgy. Indigency (Representative) <br>
                        
                         </ul>
-                        <h3>SUPPORTING DOCUMENTS</h3>
+                        <h3 style = "color: blue;">SUPPORTING DOCUMENTS</h3>
                         <ul style = "text-align: left; margin-left:60px">
                         <input type="checkbox" name="requirement" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
                         <input type="checkbox" name="requirement" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
@@ -411,13 +411,13 @@ $Status = $_POST['Status'];
                 `;
             } else if (status === 'Pending for Payout') {
                 emailFormat.innerHTML = `
-                    <div style="color: white;">
+                    <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                         <p>Your assistance request is currently pending for payout.<br>
                         We are processing your application, and you will receive your financial assistance soon.<br><br>
                         Thank you for your patience and cooperation.<br><br>
                         Best regards,<br>
-                        <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+                        <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
                         Provincial Government of Bataan - Special Assistance Program</p>
                     </div>
                 `;
@@ -428,20 +428,20 @@ $Status = $_POST['Status'];
                 `;
             } else if (status === 'For Payout') {
                 emailFormat.innerHTML = `
-                    <div style="color: white;">
+                    <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                         <p>Your assistance request is currently for payout on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" />
                         at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
                         Kindly proceed to PGB-Hermosa Branch<br>
                         Thank you for your patience and cooperation.<br><br>
                         Best regards,<br>
-                        <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+                        <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
                         Provincial Government of Bataan - Special Assistance Program</p>
                     </div>
                 `;
             } else if (status === 'For Re-schedule') {
                 emailFormat.innerHTML = `
-                    <div style="color: white;">
+                    <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                         <p>Your request for reschedule has been approved.<br>
                         Your new schedule is on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" />
@@ -449,19 +449,19 @@ $Status = $_POST['Status'];
                         Kindly proceed to PGB-Hermosa Branch on the new schedule.<br><br>
                         Thank you for your understanding.<br><br>
                         Best regards,<br>
-                        <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+                        <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
                         Provincial Government of Bataan - Special Assistance Program</p>
                     </div>
                 `;
             } else if (status === 'Pending for Requirements') {
                 emailFormat.innerHTML = `
-                    <div style="color: white;">
+                    <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                         <p>We are currently awaiting additional requirements for your assistance request.<br>
                         Please submit the necessary documents at your earliest convenience to proceed with your application.<br><br>
                         Thank you for your cooperation.<br><br>
                         Best regards,<br>
-                        <input type="text" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+                        <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
                         Provincial Government of Bataan - Special Assistance Program</p>
                     </div>
                 `;

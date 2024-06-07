@@ -51,28 +51,29 @@ if(isset($_POST['submit'])) {
 </head>
 <body>
     <div class="container">
-     <center>   <div class="title">Employee Record</div></center> 
+     <div class="title">Employee Record</div>
         <form id="editForm" method="post">
             <input type="hidden" name="Emp_ID" value="<?php echo $Emp_ID; ?>">
             <?php foreach($res_data as $record): ?>
-                <div class="input-box">
-                    <span class="details"style="font-size:20px;">Last Name:  </span>
-                   z
-                   <input type="text"  class="details"name="Lastname" value="<?php echo $record['Lastname']; ?>">
+                <div class="user-details">
+<div class="input-box">
+                    <span class="details">Last Name:  </span>
+                  
+                   <input type="text" style="color:black;"  class="details"name="Lastname" value="<?php echo $record['Lastname']; ?>">
                 
                 </div>
                 <div class="input-box">
-                    <span class="details" style="font-size:20px;">First Name:  </span>
+                    <span class="details" >First Name:  </span>
                   
                     <input type="text" name="Firstname" value="<?php echo $record['Firstname']; ?>">
                 </div>
                 <div class="input-box">
-                    <span class="details" style="font-size:20px;">Email:  </span>
+                    <span class="details" >Email:  </span>
                    
                     <input type="text" name="Email" value="<?php echo $record['Email']; ?>">
                 </div>
                 <div class="input-box" >
-                    <span class="details"style="font-size:20px;">Role:  </span>
+                    <span class="details">Role:  </span>
                     <select name="role" >
                         <?php
                         $roles = array(
@@ -95,6 +96,7 @@ if(isset($_POST['submit'])) {
             </div>
         </form>
     </div>
+ 
     <script type="text/javascript">
         function cancelEdit() {
             window.history.back();

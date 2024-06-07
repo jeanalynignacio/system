@@ -109,7 +109,7 @@ $query="SELECT * FROM employees where role='Employee'";
         <div class="header--wrapper">
             <div class="header--title">
                 <span> 1Bataan Malasakit - Special Assistance Program </span>
-                <h2> Financial Assistance </h2>
+                <h2> Assistance </h2>
             </div>
             <div class="user--info">
                 <div class="search--box">
@@ -128,7 +128,7 @@ $query="SELECT * FROM employees where role='Employee'";
 
 
         <div class="tabular--wrapper">
-            <h3 class="main--title"> Financial Assistance - Laboratories Data </h3>
+            <h3 class="main--title"> Laboratories Data </h3>
             <div class="table--container">
                 <table>
                     <thead>

@@ -107,7 +107,7 @@
                             $_SESSION['Emp_ID'] = $row['Emp_ID'];
                             $_SESSION['valid'] = $row['Lastname'];
                           
-                            if ($row["role"] == "Admin") {
+                          /* if ($row["role"] == "Admin") {
                                 echo '<body>
                                 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                                 <script>
@@ -140,11 +140,11 @@
                            
                             $errorMessage = "Wrong Username or Password";
                           
-                        }
+                        }*/
                        
                 }
               }
-                
+            }  
        ?>
 
 <!DOCTYPE html>

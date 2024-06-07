@@ -51,9 +51,11 @@ if(isset($_SESSION['Emp_ID'])){
             $result = mysqli_query($con, $check_user);
             $user = mysqli_fetch_assoc($result);
 
+
+
             if(empty($Email)){
                 array_push($errors, $lastError = "Email is required");
-            } elseif ($user) { // If user exists
+            } else if ($user) { // If user exists
                 array_push($errors, $lastError ="This email address is already in use.");
             } elseif (!filter_var($Email, FILTER_VALIDATE_EMAIL)) {
                 array_push($errors, $lastError = "Invalid email format");
