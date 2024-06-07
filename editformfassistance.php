@@ -156,8 +156,8 @@ if(isset($_SESSION['Emp_ID'])) {
   // Execute the update query
   if ($result2) {
   
-  $Status = $_POST['Status'];
-       if ($Status !== "Pending for Requirements" && $Status !== "For Validation") { // Check if status is not "Pending for Requirements" or "For Validation"
+  $status = $_POST['Status'];
+       if ($status !== "Pending for Requirements" && $status !== "For Validation" &&  $status !== "Done" ) { 
   
        require 'PHPMailer/src/Exception.php';
        require 'PHPMailer/src/PHPMailer.php';
@@ -307,6 +307,7 @@ if(isset($_SESSION['Emp_ID'])) {
         <div class="title"> Edit form </div>
         <form id="editForm" method="post">
             <input type="hidden" name="Beneficiary_Id" value="<?php echo $beneID; ?>">
+            <input type="hidden" name="Emp_ID" value="<?php echo $EmpID; ?>">
            
             <div class="user-details1">
                 <div class="input-box">

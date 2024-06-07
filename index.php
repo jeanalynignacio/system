@@ -315,7 +315,10 @@
 
               
            <p>All content is in the public unless otherwise started</p>
-       </div>
+          
+           <p>All content is in the public unless otherwise started</p> <br>
+           <a href = "employee-login.php" style = "margin-top: 30px;"> Admin/Employee Login </a>
+          </div>
     </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <!-- home section end -->

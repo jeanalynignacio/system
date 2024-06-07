@@ -131,7 +131,7 @@ if(isset($_SESSION['Emp_ID'])){
                     <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $lastError ?></p>          
                 </div>
                 <div class="field">
-                    <input type="submit" class="btn" name="submit" value="Sign Up">
+                    <input type="submit" class="btn" name="submit" value="Add Email">
                 </div>
             </form>
         </div>

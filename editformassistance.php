@@ -156,8 +156,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         
         if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation") { // Check if status is not "Pending for Requirements" or "For Validation"
-   
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
             require 'PHPMailer/src/Exception.php';
             require 'PHPMailer/src/PHPMailer.php';
             require 'PHPMailer/src/SMTP.php';
