@@ -5,7 +5,7 @@ include("php/config.php");
 if (isset($_POST['submit2'])) {
     $code =  $_POST['code'];
   
-    $query = "SELECT * FROM users WHERE verification_code='$code'";
+    $query = "SELECT * FROM employees WHERE verification_code='$code'";
     $result = mysqli_query($con, $query);
     if ($result) {
         if (mysqli_num_rows($result) == 1) {                                                                                                                   
@@ -19,11 +19,11 @@ if (isset($_POST['submit2'])) {
                     </script>';
                       echo '<script>
                      setTimeout(function(){
-                        window.location.href="resetpass.php";
+                        window.location.href="resetpassemp.php";
                     } , 2000);
                   </script>
                   </body>'; 
-                  $_SESSION['Id'] = $result_fetch['Id'];
+                  $_SESSION['Emp_ID'] = $result_fetch['Emp_ID'];
 
                 } else {
                    
@@ -34,7 +34,7 @@ if (isset($_POST['submit2'])) {
                           </script>';
                             echo '<script>
                            setTimeout(function(){
-                              window.location.href="verification.php";
+                              window.location.href="verifyEmpEmail.php";
                           } , 2000);
                         </script>
                         </body>';
@@ -48,7 +48,7 @@ if (isset($_POST['submit2'])) {
             </script>';
               echo '<script>
              setTimeout(function(){
-                window.location.href="forgotpassverify.php";
+                window.location.href="forgotpassverifyemp.php";
             } , 2000);
           </script>
           </body>';
@@ -70,7 +70,7 @@ if (isset($_POST['submit2'])) {
 <body>
     <div class="container">
         <div class="box form-box">
-            <header>Verification</header>
+            <header  style="background:#1477d2;" >Verification</header>
             <form id="" action="" method="post">
                 <div class="field input">
                     <label for="username">Enter verification code here</label>
@@ -79,7 +79,7 @@ if (isset($_POST['submit2'])) {
                 </div>
                 
                 <div class="field">
-                    <input type="submit" class="btn" name="submit2" value="Verify" required >  
+                    <input  style="background:#1477d2;" type="submit" class="btn" name="submit2" value="Verify" required >  
                     
                 </div>
                 <?php if(isset($errorMessage)): ?>

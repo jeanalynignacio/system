@@ -167,7 +167,7 @@
         <form action="#" method="POST">
             <div class="user-details">
                 <div class="input-box">
-                    <span class="details" style="margin-top:30px;"> Username </span>
+                    <span class="details" style="margin-top:30px;margin-left:8px;"> Username </span>
                     <input type="text" name="username" id="username" autocomplete="off" value="<?php echo $_POST['username'] ?? ''; ?>" required>
                     <p style="color:red;"><?php echo $userError ?></p>  
                 </div>
@@ -185,7 +185,8 @@
             </div>
             <?php endif; ?>
 
-
+            <a href="forgotpassemp.php" style="color:#ffeacb; margin-left:20px;">Forgot password?</a><br><br>
+       
             <div class="button">
                 <input type="submit" class="btn" name="submit" value="Login" required>  
             </div>
