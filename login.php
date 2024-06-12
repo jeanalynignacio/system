@@ -104,7 +104,10 @@ if(isset($_POST['submit'])){
                 </div>
                 <?php endif; ?>
                 <div class="links">
+        <a href="forgotpass.php" style="color:#5089f3;">Forgot password?</a><br><br>
+                   
                     <center>Don't have an account? <a href="register.php" style="color:blue">Sign up Now</a></center>
+                
                 </div>
             </form>
         </div>

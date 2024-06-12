@@ -1,0 +1,147 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Arial';
+    
+}
+
+body{
+
+    background-size: cover;
+    background-repeat: no-repeat;
+      background-attachment: fixed;
+     
+}
+.password-wrapper {
+    position: relative;
+}
+
+.toggle-password {
+    position: relative;
+    margin-top: -20px;
+    margin-right: 2px; /* I-adjust ang posisyon base sa iyong preference */
+    transform: translateY(-50%);
+    cursor: pointer;
+margin-left:90%;
+ 
+}
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 90vh;
+   margin-left: 35%;
+   margin-right: 35%;
+}
+.box{
+
+    display: flex;
+ margin-left: 60%;
+    flex-direction: column;
+    padding: 25px 25px;
+    border-radius: 20px;
+    box-shadow: 0 0 128px 0  rgba(0, 0, 0, 0.1),
+                0 32px 64px -48px rgba(0, 0, 0, 0.5);               
+}
+.form-box{
+    width: 450px;
+     margin: 0px 10px;
+     
+
+}
+.form-box header{
+    font-size: 25px;
+    font-weight: 600;
+    padding: 10px;
+  
+    margin-bottom: 10px;
+    background-color: #67a9e7;
+    border-top-left-radius: 20px; /* Adjust border radius if needed */
+    border-top-right-radius: 20px; 
+    color:white;
+    
+ 
+}
+.form-box form .field{
+    display: flex;
+    margin-bottom: 10px;
+    flex-direction: column;
+   
+}
+.form-box form .input input{
+    height: 40px;
+    width: 100%;
+    font-size: 16px;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+ 
+}
+.btn{
+    height: 35px;
+    background: #67a9e7;
+    border: 0;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all .3s;
+    margin-top: 10px;
+    padding: 0px 10px;
+}
+.Login{
+    width: 100%;
+}
+.error
+{
+    text-align: center;
+    background: #F2DEDE;
+    padding: 15px 0px;
+    WIDTH:95%;
+    border: 1px solid #313131;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: red;
+    margin:20px auto;
+}
+
+.links{
+    margin-bottom: 15px;
+}
+
+@media only screen and (max-width: 800px) {
+    .container {
+        margin: 0 10%;
+    }
+
+    .box {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .form-box {
+        width: 100%;
+    }
+
+    .form-box form .field input {
+        width: 100%;
+    }
+}
+.message{
+    text-align: center;
+    background: #f9eded;
+    padding: 15px 0px;
+    border: 1px solid #699053;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: red;
+}
+
+
+
+
+    
+
