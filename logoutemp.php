@@ -4,5 +4,5 @@
  
 ?>
    <script>
-   window.location.href = "employee-login.php";
+   window.location.href = "index.php";
     </script>

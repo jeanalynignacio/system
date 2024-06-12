@@ -23,7 +23,6 @@
     $res_Id2 = $result['Id'];
     $res_Fname = $result['Firstname'];
     $res_Lname = $result['Lastname'];
-    $res_profile = $result['userIDpic'];
     }
     }
     if(isset($_SESSION['hospitals'])){
@@ -41,22 +40,24 @@
     if(isset($_POST['submit'])) {
         $serviceType = $_SESSION['serviceType'];
         $BENEID = $_POST['Beneficiary_ID'];
-      
+        date_default_timezone_set('Asia/Manila');
+        $TIME = date('H:i:s');
+        $Given_Time=NULL;
         switch ($serviceType) {
             case 'dialysis':
                 $serviceType= "Dialysis";
                 $query = "INSERT INTO financialassistance (Beneficiary_ID, FA_Type) VALUES ('$BENEID', '$serviceType')";
-                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', 'Financial Assistance', 'For Schedule', CURDATE(),CURTIME())";
+                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time,Given_Time) VALUES ('$BENEID', 'Online', 'Financial Assistance', 'For Schedule', CURDATE(),'$TIME',NULL)";
                 break;
             case 'Burial':
                 $serviceType = "Burial";
                 $query = "INSERT INTO financialassistance (Beneficiary_ID, FA_Type) VALUES ('$BENEID', '$serviceType')";
-                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', 'Financial Assistance', 'For Schedule', CURDATE(),CURTIME())";
+                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', 'Financial Assistance', 'For Schedule', CURDATE(),'$TIME')";
                 break;
             case 'Radiation & Chemotherapy':
                 $serviceType = "Chemotherapy & Radiation";
                 $query = "INSERT INTO financialassistance (Beneficiary_ID, FA_Type) VALUES ('$BENEID', '$serviceType')";
-                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', 'Financial Assistance', 'For Schedule', CURDATE(),CURTIME())";
+                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', 'Financial Assistance', 'For Schedule', CURDATE(),'$TIME')";
                 break;
    
             case 'medicines':
@@ -64,7 +65,7 @@
                 $medType=$_POST['medType'];
                 $serviceType = "Medicine";
                 $query = "INSERT INTO medicines (Beneficiary_ID, MedicineType) VALUES ('$BENEID', '$medType')";
-                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Schedule', CURDATE(),CURTIME())";
+                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Schedule', CURDATE(),'$TIME')";
                 break;
             case 'hospitalbills':
                 $hospitals = $_SESSION['hospitals'];
@@ -73,13 +74,13 @@
 
                 $serviceType = "Hospital Bills";
                 $query = "INSERT INTO hospitalbill (Beneficiary_ID, PartneredHospital, billamount) VALUES ('$BENEID', '$escaped_hospitals','0')";
-                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Schedule', CURDATE(),CURTIME())";
+                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Schedule', CURDATE(),'$TIME')";
                 break;
                 case 'laboratories':
                     $labtype=$_POST['labType'];
                     $serviceType = "Laboratories";
                     $query = "INSERT INTO laboratories (Beneficiary_ID, LabType) VALUES ('$BENEID', '$labtype')";
-                    $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Schedule', CURDATE(),CURTIME())";
+                    $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Schedule', CURDATE(),'$TIME')";
                     break;
             default:
                 die("Invalid category selected");
@@ -253,7 +254,7 @@
                      <h1>FINANCIAL ASSISTANCE FOR BURIAL REQUIREMENTS</h1>
                     <ul style = "text-align: left; margin-left:60px">
                         <input type="checkbox" onclick="checkAllChecked()"> Registered Death Certificate (2 PHOTOCOPIES)<br>
-                        <input type="checkb  ox" onclick="checkAllChecked()"> Funeral Contract with Balance (2 PHOTOCOPIES)<br>
+                        <input type="checkbox" onclick="checkAllChecked()"> Funeral Contract with Balance (2 PHOTOCOPIES)<br>
                         <input type="checkbox" onclick="checkAllChecked()"> Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY)<br>
                         <input type="checkbox" onclick="checkAllChecked()"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia<br>
                         <input type="checkbox" onclick="checkAllChecked()"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad<br>
@@ -338,22 +339,20 @@
                      
                      <h1>FINANCIAL ASSISTANCE FOR DIALYSIS</h1>
                      <ul style="text-align: left; margin-left:60px">
-                    <li><input type="checkbox" onclick="checkAllChecked()"> MEDICAL ABSTRACT</li>
-                    <li><input type="checkbox" onclick="checkAllChecked()"> RESETA NG GAMOT NOTE: 1ST & 2ND CHECKS SAME DATE, SAME DOCTOR, SAME SIGNATURE WITH DOCTOR'S LICENSE NO. (2 PHOTOCOPIES)</li>
-                    <li><input type="checkbox" onclick="checkAllChecked()"> BRGY. INDIGENCY (PASYENTE) & BRGY. INDIGENCY (NAGLALAKAD)</li>
-                    <li><input type="checkbox" onclick="checkAllChecked()"> SULAT (SULAT KAMAY) NA HUMIHINGI NG TULONG KAY GOV. JOET S. GARCIA</li>
-                    <li><input type="checkbox" onclick="checkAllChecked()"> XEROX VALID ID NG PASYENTE W/ 3 SIGNATURES OR XEROX VALID ID NG NAGLALAKAD</li>
+                    <input type="checkbox" onclick="checkAllChecked()"> MEDICAL ABSTRACT<br>
+                    <input type="checkbox" onclick="checkAllChecked()"> RESETA NG GAMOT NOTE: 1ST & 2ND CHECKS SAME DATE, SAME DOCTOR, SAME SIGNATURE WITH DOCTOR'S LICENSE NO. (2 PHOTOCOPIES)<br>
+                    <input type="checkbox" onclick="checkAllChecked()"> BRGY. INDIGENCY (PASYENTE) & BRGY. INDIGENCY (NAGLALAKAD)<br>
+                    <input type="checkbox" onclick="checkAllChecked()"> SULAT (SULAT KAMAY) NA HUMIHINGI NG TULONG KAY GOV. JOET S. GARCIA<br>
+                    <input type="checkbox" onclick="checkAllChecked()"> XEROX VALID ID NG PASYENTE W/ 3 SIGNATURES OR XEROX VALID ID NG NAGLALAKAD<br>
                 </ul>
 
                 <h1>SUPPORTING DOCUMENTS</h1>
                 <ul style="text-align: left; margin-left:60px">
-                    <li><input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)</li>
-                    <li><input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE CERTIFICATE (KUNG ASAWA ANG PASYENTE)</li>
-                    <li><input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG KUNG KAPATID ANG PASYENTE)</li>
+                    <input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)<br>
+                   <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE CERTIFICATE (KUNG ASAWA ANG PASYENTE)<br>
+                    <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG KUNG KAPATID ANG PASYENTE)<br>
                 </ul>
 
-                     
-                     </ul>
                  </div>
                  <?php endif; ?>
 

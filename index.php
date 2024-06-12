@@ -158,53 +158,6 @@
         <h3> Burial Assistance </h3>
         <p>Funeral and cremation expenses can be high for some people, and burial assistance prpograms are meant to help them pay for their loved ones' funerals and burials. Helping with money during what is often a hard and stressful time is the goal of this service.  </p>
       </div>
-      
-      <div class="service">
-        <img
-              src="images/dialysis.png"
-              style="width: 80px; height: auto; margin-top: 20px; margin-bottom: -20px;"
-            />
-        <h3> Dialysis Patients </h3>
-        <p> The SAP's help for dialysis patients is essential for people with kidney failure because it makes sure they get the care they need without having to worry about the high expenses of dialysis. This service aims to enhance their quality of life, ease their financial burdens, and guarantee their ongoing access to medical treatment that they needed. </p>
-      </div>
-
-      <div class="service">
-        <img
-              src="images/hospital-bills.png"
-              style="width: 72px; height: auto; margin-top: 20px; margin-bottom: -10px;"
-            /> 
-        <h3> Hospital Bills </h3>
-        <p>The service goal is to reduce hospital costs so that people can get the medical treatment they need without worrying about money. The service that can help with hospital bills is a support for people and families in the Philippines who are having a hard time paying for medical treatment and hospitalizations in hospitals. </p>
-      </div>
-
-      <div class="service">
-        <h3> Implant <br> (Bakal) </h3>
-        <p> Driven by a dedication to enhancing quality of life and promoting inclusivity, this program provides a glimmer of hope to individuals who may otherwise lack the financial means to access steel implant medical operations.  </p>
-      </div>
-
-      <div class="service">
-        <img
-              src="images/labs.png"
-              style="
-                width: 80px;
-                height: auto;
-                margin-top: 10px; 
-                margin-bottom: -30px;
-              " />
-        <h3> Laboratories </h3>
-        <p> The financial aid offered by PGB-SAP enables the citizens of Bataan to avail high-quality healthcare services at reduced costs, hence assuring better health conditions for the community. Minimizing the costs connected with testing in laboratories is important for enhancing the accessibility and cost-efficiency of healthcare.  </p>
-      </div>
-
-      <div class="service">
-        <img
-              src="images/medicines.png"
-              style="width: 80px; height: auto;  margin-top: 15px; 
-                margin-bottom: -8px;"
-            />
-        <h3> Medicines </h3>
-        <p> This service can help people and families who need medications but are unable to afford them. This assistance ensures that financial constraints do not prevent individuals from accessing necessary medications. </p>
-      </div>
-
       <div class="service">
         <img
               src="images/r&chemo.png"
@@ -216,8 +169,52 @@
               "
             />
         <h3> Radiation & <br> Chemotherapy </h3>
-        <p> Medicines, treatments, and hospitalizations can be very expensive during cancer treatment, especially radiation therapy and chemotherapy. The goal of the program is to make cancer treatment more accessible so that patients can get the radiation therapy and medicines they need without having to worry about financial problems. </p>
+        <p> The goal of the program is to make cancer treatment more accessible so that patients can get the radiation therapy and medicines they need without having to worry about financial problems. </p>
       </div>
+      <div class="service">
+        <img
+              src="images/dialysis.png"
+              style="width: 80px; height: auto; margin-top: 20px; margin-bottom: -20px;"
+            />
+        <h3> Dialysis Patients </h3>
+        <p> The SAP's help for dialysis patients is essential for people with kidney failure because it makes sure they get the care they need without having to worry about the high expenses of dialysis. This service aims to enhance their quality of life, ease their financial burdens, and guarantee their ongoing access to medical treatment that they needed. </p>
+      </div>
+
+    
+
+     
+
+      <div class="service">
+        <img
+              src="images/labs.png"
+              style="
+                width: 80px;
+                height: auto;
+                margin-top: 10px; 
+                margin-bottom: -30px;
+              " />
+        <h3> Laboratories </h3>
+        <p> The financial aid offered by PGB-SAP enables the citizens of Bataan to avail high-quality healthcare services at reduced costs, hence assuring better health conditions for the community.  </p>
+      </div>
+
+      <div class="service">
+        <img
+              src="images/medicines.png"
+              style="width: 80px; height: auto;  margin-top: 15px; 
+                margin-bottom: -8px;"
+            />
+        <h3>Medical Assistance</h3>
+            <p>One of the services that SAP offers is medical aid. This program helps people in the Philippines who have serious medical needs. The goal is to help them get the care they need to improve their health and quality of life.</p>
+      </div>
+  <div class="service">
+        <img
+              src="images/hospital-bills.png"
+              style="width: 72px; height: auto; margin-top: 20px; margin-bottom: -10px;"
+            /> 
+        <h3> Hospital Bills </h3>
+        <p>The service goal is to reduce hospital costs so that people can get the medical treatment they need without worrying about money. The service that can help with hospital bills is a support for people and families in the Philippines who are having a hard time paying for medical treatment and hospitalizations in hospitals. </p>
+      </div>
+      
     </div>
     
      <h1 id = "partnered"> Partnered Hospitals inside Bataan </h1>
@@ -299,8 +296,7 @@
     </div>
     
     <div class="footer" id=footer>
-        <h1> Help us improve the PGB-SAP <br/> <input type="button" value="Answer Survey Here" class="styled"/></h1>
-         <div class="Location">
+          <div class="Location">
            <div class="content1">
            <img src="images/logo-png.png"/>
            <h3> <i class="fa-solid fa-location-dot" style = "color: #1477d2;"></i> LOCATION </h3>
@@ -314,11 +310,10 @@
 </p>
 
               
-           <p>All content is in the public unless otherwise started</p>
           
-           <p>All content is in the public unless otherwise started</p> <br>
+           <p>All content is in the public unless otherwise stated</p> <br>
            <a href = "employee-login.php" style = "margin-top: 30px;"> Admin/Employee Login </a>
-          </div>
+       </div>
     </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <!-- home section end -->

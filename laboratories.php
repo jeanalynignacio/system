@@ -138,7 +138,8 @@ $query="SELECT * FROM employees where role='Employee'";
                           
                             <th> Name: </th>
                             <th> Municipality: </th>
-                            <th> Schedule: <br> (if online) </th>
+                            <th> Schedule Date: </th>
+                             <th> Schedule Time: </th>
                             <th> Transaction Type: </th>
                             <th> Types of Laboratory: </th>
                             <th> Status: </th>
@@ -148,11 +149,11 @@ $query="SELECT * FROM employees where role='Employee'";
                         <?php
 include("php/config.php");
 
-$sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType, l.LabType, t.Status 
+$sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType, l.LabType, t.Status, t.Given_Time
         FROM laboratories l
         INNER JOIN beneficiary b ON b.Beneficiary_Id = l.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = l.Beneficiary_ID
-        ORDER BY t.Date ASC"; 
+         ORDER BY t.Date ASC, t.transaction_time ASC"; 
 
 $result = $con->query($sql);
 
@@ -161,13 +162,17 @@ if (!$result) {
 }
 
 while ($row = $result->fetch_assoc()) {
-    echo "<tr>
+    $transaction_time = date("h:i A", strtotime($row["transaction_time"]));
+        $givenTime = "";
+if ($row["Given_Time"] !== NULL) {
+    $givenTime = date("h:i A", strtotime($row["Given_Time"]));
+}    echo "<tr>
             <td>" . $row["Date"] . " </td>
-            <td>" . $row["transaction_time"] . " </td>
-           
+            <td>" . $transaction_time . " </td>
             <td>" . $row["Lastname"] . ", " . $row["Firstname"] . " </td>
             <td>" . $row["CityMunicipality"] . " </td>
             <td>" . $row["Given_Sched"] . " </td>
+             <td>" . $givenTime . " </td>
             <td>" . $row["TransactionType"] . " </td>
             <td>" . $row["LabType"] . " </td>
             <td>" . $row["Status"] . " </td>
@@ -175,7 +180,7 @@ while ($row = $result->fetch_assoc()) {
             "<form method='post' action='editformlab.php'>" .
             "<input type='hidden' name='Beneficiary_Id' value='" . $row['Beneficiary_Id'] . "'>" .
             "<input type='hidden' name='Status' value='" . $row['Status'] . "'>" .
-            "<button type='submit'>Edit</button>" .
+            "<button type='submit'>View</button>" .
             "</form>" .
             "</td>   </tr>";
 }

@@ -85,7 +85,9 @@ if($result = mysqli_fetch_assoc($query)){
                     $results = mysqli_query($con, $user_Cn);
                     $user_phone = mysqli_fetch_assoc($results);
                   
-             
+                    date_default_timezone_set('Asia/Manila');
+                    $Date = date('Y-m-d'); 
+                    $TIME = date('H:i:s'); 
 
 
                   
@@ -165,7 +167,7 @@ else {
 
 
 // Use the complete user ID in the INSERT query
-$query ="INSERT INTO beneficiary( Lastname, Firstname, Middlename, Birthday, Contactnumber, Province, CityMunicipality, Barangay, HousenoStreet, Email, Representative_ID,Date,time) VALUES ('$Lastname', '$Firstname', '$Middlename', '$Birthday', '$Contactnumber', '$Province', '$CityMunicipality', '$Barangay', '$HousenoStreet', '$Email', '$Representative_ID',CURDATE(),CURTIME())";
+$query ="INSERT INTO beneficiary( Lastname, Firstname, Middlename, Birthday, Contactnumber, Province, CityMunicipality, Barangay, HousenoStreet, Email, Representative_ID,Date,time) VALUES ('$Lastname', '$Firstname', '$Middlename', '$Birthday', '$Contactnumber', '$Province', '$CityMunicipality', '$Barangay', '$HousenoStreet', '$Email', '$Representative_ID','$Date','$TIME')";
 if(mysqli_query($con, $query)){
   ?>
   <script>

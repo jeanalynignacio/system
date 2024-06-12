@@ -1,328 +1,327 @@
 * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    font-family: "Arial";
-  }
-  body {
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    display: flex;
-  }
-  /* navbar start */
-  
-  #navbar {
-    background-color: white;
-    height: 150px;
-  }
-  
-  #logo img {
-    border-radius: 10px;
-    width: 60px;
-    margin-left: 5px;
-  }
-  
-  .navbar-nav {
-    margin-left: 300px;
-  }
-  
-  .nav-item .nav-link {
-    color: white;
-    margin-left: 10px;
-    font-weight: bold;
-    transition: 0.5s;
-    padding-left: 10px;
- 
-  }
-  
-  .nav-item .nav-link:hover {
-    background: #c0dfff;
-    border-radius: 5px;
-    color: white;
-    padding-left: 10px;
-  
-  }
-  .profile-button {
-    width: 100%;
-    height: 40px;
-  
-    transition: 0.5s;
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-top: 2px;
-    color: white;
-    margin-left: 10px;
-    font-weight: bold;
-    transition: 0.5s;
-    text-align: left;
-    padding-left: 10px;
-  }
-  .profile-button:hover {
-    background: #2b5074;
-    width: 100%;
-    height: 40px;
-    border-radius: 4px;
-    color: white;
-    text-align: left;
-    margin-top: 2px;
-    cursor: pointer;
-    padding-left: 10px;
-  }
-  
-  .all-content {
-    width: 100%;
-    background: #1477d2;
-  }
-  
-  #navbar form button {
-    background: black;
-    color: white;
-    border: 1px solid white;
-  }
-  .welcome-message {
-    font-size: 30px;
-    color: #ffd700;
-    margin-left: 70px;
-    margin-top: 50px;
-  }
-  
-  .container-fluid .navbar-brand {
-    font-size: 18px;
-    padding-left: 10px;
-    cursor:default;
-  }
-  
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Arial";
+}
+body {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+}
+/* navbar start */
+
+#navbar {
+  background-color: white;
+  height: 150px;
+}
+
+#logo img {
+  border-radius: 10px;
+  width: 60px;
+  margin-left: 5px;
+}
+
+.navbar-nav {
+  margin-left: 300px;
+}
+
+.nav-item .nav-link {
+  color: white;
+  margin-left: 10px;
+  font-weight: bold;
+  transition: 0.5s;
+  padding-left: 10px;
+
+}
+
+.nav-item .nav-link:hover {
+  background: #c0dfff;
+  border-radius: 5px;
+  color: white;
+  padding-left: 10px;
+
+}
+.profile-button {
+  width: 100%;
+  height: 40px;
+
+  transition: 0.5s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 2px;
+  color: white;
+  margin-left: 10px;
+  font-weight: bold;
+  transition: 0.5s;
+  text-align: left;
+  padding-left: 10px;
+}
+.profile-button:hover {
+  background: #2b5074;
+  width: 100%;
+  height: 40px;
+  border-radius: 4px;
+  color: white;
+  text-align: left;
+  margin-top: 2px;
+  cursor: pointer;
+  padding-left: 10px;
+}
+
+.all-content {
+  width: 100%;
+  background: #1477d2;
+}
+
+#navbar form button {
+  background: black;
+  color: white;
+  border: 1px solid white;
+}
+.welcome-message {
+  font-size: 30px;
+  color: #ffd700;
+  margin-left: 70px;
+  margin-top: 50px;
+}
+
+.container-fluid .navbar-brand {
+  font-size: 18px;
+  padding-left: 10px;
+  cursor:default;
+}
+
+.sub-menu-wrap {
+  position: absolute;
+  top: 70%;
+  margin-right: 10px;
+  right: 10%;
+  width: 340px;
+  max-height: 0px;
+  overflow: hidden;
+  transition: max-height 0.5s;
+}
+.sub-menu-wrap.open-menu {
+  max-height: 300px;
+}
+
+.sub-menu {
+  background: #525252;
+  padding: 5px;
+  margin: 5px;
+  color: rgb(83, 152, 231);
+  border-radius: 10px;
+}
+.user-info {
+  display: flex;
+  align-items: center;
+}
+.user-pic {
+  width: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: 20px;
+  right: 10%;
+}
+.user-info h2 {
+  font-weight: 300px;
+  color: rgb(255, 250, 250);
+  font-size: 16px;
+  padding-top: 20px;
+}
+.user-info img {
+  width: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.sub-menu hr {
+  border: 0;
+  height: 1px;
+  width: 100%;
+  background: #ccc;
+  margin: 8px 0 10px;
+}
+.btn-edit-profile {
+  background: none;
+  border: 0;
+}
+.btn-edit-profile {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #525252;
+  margin: 6px 0;
+  font-size: 14px;
+}
+.sub-menu-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #525252;
+  margin: 10px 0;
+  font-size: 14px;
+}
+.btn-edit-profile p {
+  width: 100%;
+  margin-left: 0px;
+  margin-right: 12px;
+  margin-top: 20px;
+}
+.sub-menu-link p {
+  width: 100%;
+  margin-left: 0px;
+  margin-right: 12px;
+  margin-top: 20px;
+  color:white;
+}
+.btn-edit-profile img {
+  width: 40px;
+
+  background: #e5e5e5;
+  border-radius: 50%;
+  padding: 5px;
+  margin-right: 15px;
+  margin-top: 2px;
+}
+.sub-menu-link img {
+  width: 40px;
+  background: #e5e5e5;
+  border-radius: 50%;
+  padding: 6px;
+  margin-right: 15px;
+}
+
+.btn-edit-profile:hover p {
+  transform: translateX(5px);
+  font-weight: 700;
+}
+.sub-menu-link:hover p {
+  transform: translateX(5px);
+  font-weight: 700;
+  color: #d1ce32;
+}
+/* Add this media query for mobile responsiveness */
+@media only screen and (max-width: 768px) {
   .sub-menu-wrap {
-    position: absolute;
-    top: 70%;
-    margin-right: 10px;
-    right: 10%;
-    width: 340px;
-    max-height: 0px;
-    overflow: hidden;
-    transition: max-height 0.5s;
+    top: 50%; /* Adjust the position for better visibility */
+    right: 5%; /* Adjust the position for better visibility */
+    width: 80%; /* Adjust the width for better fit on small screens */
+    max-height: 0; /* Hide the submenu initially on small screens */
+    overflow: hidden; /* Hide overflow */
+    transition: max-height 0.5s; /* Add transition for smoother animation */
   }
+
   .sub-menu-wrap.open-menu {
-    max-height: 300px;
+    max-height: 300px; /* Adjust the maximum height for small screens */
   }
-  
+
   .sub-menu {
-    background: #525252;
-    padding: 5px;
-    margin: 5px;
-    color: rgb(83, 152, 231);
-    border-radius: 10px;
+    border-radius: 0; /* Remove border radius for better appearance */
   }
-  .user-info {
-    display: flex;
-    align-items: center;
-  }
-  .user-pic {
-    width: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    margin: 20px;
-    right: 10%;
-  }
-  .user-info h2 {
-    font-weight: 300px;
-    color: rgb(255, 250, 250);
-    font-size: 16px;
-    padding-top: 20px;
-  }
-  .user-info img {
-    width: 40px;
-    border-radius: 50%;
-    margin-right: 15px;
-  }
-  
-  .sub-menu hr {
-    border: 0;
-    height: 1px;
-    width: 100%;
-    background: #ccc;
-    margin: 8px 0 10px;
-  }
-  .btn-edit-profile {
-    background: none;
-    border: 0;
-  }
-  .btn-edit-profile {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: #525252;
-    margin: 6px 0;
-    font-size: 14px;
-  }
-  .sub-menu-link {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: #525252;
-    margin: 10px 0;
-    font-size: 14px;
-  }
-  .btn-edit-profile p {
-    width: 100%;
-    margin-left: 0px;
-    margin-right: 12px;
-    margin-top: 20px;
-  }
-  .sub-menu-link p {
-    width: 100%;
-    margin-left: 0px;
-    margin-right: 12px;
-    margin-top: 20px;
-    color:white;
-  }
-  .btn-edit-profile img {
-    width: 40px;
-  
-    background: #e5e5e5;
-    border-radius: 50%;
-    padding: 5px;
-    margin-right: 15px;
-    margin-top: 2px;
-  }
-  .sub-menu-link img {
-    width: 40px;
-    background: #e5e5e5;
-    border-radius: 50%;
-    padding: 6px;
-    margin-right: 15px;
-  }
-  
-  .btn-edit-profile:hover p {
-    transform: translateX(5px);
-    font-weight: 700;
-  }
-  .sub-menu-link:hover p {
-    transform: translateX(5px);
-    font-weight: 700;
-    color: #d1ce32;
-  }
-  /* Add this media query for mobile responsiveness */
-  @media only screen and (max-width: 768px) {
-    .sub-menu-wrap {
-      top: 50%; /* Adjust the position for better visibility */
-      right: 5%; /* Adjust the position for better visibility */
-      width: 80%; /* Adjust the width for better fit on small screens */
-      max-height: 0; /* Hide the submenu initially on small screens */
-      overflow: hidden; /* Hide overflow */
-      transition: max-height 0.5s; /* Add transition for smoother animation */
-    }
-  
-    .sub-menu-wrap.open-menu {
-      max-height: 300px; /* Adjust the maximum height for small screens */
-    }
-  
-    .sub-menu {
-      border-radius: 0; /* Remove border radius for better appearance */
-    }
-  }
-  /* navbar end */
-  
-  #home {
-    margin-top: 40px;
-    width: 100%;
-    background: #1477d2;
-  }
-  
-  #home .container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 90vh;
-    margin-top: -100px;
-  }
-  #home .box {
-    margin: 120px 10px 20px 20px;
-    background: #fdfdfd;
-  
-    flex-direction: column;
-    padding: 25px 25px;
-    border-radius: 20px;
-    box-shadow: 0 0 128px 0 rgba(0, 0, 0, 0.1),
-      0 32px 64px -48px rgba(0, 0, 0, 0.5);
-  }
-  #home .form-box {
-    width: 450px;
-    margin: 120px 10px 20px 20px;
-  }
-  #home .form-box header {
-    font-size: 20px;
-    font-weight: 200;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e6e6e6;
-    margin-bottom: 10px;
-    color: #303030;
-  }
-  #home .form-box form .field {
-    display: flex;
-    margin-bottom: 10px;
-    flex-direction: column;
-  }
-  #home .form-box form .input {
-    height: 40px;
-    width: 100%;
-    font-size: 25px;
-    padding: 0 10px;
-    align-items: center;
-    justify-content: center;
-    outline: none;
-  }
-  
-  #home .btn1 {
-    height: 50px;
-    background: #b1891c;
-    border: 0;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-top: 10px;
-    padding: 0px 10px;
-  }
-  
-  #home .btn1:hover {
-    height: 50px;
-    background: #c7a74f;
-    border: 0;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-top: 10px;
-    padding: 0px 10px;
-  }
-  #home .btn2 {
-    height: 50px;
-    background: #b1891c;
-    border: 0;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-top: 10px;
-    padding: 0px 10px;
-  }
-  
-  #home .btn2:hover {
-    height: 50px;
-    background: #c7a74f;
-    border: 0;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-top: 10px;
-    padding: 0px 10px;
-  }
-  
+}
+/* navbar end */
+
+#home {
+  margin-top: 40px;
+  width: 100%;
+  background: #1477d2;
+}
+
+#home .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 90vh;
+  margin-top: -100px;
+}
+#home .box {
+  margin: 120px 10px 20px 20px;
+  background: #fdfdfd;
+
+  flex-direction: column;
+  padding: 25px 25px;
+  border-radius: 20px;
+  box-shadow: 0 0 128px 0 rgba(0, 0, 0, 0.1),
+    0 32px 64px -48px rgba(0, 0, 0, 0.5);
+}
+#home .form-box {
+  width: 450px;
+  margin: 120px 10px 20px 20px;
+}
+#home .form-box header {
+  font-size: 20px;
+  font-weight: 200;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e6e6e6;
+  margin-bottom: 10px;
+  color: #303030;
+}
+#home .form-box form .field {
+  display: flex;
+  margin-bottom: 10px;
+  flex-direction: column;
+}
+#home .form-box form .input {
+  height: 40px;
+  width: 100%;
+  font-size: 25px;
+  padding: 0 10px;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+#home .btn1 {
+  height: 50px;
+  background: #b1891c;
+  border: 0;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+  padding: 0px 10px;
+}
+
+#home .btn1:hover {
+  height: 50px;
+  background: #c7a74f;
+  border: 0;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+  padding: 0px 10px;
+}
+#home .btn2 {
+  height: 50px;
+  background: #b1891c;
+  border: 0;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+  padding: 0px 10px;
+}
+
+#home .btn2:hover {
+  height: 50px;
+  background: #c7a74f;
+  border: 0;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+  padding: 0px 10px;
+}

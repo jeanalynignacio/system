@@ -257,7 +257,8 @@ $res_Fname = $result['Firstname'];
                             <th> Hospital Name: </th>
                             <th> Total Hospital Bill: </th>
                             <th> Status: </th>
-                            <th> Given Schedule: </th>
+                            <th> Schedule Date: </th>
+                            <th> Schedule Time: </th>
                             <th> Action: </th>
                         </tr>
                         <tbody >
@@ -274,7 +275,7 @@ if(isset($_POST['hospital'])) {
 
 
 // Modify the SQL query to fetch records for all hospitals when $selectedHospital is NULL
-$sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, t.TransactionType, h.PartneredHospital, h.billamount, t.Status, t.AssistanceType,t.Given_Sched 
+$sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, t.TransactionType, h.PartneredHospital, h.billamount, t.Status, t.AssistanceType,t.Given_Sched,t.Given_Time 
         FROM hospitalbill h
         INNER JOIN beneficiary b ON b.Beneficiary_Id = h.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = h.Beneficiary_ID";
@@ -290,7 +291,7 @@ if ($selectedHospital == NULL ) {
 }
 
 // Add ORDER BY clause to sort by date in descending order
-$sql .= " ORDER BY t.Date DESC";
+$sql .= "  ORDER BY t.Date ASC, t.transaction_time ASC";
 
 // Execute the query
 $result = $con->query($sql);
@@ -301,20 +302,26 @@ if (!$result) {
 }
 
 while ($row = $result->fetch_assoc()) {
+        $givenTime = "";
+if ($row["Given_Time"] !== NULL) {
+    $givenTime = date("h:i A", strtotime($row["Given_Time"]));
+}
+      $transaction_time = date("h:i A", strtotime($row["transaction_time"]));
     echo "<tr>
             <td>" . $row["Date"] . " </td>
-            <td>" . $row["transaction_time"] . " </td>
+            <td>" . $transaction_time . " </td>
                <td>" . $row["Lastname"] . ", " . $row["Firstname"] . " </td>
             <td>" . $row["TransactionType"] . " </td>
             <td>" . $row["PartneredHospital"] . " </td>
             <td>" . $row["billamount"] . " </td>
             <td>" . $row["Status"] . " </td>
             <td>" . $row["Given_Sched"] . " </td>
+          <td>" . $givenTime . " </td>
              <td>".
             "<form method='post' action='editformhospitals.php'>" .
             "<input type='hidden' name='Beneficiary_Id' value='" . $row['Beneficiary_Id'] . "'>" .
             "<input type='hidden' name='Status' value='" . $row['Status'] . "'>" .
-            "<button type='submit'>Edit</button>" .
+            "<button type='submit'>View</button>" .
             "</form>" .
             "</td>
             

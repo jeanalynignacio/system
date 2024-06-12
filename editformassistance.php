@@ -1,4 +1,5 @@
 <?php 
+
 session_start();
 include("php/config.php");
  
@@ -54,7 +55,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         $beneID = $_POST['Beneficiary_Id'];
         //$Date = $_POST['Date'];
          //$TransactionType = $_POST['TransactionType'];
-       // $FA_Type = $_POST['FA_Type'];
+        $FA_Type = $_POST['FA_Type'];
         $Status = $_POST['Status'];
         $EmpID = $_POST['Emp_ID'];
 
@@ -76,90 +77,39 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
             $transaction_time = $_POST['time'];
             $Date = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
+            $timestamp = strtotime($transaction_time);
+         $transaction_time_24hr = date("H:i", $timestamp);
          
             $Status = "For Validation";
-              $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
+              $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time_24hr' AND Beneficiary_Id != '$beneID'";
             $overlapResult = mysqli_query($con, $overlapQuery);
 
             if(mysqli_num_rows($overlapResult) > 0) {
-                echo "The selected date and time are already booked. Please choose a different time.";
-                exit();
+                 echo '<body>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+        swal("The selected date and time are already taken. Please choose a different time.","","error")
+        .then((value) => {
+            if (value) {
+                exit(); // Prevent further execution
             }
+        });
+        </script>
+        </body>';
+            } else{
             $query = "UPDATE financialassistance f
             INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
             INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
             SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
             WHERE b.Beneficiary_Id = '$beneID'";
-        }
-        elseif ($Status == "Pending for Payout") {
-            date_default_timezone_set('Asia/Manila');
-            $Date = date('Y-m-d'); // Set the current date for Given_Sched
-            $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
-            $Status = "For Validation";
-
-            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
-            $overlapResult = mysqli_query($con, $overlapQuery);
-
-            if(mysqli_num_rows($overlapResult) > 0) {
-                echo "The selected date and time are already booked. Please choose a different time.";
-                exit();
-            }
-            $query = "UPDATE financialassistance f
-            INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
-            INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-            SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
-            WHERE b.Beneficiary_Id = '$beneID'";
-        }
-        elseif ($Status == "For Re-schedule") {
-            $transaction_time = $_POST['time'];
-            $Date = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
-         
-            $Status = "For Validation";
-
-            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
-            $overlapResult = mysqli_query($con, $overlapQuery);
-
-            if(mysqli_num_rows($overlapResult) > 0) {
-                echo "The selected date and time are already booked. Please choose a different time.";
-                exit();
-            }
-            $query = "UPDATE financialassistance f
-            INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
-            INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-            SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
-            WHERE b.Beneficiary_Id = '$beneID'";
-        }
-    
-    
-        else{
-            date_default_timezone_set('Asia/Manila');
-            $Date = date('Y-m-d'); // Set the current date for Given_Sched
-            $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
-    
-            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
-            $overlapResult = mysqli_query($con, $overlapQuery);
-
-            if(mysqli_num_rows($overlapResult) > 0) {
-                echo "The selected date and time are already booked. Please choose a different time.";
-                exit();
-            }
-            $query = "UPDATE financialassistance f
-                      INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
-                      INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-                      SET  t.Given_Sched = '$Date',
-        t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
-                      WHERE b.Beneficiary_Id = '$beneID'";
-        }
-        // Construct the update query
-
-        $result2 = mysqli_query($con, $query);
+              $result2 = mysqli_query($con, $query);
         
         if ($result2) {
             $Status = $_POST['Status'];
             if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
-            require 'PHPMailer/src/Exception.php';
-            require 'PHPMailer/src/PHPMailer.php';
-            require 'PHPMailer/src/SMTP.php';
+            require 'phpmailer/src/Exception.php';
+            require 'phpmailer/src/PHPMailer.php';
+            require 'phpmailer/src/SMTP.php';
 
             $mail = new PHPMailer(true);
             $lastName = $record['Lastname'];
@@ -202,8 +152,102 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     </html>
                     ";
 
-                
-                } elseif($status == 'Pending for Payout') {
+                }
+
+                $mail->send();
+                echo '<body>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                        <script>
+                        swal("Update and email send successful","","success")
+                        .then((value) => {
+                            if (value) {
+                                window.location.href = "assistance.php";
+                            }
+                        });
+                        </script>
+                        </body>';
+            } catch (Exception $e) {
+                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
+         } else{ 
+            echo '<body>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script>
+            swal("Updated successfully","","success")
+            .then((value) => {
+                if (value) {
+                    window.location.href = "assistance.php";
+                }
+            });
+            </script>
+            </body>';}
+
+        } else {
+            echo "Error updating records: " . mysqli_error($con);
+            header("Location: assistance.php");
+            exit();
+        }
+         
+            }
+        }
+        elseif ($Status == "Pending for Payout") {
+            date_default_timezone_set('Asia/Manila');
+            $Date = date('Y-m-d'); // Set the current date for Given_Sched
+            $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
+            $Status = "For Validation";
+
+            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
+            $overlapResult = mysqli_query($con, $overlapQuery);
+
+            if(mysqli_num_rows($overlapResult) > 0) {
+                echo '<body>
+                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                <script>
+                swal("The selected date and time are already taken. Please choose a different time.","","error")
+                .then((value) => {
+                    if (value) {
+                        exit(); // Prevent further execution
+                    }
+                });
+                </script>
+                </body>';
+            }else{
+            $query = "UPDATE financialassistance f
+            INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+            INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+            SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
+            WHERE b.Beneficiary_Id = '$beneID'";
+             $result2 = mysqli_query($con, $query);
+             if ($result2) {
+            $Status = $_POST['Status'];
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+                require 'PHPMailer/src/Exception.php';
+                require 'PHPMailer/src/PHPMailer.php';
+                require 'PHPMailer/src/SMTP.php';
+
+            $mail = new PHPMailer(true);
+            $lastName = $record['Lastname'];
+           
+            $Email = $record['Email'];
+            $status= $_POST['Status'];
+
+            try {
+                // Server settings
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'bataanpgbsap@gmail.com'; // Your Gmail address
+                $mail->Password = 'cmpp hltn mxuc tcgl'; // Your Gmail password or App Password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+
+                // Recipients
+                $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
+                $mail->addAddress($Email); // Add a recipient
+
+                // Content
+                $mail->isHTML(true); // Set email format to HTML
+                if($status == 'Pending for Payout') {
                     $employeeName = $_POST['EmpName'];
                     $mail->Subject = 'Pending for Payout';
                     $mail->Body = "
@@ -219,7 +263,106 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                         </body>
                         </html>
                     ";
-                }elseif($status == 'For Payout') {
+
+
+                
+                }
+            
+
+                $mail->send();
+                echo '<body>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                        <script>
+                        swal("Update and email send successful","","success")
+                        .then((value) => {
+                            if (value) {
+                                window.location.href = "assistance.php";
+                            }
+                        });
+                        </script>
+                        </body>';
+            } catch (Exception $e) {
+                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
+         } else{ 
+            echo '<body>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script>
+            swal("Updated successfully","","success")
+            .then((value) => {
+                if (value) {
+                    window.location.href = "assistance.php";
+                }
+            });
+            </script>
+            </body>';}
+
+        } else {
+            echo "Error updating records: " . mysqli_error($con);
+            header("Location: assistance.php");
+            exit();
+        }
+            }
+           
+        }
+        
+        elseif ($Status == "For Payout") {
+            date_default_timezone_set('Asia/Manila');
+            $Date = date('Y-m-d'); // Set the current date for Given_Sched
+            $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
+            
+            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID' ";
+            $overlapResult = mysqli_query($con, $overlapQuery);
+
+            if(mysqli_num_rows($overlapResult) > 0) {
+                echo '<body>
+                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                <script>
+                swal("The selected date and time are already taken. Please choose a different time.","","error")
+                .then((value) => {
+                    if (value) {
+                        exit(); // Prevent further execution
+                    }
+                });
+                </script>
+                </body>';
+            }else{
+            $query = "UPDATE financialassistance f
+            INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+            INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+            SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
+            WHERE b.Beneficiary_Id = '$beneID'";
+             $result2 = mysqli_query($con, $query);
+             if ($result2) {
+            $Status = $_POST['Status'];
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+            require 'phpmailer/src/Exception.php';
+            require 'phpmailer/src/PHPMailer.php';
+            require 'phpmailer/src/SMTP.php';
+
+            $mail = new PHPMailer(true);
+            $lastName = $record['Lastname'];
+           
+            $Email = $record['Email'];
+            $status= $_POST['Status'];
+
+            try {
+                // Server settings
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'bataanpgbsap@gmail.com'; // Your Gmail address
+                $mail->Password = 'cmpp hltn mxuc tcgl'; // Your Gmail password or App Password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+
+                // Recipients
+                $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
+                $mail->addAddress($Email); // Add a recipient
+
+                // Content
+                $mail->isHTML(true); // Set email format to HTML
+                if($status == 'For Payout') {
                     $employeeName = $_POST['EmpName'];
                     $mail->Subject = 'For Payout';
                     $mail->Body = "
@@ -235,21 +378,106 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                         </body>
                         </html>
                     ";
-                }elseif($status == 'For Re-schedule') {
+
+                }
+            
+
+                $mail->send();
+                echo '<body>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                        <script>
+                        swal("Update and email send successful","","success")
+                        .then((value) => {
+                            if (value) {
+                                window.location.href = "assistance.php";
+                            }
+                        });
+                        </script>
+                        </body>';
+            } catch (Exception $e) {
+                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
+         } else{ 
+            echo '<body>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script>
+            swal("Updated successfully","","success")
+            .then((value) => {
+                if (value) {
+                    window.location.href = "assistance.php";
+                }
+            });
+            </script>
+            </body>';}
+
+        } else {
+            echo "Error updating records: " . mysqli_error($con);
+            header("Location: assistance.php");
+            exit();
+        }
+            }
+           
+        }
+        
+        elseif ($Status == "Decline Request for Re-schedule") {
+         $reason= $_POST['reason'];
+            $query = "UPDATE financialassistance f
+            INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+            INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+            SET  t.Status = '$Status', t.Emp_ID='$EmpID'
+            WHERE b.Beneficiary_Id = '$beneID'";
+             $result2 = mysqli_query($con, $query);
+            if ($result2) {
+            $Status = $_POST['Status'];
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+            require 'phpmailer/src/Exception.php';
+            require 'phpmailer/src/PHPMailer.php';
+            require 'phpmailer/src/SMTP.php';
+
+            $mail = new PHPMailer(true);
+            $lastName = $record['Lastname'];
+           
+            $Email = $record['Email'];
+            $status= $_POST['Status'];
+
+            try {
+                // Server settings
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'bataanpgbsap@gmail.com'; // Your Gmail address
+                $mail->Password = 'cmpp hltn mxuc tcgl'; // Your Gmail password or App Password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+
+                // Recipients
+                $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
+                $mail->addAddress($Email); // Add a recipient
+
+                // Content
+                $mail->isHTML(true); // Set email format to HTML
+               if($status == 'Decline Request for Re-schedule') {
                     $employeeName = $_POST['EmpName'];
-                    $mail->Subject = 'Re-schedule';
+                    $mail->Subject = 'Request For Re-scheduled Declined';
                     $mail->Body = "
                         <html>
                         <body>
                         <p>Dear Mr./Ms./Mrs. $lastName,</p>
-                        <p>Your request for re-schedule has been accepted. Your new schedule is on $Date at $transaction_time.</p>
-                        <p> We kindly expect your presence on the said date.<br><br></p>
-<p>Best regards,<br>$employeeName</p>
+                        <p>We have received your request for rescheduling. Unfortunately, we regret to inform you that your request cannot be accommodated at this time.</p>
+                        <p>  Please be assured that we are doing our best to process all applications and requests efficiently. However, due to the following reason, we are unable to grant your rescheduling request.<br><br></p>
+                    <p>  Reason:$reason<br><br></p>
+                    <p>   We appreciate your understanding and patience in this matter. If you have any further questions or need additional assistance, please do not hesitate to contact us.<br><br></p>
+                        <p>Best regards,<br>$employeeName</p>
                    
                     <p>Provincial Government of Bataan - Special Assistance Program</p>
                     </body>
                     </html>
                     ";
+
+
+
+              
+                
                 }
          
 
@@ -285,9 +513,152 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             echo "Error updating records: " . mysqli_error($con);
             header("Location: assistance.php");
             exit();
+        } 
         }
+        }
+
+        elseif ($Status == "For Re-schedule") {
+            $transaction_time = $_POST['time'];
+            $Date = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
+         
+            $Status = "For Validation";
+
+            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
+            $overlapResult = mysqli_query($con, $overlapQuery);
+
+            if(mysqli_num_rows($overlapResult) > 0) {
+                
+                   echo '<body>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+        swal("The selected date and time are already taken. Please choose a different time.","","error")
+        .then((value) => {
+            if (value) {
+                exit(); // Prevent further execution
+            }
+        });
+        </script>
+        </body>';
+            }else{
+                
+                
+            
+            $query = "UPDATE financialassistance f
+            INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+            INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+            SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
+            WHERE b.Beneficiary_Id = '$beneID'";
+            
+             $result2 = mysqli_query($con, $query);
+            if ($result2) {
+            $Status = $_POST['Status'];
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+            require 'phpmailer/src/Exception.php';
+            require 'phpmailer/src/PHPMailer.php';
+            require 'phpmailer/src/SMTP.php';
+
+            $mail = new PHPMailer(true);
+            $lastName = $record['Lastname'];
+           
+            $Email = $record['Email'];
+            $status= $_POST['Status'];
+
+            try {
+                // Server settings
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'bataanpgbsap@gmail.com'; // Your Gmail address
+                $mail->Password = 'cmpp hltn mxuc tcgl'; // Your Gmail password or App Password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+
+                // Recipients
+                $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
+                $mail->addAddress($Email); // Add a recipient
+
+                // Content
+                $mail->isHTML(true); // Set email format to HTML
+               if($status == 'For Re-schedule') {
+                    $employeeName = $_POST['EmpName'];
+                    $mail->Subject = 'Re-schedule';
+                    $mail->Body = "
+                        <html>
+                        <body>
+                        <p>Dear Mr./Ms./Mrs. $lastName,</p>
+                        <p>Your request for re-schedule has been accepted. Your new schedule is on $Date at $transaction_time.</p>
+                        <p> We kindly expect your presence on the said date.<br><br></p>
+<p>Best regards,<br>$employeeName</p>
+                   
+                    <p>Provincial Government of Bataan - Special Assistance Program</p>
+                    </body>
+                    </html>
+                    ";
+                
+                }
+         
+
+                $mail->send();
+                echo '<body>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                        <script>
+                        swal("Update and email send successful","","success")
+                        .then((value) => {
+                            if (value) {
+                                window.location.href = "assistance.php";
+                            }
+                        });
+                        </script>
+                        </body>';
+            } catch (Exception $e) {
+                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
+         } else{ 
+            echo '<body>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script>
+            swal("Updated successfully","","success")
+            .then((value) => {
+                if (value) {
+                    window.location.href = "assistance.php";
+                }
+            });
+            </script>
+            </body>';}
+
+        } else {
+            echo "Error updating records: " . mysqli_error($con);
+            header("Location: assistance.php");
+            exit();
+        } 
+        }
+        }
+
+        else{
+            date_default_timezone_set('Asia/Manila');
+            $Date = date('Y-m-d'); // Set the current date for Given_Sched
+            $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
+    
+            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
+            $overlapResult = mysqli_query($con, $overlapQuery);
+
+            if(mysqli_num_rows($overlapResult) > 0) {
+                echo "The selected date and time are already booked. Please choose a different time.";
+                exit();
+            }
+            $query = "UPDATE financialassistance f
+                      INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+                      INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+                      SET  t.Given_Sched = '$Date',
+        t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
+                      WHERE b.Beneficiary_Id = '$beneID'";
+        }
+        // Construct the update query
     }
-}
+
+
+
+      
 
 ?>
 
@@ -335,6 +706,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 <div class="input-box">
                     <span class="details">Financial Assistance Type</span>
                     <input disabled type = "text" required value = "<?php echo $record['FA_Type']; ?>">
+                       <input type = "hidden" name="FA_Type" required value = "<?php echo $record['FA_Type']; ?>">
                    <!-- <select name="FA_Type">
                        
                         $FA_type = array('Burial', 'Chemotherapy & Radiation', 'Dialysis', 'Medicine');
@@ -350,7 +722,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     <span class="details">Status</span>
                     <select id="status" name="Status" onchange="handleStatusChange()">
                         <?php
-                       $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Payout' ,'For Payout','Request for Re-schedule','For Re-schedule', 'Done');
+                       $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Payout' ,'For Payout','Request for Re-schedule','For Re-schedule', 'Decline Request for Re-schedule', 'Done');
                         foreach ($status as $stat) {
                             $selected = ($record['Status'] == $stat) ? 'selected' : '';
                             echo "<option $selected>$stat</option>";
@@ -399,7 +771,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
             at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br>
           <br>
-          If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='http://localhost/public_html/requestresched.php' style = "color:  blue;"> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.
+          If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='https://pgbataansap24.000webhostapp.com/requestresched.php' style = "color:  blue;"> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.
 Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.
  
             Best regards,<br>
@@ -414,7 +786,7 @@ Please note that your reasons may need to be verified to avoid any inconvenience
             
              <div style = "color: black; padding:15px; background:white; margin-top:20px;">
                 <h3 style = "color: blue;">REQUIREMENTS FOR BURIAL ASSISTANCE VALIDATION</h3>
-                <ul>
+                  <ul style = "text-align: left; margin-left:60px">
                     <input type="checkbox" name="requirement" value="Registered Death Certificate (2 PHOTOCOPIES)"> Registered Death Certificate (2 PHOTOCOPIES) <br>
                     <input type="checkbox" name="requirement" value="Funeral Contract with Balance (2 PHOTOCOPIES)"> Funeral Contract with Balance (2 PHOTOCOPIES) <br>
                     <input type="checkbox" name="requirement" value="Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY)"> Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY) <br>
@@ -433,20 +805,19 @@ Please note that your reasons may need to be verified to avoid any inconvenience
             
         } else if (faType === 'Chemotherapy & Radiation') {
             requirements.innerHTML = `
-             <div style = "color: black; padding:15px; background:white; margin-top:20px;">
-                <h3 style = "color: blue;">REQUIREMENTS FOR CHEMOTHERAPY & RADIATION ASSISTANCE VALIDATIONS</h3><br>
-                <ul>
-                    <input type="checkbox" name="requirement" value="Medical Abstract"> Medical Abstract<br>
-                    <input type="checkbox" name="requirement" value="Request Letter from Barangay Health Center"> Request Letter from Barangay Health Center<br>
+            
+                  <div style = "color: black; padding:15px; background:white; margin-top:20px;">
+                <h3 style = "color: blue;">REQUIREMENTS FOR CHEMOTHERAPY & RADIATION ASSISTANCE VALIDATIONS</h3>
+                  <ul style = "text-align: left; margin-left:60px">
+                    <input type="checkbox" name="requirement" value="Medical Abstract"> Medical Abstract <br>
+                    <input type="checkbox" name="requirement" value="Request Letter from Barangay Health Center"> Request Letter from Barangay Health Center <br>
                     <input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente"> Xerox Valid ID ng Pasyente <br>
                     <input type="checkbox" name="requirement" value="Xerox Valid ID ng Maglalakad"> Xerox Valid ID ng Maglalakad <br>
-                    <input type="checkbox" name="requirement" value="BRGY. INDIGENCY (PASYENTE) <br>
-                </ul>
-                <h3 style = "color: blue;">SUPPORTING DOCUMENTS</h3>
+                    <input type="checkbox" name="requirement" value="BRGY. INDIGENCY (PASYENTE)"> BRGY. INDIGENCY (PASYENTE) <br>
+                    </ul>
+                    <h3 style = "color: blue;">SUPPORTING DOCUMENTS</h3>
                     <ul style = "text-align: left; margin-left:60px">
-                    <input type="hidden" name="requirement" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
                     <input type="checkbox" name="requirement" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
-                   
                     <input type="checkbox" name="requirement" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
                     <input type="checkbox" name="requirement" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
                     </ul>
@@ -473,7 +844,6 @@ Please note that your reasons may need to be verified to avoid any inconvenience
              </div>
             `;
         }
-    
     } else if (status === 'Pending for Payout') {
         emailFormat.innerHTML = `
          <div style = "color: black; padding:15px; background:white; margin-top:20px;">
@@ -486,7 +856,8 @@ Please note that your reasons may need to be verified to avoid any inconvenience
             Provincial Government of Bataan - Special Assistance Program</p>
          </div>
         `;
-    } else if (status === 'Request for Re-schedule') {
+    }
+    else if (status === 'Request for Re-schedule') {
         requirements.style.display = 'block'; 
         requirements.innerHTML = `
                 <h3 style = "color: white;">Click this   <a href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox" target="_blank" style = "color:  #3cd82e;">link</a> to check the email of beneficiary.</h3>
@@ -518,10 +889,28 @@ Please note that your reasons may need to be verified to avoid any inconvenience
          </div> 
         `;
 }
-      }
+else if (status === 'Decline Request for Re-schedule') {
+        emailFormat.innerHTML = `
+         <div style = "color: black; padding:15px; background:white; margin-top:20px;">
+            Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
+            <p>We have received your request for rescheduling. Unfortunately, we regret to inform you that your request cannot be accommodated at this time.<br>
+            Please be assured that we are doing our best to process all applications and requests efficiently. However, due to the following reason, we are unable to grant your rescheduling request.<br><br>
+             
+        <strong>Reason:</strong><br><textarea style="height:50px;width:620px;" name="reason" required value=""></textarea><br>
+
+            We appreciate your understanding and patience in this matter. If you have any further questions or need additional assistance, please do not hesitate to contact us.<br><br>
+            Best regards,<br>
+            <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+            Provincial Government of Bataan - Special Assistance Program</p>
+         </div>
+        `;
+    }
+
+
+}
 
     function cancelEdit() {
-            window.history.back();
+             window.location.href = "assistance.php";
         }
 
         function showConfirmation() {

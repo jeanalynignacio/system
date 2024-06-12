@@ -10,7 +10,7 @@
                     $firstError = "";
                     $middleError = "";
                     $bdayError = "";
-                    $numError = "";
+                   $numError = "";
                     $provError = "";
                     $cityError = "";
                     $brgyError = "";
@@ -22,7 +22,7 @@
                     $Errors = "";
                     
                       $otp_str = str_shuffle("0123456789");
-                    $verification_code= substr($otp_str, 0, 5);
+                    $verification_code= substr($otp_str, 0, 10);
                     
                     if(isset($_POST['submit'])){
                     // receive all input values from the form
@@ -161,9 +161,9 @@ if(mysqli_query($con, $query)){
   if ($result) {
     //send verification email
    
- require 'PHPMailer/src/Exception.php';
-require 'PHPMailer/src/PHPMailer.php';
-require 'PHPMailer/src/SMTP.php';
+    require 'PHPMailer/src/Exception.php';
+    require 'PHPMailer/src/PHPMailer.php';
+    require 'PHPMailer/src/SMTP.php';
 
    
     $mail = new PHPMailer(true);
@@ -184,7 +184,7 @@ require 'PHPMailer/src/SMTP.php';
         //Content
         $mail->isHTML(true); // Set email format to HTML
         $mail->Subject = 'Email Verification';
-        $mail->Body = "Good Day! this is your verification code: $verification_code 
+        $mail->Body = "Good Day! This is your verification code: $verification_code 
              <p> If you did not request for this code. Please ignore this email.</p>";
           
     
@@ -197,7 +197,7 @@ require 'PHPMailer/src/SMTP.php';
           echo '<script>
          setTimeout(function(){
             window.location.href="verification.php";
-        } , 5000);
+        } , 3000);
       </script>
       </body>';
        }
@@ -404,8 +404,8 @@ barangayDropdown.setAttribute("name", "Barangay");
                   <div class="field input input-container">
                     <label for="password">Password</label>
                     <input type="password" name="password" id="password" autocomplete="off" value="<?php echo $_POST['password'] ?? ''; ?>" required>
-                    <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility()"></i>
-                    <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $passError ?></p>                    
+                   <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility()"></i>
+                   <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $passError ?></p>                    
                 </div>
   
                   
@@ -427,8 +427,7 @@ barangayDropdown.setAttribute("name", "Barangay");
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
   
- 
-        function togglePasswordVisibility() {
+  function togglePasswordVisibility() {
             const passwordField = document.getElementById('password');
             const togglePassword = document.querySelector('.toggle-password');
             if (passwordField.type === 'password') {
@@ -441,8 +440,7 @@ barangayDropdown.setAttribute("name", "Barangay");
                 togglePassword.classList.add('fa-eye');
             }
         }
-    
-    
+
     
     
        

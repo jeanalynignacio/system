@@ -2,7 +2,7 @@
  session_start();
 
  include("php/config.php");
- use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -53,9 +53,9 @@ else {
    WHERE Beneficiary_Id = '$beneID'";
    $result2 = mysqli_query($con, $query);
    if ($result2) {
-    require 'PHPMailer/src/Exception.php';
-    require 'PHPMailer/src/PHPMailer.php';
-    require 'PHPMailer/src/SMTP.php';
+    require 'phpmailer/src/Exception.php';
+    require 'phpmailer/src/PHPMailer.php';
+    require 'phpmailer/src/SMTP.php';
    
     $mail = new PHPMailer(true);
 
@@ -78,18 +78,17 @@ else {
         $mail->Body =  "<html><body><p>$reason</p></body></html>";
     
        $mail->send();
-    
       echo '<body>
       <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
       <script>
       swal("Email sent successfully!", "Please wait for an email notification to know if your request is accepted or not.", "success")
-      .then((value) => {
-          if (value) {
-              <?php echo $reason ?>
-          }
-      });
-      </script>
-      </body>';
+      </script>';
+        echo '<script>
+       setTimeout(function(){
+          window.location.href="usershomepage.php";
+      } , 3000);
+    </script>
+    </body>';
     
   }catch (Exception $e) {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
@@ -102,14 +101,13 @@ else {
    
 ?>
 <!DOCTYPE html>
-<!---Coding By CodingLab | www.codinglabweb.com--->
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <!---Custom CSS File--->
-    <link rel="stylesheet" href="requestresched.css" />
+    <link rel="stylesheet" href="requestedresched.css" />
   </head>
   <body>
     <section class="container">

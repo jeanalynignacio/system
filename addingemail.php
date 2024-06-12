@@ -25,7 +25,7 @@ if(isset($_SESSION['Emp_ID'])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Add Email</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="emp_registration.css">
 </head>
@@ -74,7 +74,6 @@ if(isset($_SESSION['Emp_ID'])){
                     require 'PHPMailer/src/Exception.php';
                     require 'PHPMailer/src/PHPMailer.php';
                     require 'PHPMailer/src/SMTP.php';
-   
                     $mail = new PHPMailer(true);
 
                     // Server settings
@@ -93,7 +92,7 @@ if(isset($_SESSION['Emp_ID'])){
                     // Content
                     $mail->isHTML(true); // Set email format to HTML
                     $mail->Subject = 'Email Verification';
-                    $mail->Body = "Good Day! this is your verification code: $verification_code 
+                    $mail->Body = "Good Day! This is your verification code: $verification_code 
                     <p> If you did not request for this code. Please ignore this email.</p>";
                  
     
@@ -123,7 +122,7 @@ if(isset($_SESSION['Emp_ID'])){
         }
         ?>
            
-            <header>Sign Up</header>
+            <header>Add Email</header>
             <form action="" method="post">
                 <div class="field input">
                     <label for="Email" style="font-size: 18px;">Email</label>

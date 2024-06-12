@@ -16,7 +16,7 @@ if (isset($_POST['submit'])) {
                     echo '<body>
                     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                     <script>
-                    swal("Registration successful!", "Please verify your email.", "success")
+                    swal("Email verified successfully", "You may now log in", "success")
                     </script>';
                       echo '<script>
                      setTimeout(function(){
@@ -90,12 +90,12 @@ if (isset($_POST['submit'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <title>Login</title>
+    <title>Verification</title>
 </head>
 <body>
     <div class="container">
         <div class="box form-box">
-            <header>Login</header>
+            <header>Verification</header>
             <form id="" action="" method="post">
                 <div class="field input">
                     <label for="username">Enter verification code here</label>

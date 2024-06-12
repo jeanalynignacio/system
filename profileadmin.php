@@ -47,15 +47,20 @@ if(isset($_POST['submit'])) {
             ?>
             <script>
                 alert("Update successful");
+                 window.location.href = "profileadmin.php";
             </script>
-            <?php
-            header("Location: profileadmin.php");
+          <?php
+           
             exit();
         } else {
-            echo "Error updating records: " . mysqli_error($con);
-            header("Location: profileadmin.php");
-            exit();
-        }
+           echo "Error updating records: " . mysqli_error($con);
+    ?>
+    <script>
+        window.location.href = "profileadmin.php";
+    </script>
+    <?php
+    exit();
+}
     }
 
 ?>
@@ -66,6 +71,7 @@ if(isset($_POST['submit'])) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit Form</title>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="profileadmin.css" />
 </head>
 <body>
@@ -78,12 +84,12 @@ if(isset($_POST['submit'])) {
                 <div class="input-box">
                 
                     <span class="details">Last Name</span>
-                    <input type="text" required value="<?php echo $res_Lname ?? ''; ?>" id="Lastname" name="Lastname" disabled>
+                    <input type="text" autocomplete="off" required value="<?php echo $res_Lname ?? ''; ?>" id="Lastname" name="Lastname" disabled>
                 </div>
 
                 <div class="input-box">
                     <span class="details">First Name</span>
-                    <input type="text" required value="<?php echo $res_Fname ?? ''; ?>" id="Firstname" name="Firstname" disabled>
+                    <input type="text" autocomplete="off" required value="<?php echo $res_Fname ?? ''; ?>" id="Firstname" name="Firstname" disabled>
                     <input type="hidden" required value="<?php echo $Emp_ID; ?>" name="Emp_ID" />
                 </div>
             </div>
@@ -91,17 +97,18 @@ if(isset($_POST['submit'])) {
             <div class="user-details">
                 <div class="input-box">
                     <span class="details">Email</span>
-                    <input type="text"  required value="<?php echo $res_Email ?? ''; ?>" id="Email"  name="Email" disabled/>
+                    <input type="text"  autocomplete="off" required value="<?php echo $res_Email ?? ''; ?>" id="Email"  name="Email" disabled/>
                 </div>
 
                 <div class="input-box">
                     <span class="details">Username</span>
-                    <input type="text" required value="<?php echo $res_username ?? ''; ?>" id="username"  name="username" disabled/>
+                    <input type="text"  autocomplete="off" required value="<?php echo $res_username ?? ''; ?>" id="username"  name="username" disabled/>
                 </div>
 
                 <div class="input-box">
                     <span class="details">Password</span>
-                    <input type="text" required value="<?php echo $res_password ?? ''; ?>" id="password_hash"  name="password_hash" disabled/>
+                    <input type="text"  autocomplete="off" required value="<?php echo $res_password ?? ''; ?>" id="password_hash"  name="password_hash" disabled/>
+                    <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility()"></i>
                 </div>
             </div>
 
@@ -112,7 +119,7 @@ if(isset($_POST['submit'])) {
         
                 <!-- Submit button -->
                 <input type="submit" value="Done Edit" name="submit" id="submit"  class="hidden" />
-<input type="button" value="Cancel" name="cancel" id="cancel" onclick="cancelEdit()"/>
+<input type="button" value="Back" name="cancel" id="cancel" onclick="cancelEdit()"/>
 
 
                
@@ -126,8 +133,7 @@ if(isset($_POST['submit'])) {
  
         <script>
         function cancelEdit() {
-            // Redirect to the previous page <script type="text/javascript">
-            window.history.back();
+             window.location.href = "dashboard.php";
         }
 
         function showConfirmation() {
@@ -155,7 +161,19 @@ if(isset($_POST['submit'])) {
     
     }
 
-
+ function togglePasswordVisibility() {
+            const passwordField = document.getElementById('password_hash');
+            const togglePassword = document.querySelector('.toggle-password');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                togglePassword.classList.remove('fa-eye');
+                togglePassword.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                togglePassword.classList.remove('fa-eye-slash');
+                togglePassword.classList.add('fa-eye');
+            }
+        }
 
     </script>
 </body>

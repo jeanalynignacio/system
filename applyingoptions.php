@@ -19,7 +19,6 @@ if($result = mysqli_fetch_assoc($query)){
 $res_Id = $result['Id'];
 $res_Fname = $result['Firstname'];
 $res_Lname = $result['Lastname'];
-$res_profile = $result['userIDpic'];
 }
 }
 if(isset($_POST['hospitals'])){
@@ -115,7 +114,7 @@ if (isset($_POST['myself'])) {
                         echo '<body>
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                         <script>
-                        swal("Notification", "You already pendingh for req. Please wait for the email to know when your schedule of appearance to the office is. Thank you.")
+                        swal("Notification", "You already pending for req. Please wait for the email to know when your schedule of appearance to the office is. Thank you.")
                         .then((value) => {
                             if (value) {
                                 window.location.href = "applyingoptions.php";
@@ -149,7 +148,7 @@ if (isset($_POST['myself'])) {
                         echo '<body>
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                         <script>
-                        swal("Notification", "You already request for rescheduling. Please wait to an email to know if it is accepted or not.")
+                        swal("Notification", "You already request for reschedule. Please wait to an email to know if it is accepted or not.")
                         .then((value) => {
                             if (value) {
                                 window.location.href = "applyingoptions.php";
@@ -210,9 +209,13 @@ if (isset($_POST['myself'])) {
                 $HousenoStreet = $row['HousenoStreet'];
                 $Email = $row['Email'];
                 $Representative_ID = $row['Id'];
+
+                date_default_timezone_set('Asia/Manila');
+                $Date = date('Y-m-d'); 
+                $TIME = date('H:i:s'); 
             }
 
-            $query = "INSERT INTO beneficiary (Lastname, Firstname, Middlename, Birthday, Contactnumber, Province, CityMunicipality, Barangay, HousenoStreet, Email, Representative_ID, Date, time) VALUES ('$Lastname', '$Firstname', '$Middlename', '$Birthday', '$Contactnumber', '$Province', '$CityMunicipality', '$Barangay', '$HousenoStreet', '$Email', '$Representative_ID', CURDATE(), CURTIME())";
+            $query = "INSERT INTO beneficiary (Lastname, Firstname, Middlename, Birthday, Contactnumber, Province, CityMunicipality, Barangay, HousenoStreet, Email, Representative_ID, Date, time) VALUES ('$Lastname', '$Firstname', '$Middlename', '$Birthday', '$Contactnumber', '$Province', '$CityMunicipality', '$Barangay', '$HousenoStreet', '$Email', '$Representative_ID', '$Date', '$TIME')";
 
             if (mysqli_query($con, $query)) {
                 echo "<script>window.location.href = 'applysched.php';</script>";
@@ -330,6 +333,7 @@ elseif (isset($_POST['relative'])) {
 <head>
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Apply</title>
     <link rel="stylesheet" href="applyingoptions.css" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"

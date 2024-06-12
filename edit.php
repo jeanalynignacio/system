@@ -57,7 +57,6 @@
         $Barangay=$_POST['Barangay'];
         $HousenoStreet=$_POST['HousenoStreet'];
       
-        $Username=$_POST['Username'];
         $Password=$_POST['Password'];
 
 
@@ -69,7 +68,7 @@
         }
 
         if (empty($errors)) {
-        $query = "UPDATE users SET Lastname='$Lastname', Firstname='$Firstname', Middlename='$Middlename', Birthday='$Birthday', Contactnumber='$Contactnumber',  CityMunicipality='$CityMunicipality', Barangay='$Barangay', HousenoStreet='$HousenoStreet', Username='$Username', Password='$Password' WHERE Id='$userID'";
+        $query = "UPDATE users SET Lastname='$Lastname', Firstname='$Firstname', Middlename='$Middlename', Birthday='$Birthday', Contactnumber='$Contactnumber',  CityMunicipality='$CityMunicipality', Barangay='$Barangay', HousenoStreet='$HousenoStreet', Password='$Password' WHERE Id='$userID'";
 
         $result2=mysqli_query($con,$query);
 
@@ -289,13 +288,12 @@
                 </div>
                 <div class="field input">
                     <label for = "Username">Username</label>
-                    <input type="text" name="Username" id="Username" autocomplete="off"value="<?php echo "{$res_ID['Username']}"; ?>" required>  
+                    <input type="text" disabled name="Username" id="Username" autocomplete="off"value="<?php echo "{$res_ID['Username']}"; ?>" required>  
                 </div>
                 <div class="field input">
                     <label for = "Password">Password</label>
-                    <input type="password" name="Password" id="Password" autocomplete="off"value="<?php echo "{$res_ID['Password']}"; ?>" required>           
-                    <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility()"></i>
-                  
+                    <input type="password" name="Password" id="Password" autocomplete="off"value="<?php echo "{$res_ID['Password']}"; ?>" required>
+              <span class="fas fa-eye toggle-password" onclick="togglePasswordVisibility(this)"></span>
                     <p style="color:  rgb(146, 16, 16); font-size: 18px;"><?php echo $passError ?></p>                    
               
                 </div>
@@ -331,19 +329,6 @@
     return isValid;
 }
 
-function togglePasswordVisibility() {
-            const passwordField = document.getElementById('Password');
-            const togglePassword = document.querySelector('.toggle-password');
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                togglePassword.classList.remove('fa-eye');
-                togglePassword.classList.add('fa-eye-slash');
-            } else {
-                passwordField.type = 'Password';
-                togglePassword.classList.remove('fa-eye-slash');
-                togglePassword.classList.add('fa-eye');
-            }
-        }
 
 function showConfirmation() {
     if (!validateForm()) {
@@ -361,6 +346,20 @@ function showConfirmation() {
         }
     }
 }
+function togglePasswordVisibility(icon) {
+    var passwordInput = icon.previousElementSibling;
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        passwordInput.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+
+
 
 
 </script>

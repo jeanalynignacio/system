@@ -139,7 +139,8 @@ $res_Fname = $result['Firstname'];
                             <th> Time: </th>
                             <th> Beneficiary Name: </th>
                             <th> Municipality: </th>
-                            <th> Schedule: </th>
+                            <th> Schedule Date: </th>
+                              <th> Schedule Time: </th>
                             <th> Transaction Type: </th>
                             <th> Amount Received: </th>
                             <th> Status: </th>
@@ -149,12 +150,12 @@ $res_Fname = $result['Firstname'];
                         <?php
 include("php/config.php");
 
-$sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType,  t.Status ,f.Amount 
+$sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType,  t.Status ,f.Amount,t.Given_Time 
         FROM financialassistance f 
         INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
         where FA_type= 'Burial'
-        ORDER BY t.Date ASC"; 
+        ORDER BY t.Date ASC, t.transaction_time ASC";
 
 $result = $con->query($sql);
 
@@ -163,13 +164,19 @@ if (!$result) {
 }
 
 while ($row = $result->fetch_assoc()) {
+      $givenTime = "";
+if ($row["Given_Time"] !== NULL) {
+    $givenTime = date("h:i A", strtotime($row["Given_Time"]));
+}
+      $transaction_time = date("h:i A", strtotime($row["transaction_time"]));
     echo "<tr>
             <td>" . $row["Date"] . " </td>
-            <td>" . $row["transaction_time"] . " </td>
+            <td>" . $transaction_time . " </td>
             
             <td>" . $row["Lastname"] . ", " . $row["Firstname"] . " </td>
             <td>" . $row["CityMunicipality"] . " </td>
             <td>" . $row["Given_Sched"] . " </td>
+             <td>" . $givenTime . " </td>
             <td>" . $row["TransactionType"] . " </td>
             <td>" . $row["Amount"] . " </td>
             <td>" . $row["Status"] . " </td>
@@ -178,7 +185,7 @@ while ($row = $result->fetch_assoc()) {
             "<input type='hidden' name='Beneficiary_Id' value='" . $row['Beneficiary_Id'] . "'>" .
             "<input type='hidden' name='Status' value='" . $row['Status'] . "'>" .
           
-            "<button type='submit'>Edit</button>" .
+            "<button type='submit'>View</button>" .
             "</form>" .
             "</td>
             </tr>";

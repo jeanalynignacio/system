@@ -146,13 +146,13 @@
               }
             }  
        ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Form</title>
+    <title>Login Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="employee-login.css" />
 </head>
 <style>
@@ -167,27 +167,45 @@
         <form action="#" method="POST">
             <div class="user-details">
                 <div class="input-box">
-                    <span class="details"> Username </span>
+                    <span class="details" style="margin-top:30px;"> Username </span>
                     <input type="text" name="username" id="username" autocomplete="off" value="<?php echo $_POST['username'] ?? ''; ?>" required>
                     <p style="color:red;"><?php echo $userError ?></p>  
                 </div>
             </div>
-            <div class="user-details">
-                <div class="input-box">
-                    <span class="details"> Password </span>
-                    <input type="password" name="password" id="password" autocomplete="off" required>  
+           
+            <div class="field input input-container">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" autocomplete="off" value="<?php echo $_POST['password'] ?? ''; ?>" required > 
+                    <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility()"></i>
                     <p style="color:red;"><?php echo $passError ?></p>                    
                 </div>
+                <?php if(isset($logError)): ?>
+            <div class="message">
+                <p style="color:red; margin-top:20px;"><?php echo $logError; ?></p>
             </div>
+            <?php endif; ?>
+
+
             <div class="button">
                 <input type="submit" class="btn" name="submit" value="Login" required>  
             </div>
-            <?php if(isset($logError)): ?>
-            <div class="message">
-                <p style="color:red;"><?php echo $logError; ?></p>
-            </div>
-            <?php endif; ?>
+           
         </form>
     </div>
+    <script>
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById('password');
+            const togglePassword = document.querySelector('.toggle-password');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                togglePassword.classList.remove('fa-eye');
+                togglePassword.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                togglePassword.classList.remove('fa-eye-slash');
+                togglePassword.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
 </html>

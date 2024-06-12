@@ -16,8 +16,7 @@ $res_data[] = $row;
 }
 if(isset($_POST['submit'])) {
 if(isset($_POST['confirmed']) && $_POST['confirmed'] === "yes") {
-$Date = $_POST['Date'];
-$time = $_POST['time'];
+
 $Lastname = $_POST['Lastname'];
 $Firstname = $_POST['Firstname'];
 $Middlename = $_POST['Middlename'];
@@ -40,9 +39,6 @@ Province = '$Province',
 CityMunicipality = '$CityMunicipality',
 Barangay = '$Barangay',
 HousenoStreet = '$HousenoStreet',
-
-Date = '$Date',
-time = '$time',
 Representative_ID = NULL
 WHERE Beneficiary_Id = '$beneID'";
 $result2 = mysqli_query($con, $query);
@@ -77,13 +73,13 @@ exit();
 <div class="user-details">
 <div class="input-box">
 <span class="details">Date</span>
-<input type="date" id="calendar" name="Date" required
+<input type="date" disabled id="calendar" name="Date" required
 value="<?php echo $record['Date']; ?>">
 </div>
 <div class="input-box">
 <span class="details">Time</span>
-<input type="text" id="time" required value="<?php echo
-$record['time']; ?>" name="time">
+<input type="text" id="time" required disabled value="<?php echo date('h:i A', strtotime($record['time'])); ?>" name="time">
+
 </div>
 <div class="input-box">
 <span class="details">Last Name</span>

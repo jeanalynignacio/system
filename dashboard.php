@@ -282,10 +282,10 @@ $totalEntriesSTAT = $row['totalEntriesSTAT'];
                             if ($result) {
                                 $beneficiary = $result->fetch_assoc();
                                 
-                        
+                        $transaction_time = date("h:i A", strtotime($row["transaction_time"]));
                             echo "<tr>
                             <td>". $row["Date"] ."</td>
-                            <td>". $row["transaction_time"] ."</td>
+                           <td>" . $transaction_time . " </td>
                             <td>". $beneficiary["Lastname"]  . ", " . $beneficiary["Firstname"] . " </td>
                             <td>". $row["TransactionType"] ."</td>
                             <td>". $row["AssistanceType"] ."</td>
