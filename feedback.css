@@ -1,0 +1,246 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;1,600&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+}
+
+body {
+  justify-content: center;
+  align-items: center;
+  background-color: #1477d2;
+  height: 100%;
+}
+
+.all-content {
+  background: #1477d2;
+  border-bottom: 2px solid #f2f2f2;
+}
+
+html ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html ::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 10px;
+}
+
+html ::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* navbar start */
+
+#navbar {
+  background-color: white;
+  height: 150px;
+}
+
+#logo img {
+  border-radius: 10px;
+  width: 60px;
+  margin-left: 5px;
+}
+
+.navbar-nav {
+  margin-left: 50px;
+}
+
+.nav-item .nav-link {
+  color: white;
+  margin-left: 10px;
+  font-weight: bold;
+  transition: 0.5s;
+}
+
+.nav-item .nav-link:hover {
+  background: #c0dfff;
+  border-radius: 5px;
+  color: black;
+}
+
+#navbar form button {
+  background: black;
+  color: white;
+  border: 1px solid white;
+}
+
+.container-fluid .navbar-brand {
+  font-size: 18px;
+}
+/* navbar end */
+
+/* feedback */
+.feedback {
+  margin-bottom: 40px;
+}
+.feedback h1 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-left: 20px;
+  color: black;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.feedback .eng {
+  margin-top: 5px;
+  text-align: justify;
+  font-size: 20px;
+  color: black;
+  padding-right: 50px;
+  padding-left: 35px;
+  line-height: 1.2;
+}
+
+.feedback .fil {
+  text-align: justify;
+  font-size: 13px;
+  color: black;
+  padding-right: 50px;
+  padding-left: 35px;
+}
+
+.input-box {
+  display: block;
+  padding-left: 30px;
+  margin-bottom: 20px;
+}
+
+.input-box input {
+  height: 40px;
+  width: 600px;
+  font-size: 15px;
+  color: rgb(80, 78, 78);
+  border: 1.5px solid black;
+  border-radius: 2px;
+  vertical-align: middle;
+  padding-left: 5px;
+}
+
+input[type="radio"] {
+  margin-top: -1px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid black;
+  cursor: pointer;
+  padding-bottom: 15px;
+}
+
+/* Style for checked radio buttons */
+input[type="radio"]:checked {
+  background-color: #999;
+}
+
+/* Dropdown Button */
+.dropbtn {
+  margin-left: 35px;
+  background-color: white;
+  color: black;
+  padding: 10px;
+  font-size: 16px;
+  border: 1.5px solid black;
+  cursor: pointer;
+  position: relative;
+  width: 500px;
+  text-align: left;
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn:hover,
+.dropbtn:focus {
+  background-color: #f1f1f1; /* Light gray background */
+}
+
+.dropbtn:hover,
+.dropbtn:focus {
+  background-color: #f1f1f1;
+}
+
+/* Dropdown Icon */
+.dropbtn i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.dropdown-content {
+  margin-left: 35px;
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 500px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border: 1.5px solid black;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.input-box :where(.input-box textarea) {
+  position: relative;
+  height: 100px; /* Adjust height as needed */
+  width: 600px;
+  outline: none;
+  font-size: 1rem;
+  color: rgb(80, 78, 78);
+  border: 1.5px solid black;
+  border-radius: 8px;
+  padding: 15px;
+  resize: vertical; /* Allows vertical resizing */
+}
+
+.input-box textarea:focus {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.star-rating {
+  margin-top: -50px;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: left;
+  gap: 20px;
+}
+
+.star-rating input {
+  display: none;
+}
+
+.star-rating label {
+  font-size: 6em;
+  color: gray;
+  cursor: pointer;
+}
+
+.star-rating label::before {
+  content: "★";
+}
+
+.star-rating input:checked ~ label {
+  color: gray;
+}
+
+.star-rating input:checked + label,
+.star-rating input:checked + label ~ label {
+  color: blue;
+}
+
+.star-rating input#star1:checked ~ label,
+.star-rating input#star2:checked ~ label:nth-of-type(-n + 4),
+.star-rating input#star3:checked ~ label:nth-of-type(-n + 3),
+.star-rating input#star4:checked ~ label:nth-of-type(-n + 2),
+.star-rating input#star5:checked ~ label:nth-of-type(-n + 1) {
+  color: blue;
+}

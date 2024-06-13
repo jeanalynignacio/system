@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> Feedback Form </title>
+    <link rel="stylesheet" href="feedback.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous" />
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  </head>
+  <body>
+    <div class="all-content">
+      <!-- navbar !-->
+
+      <nav
+        class="navbar navbar-expand-lg navbar-light"
+        style="background-color: white"
+      >
+        <div class="container-fluid">
+          <a
+            class="navbar-brand"
+            href="#"
+            id="logo"
+            style="font-size: 13px; color: #1477d2"
+          >
+            <img src="images/background.png" /> PGB - Special Assistance Program
+          </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span>
+              <i
+                class="fa-solid fa-bars"
+                style="color: #1477d2; font-size: 23px"
+              ></i
+            ></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a
+                  style="color: #1477d2"
+                  class="nav-link"
+                  aria-current="page"
+                  href="#"
+                >
+                  Home
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  style="color: #1477d2"
+                  class="nav-link"
+                  href="#Services"
+                  onclick="showServices('header')"
+                >
+                  Services Available
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  style="color: #1477d2"
+                  class="nav-link"
+                  href="#PartneredHospitals"
+                  onclick="showHospitals('partnered')"
+                >
+                  Partnered Hospitals
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  style="color: #1477d2"
+                  class="nav-link"
+                  href="#footer"
+                  onclick="showContact('footer')"
+                >
+                  Contact
+                </a>
+              </li>
+              <li class="nav-item">
+                <a style="color: #1477d2" class="nav-link" href="register.php">
+                  Sign Up
+                </a>
+              </li>
+              <li class="nav-item">
+                <a style="color: #1477d2" class="nav-link" href="login.php">
+                  Log in
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <!-- navbar end -->
+    </div>
+    <div class="feedback">
+      <h1>Feedback Form</h1>
+      <p class="eng">
+        This feedback form monitors the experience of clients of
+        the government office. Your feedback on your recently completed
+        transaction will help this office provide better service. The personal
+        information shared will be kept confidential, and you always have the
+        option not to answer this form.
+      <p class="fil">
+        (Ang feedback form na ito ay sinusubaybayan ang karanasan ng mga kliyente ng tanggapan ng gobyerno.
+        Ang iyong feedback sa iyong kamakailang natapos na transaksyon sa PGB-SAP ay makakatulong sa opisinang ito na
+        makapagbigay ng mas mahusay na serbisyo. Ang personal na impormasyong ibinahagi ay pananatilihing kompidensyal at palagi kang may opsyon na
+        hindi sagutin ang form na ito.) </p>
+      </p>
+      </div>
+
+        <div class = "input-box">
+        <h1 style="font-size: 15px;"> <strong> Name (Pangalan) </strong></h1> <!-- dapat option lang ang paglalagay ng name, di required-->
+        <input placeholder="(Optional)" required />
+      </div>
+
+      <div class = "input-box">
+        <h1 style="font-size: 15px;"> <strong> Date (Petsa) </strong></h1> <!-- required!! -->
+        <input type = "date" required />
+      </div>
+
+      <div class = "input-box">
+        <h1 style="font-size: 15px;"> <strong> Email Address </strong></h1> <!-- required!! -->
+        <input type = "text" required />
+      </div>
+
+      <div class = "dropdown" style="margin-top: 10px;">
+        <label style = "margin-bottom: 5px; margin-left: 35px; font-size: 15px;"> <strong> Office Visited/Assistance Acquired (Opisinang Pinuntahan/Pinagkuhanan ng Tulong) </strong> </label> <br>
+        <button class="dropbtn" onclick="toggleDropdown()"> -- Select Here -- <i class="fas fa-caret-down"></i></button>
+      <div class="dropdown-content" id="myDropdown">
+        <a href="#"> 1BM - Balanga </a>
+        <a href="#"> 1BM - Dinalupihan </a>
+        <a href="#"> 1BM - Hermosa </a>
+        <a href="#"> 1BM - Mariveles </a>
+      </div>
+      </div> <br> 
+
+    <div class="dropdown">
+      <label style = "margin-bottom: 5px; margin-left: 35px; font-size: 15px;"> <strong> Type of Assistance. Choose one. (Uri ng Tulong. Pumili ng isa.) </strong> </label> <br>
+      <button class="dropbtn" onclick="toggleDropdown1()"> -- Select Here -- <i class="fas fa-caret-down"></i></button>
+      <div class="dropdown-content" id="myDropdown1">
+        <a href="#"> Financial Assistance/Burial Assistance </a>
+        <a href="#"> Medicines Assistance </a>
+        <a href="#"> Hospital Bills Assistance </a>
+        <a href="#"> Radiation and Chemotherapy </a>
+        <a href="#"> Dialysis Patients </a>
+  </div>
+
+  <div class="dropdown">
+      <label style = "margin-bottom: 5px; margin-left: 35px; font-size: 15px; margin-top: 20px;"> <strong> How easy was it to find the special assistance you were looking for on our website? (Gaano kadali mong natagpuan ang espesyal na tulong na hinahanap mo sa aming website?) </strong> </label> <br>
+      <button class="dropbtn" onclick="toggleDropdown2()"> -- Select Here -- <i class="fas fa-caret-down"></i></button>
+      <div class="dropdown-content" id="myDropdown2">
+        <a href="#"> Extremely easy </a>
+        <a href="#"> Very easy </a>
+        <a href="#"> Somewhat easy </a>
+        <a href="#"> Not easy </a>
+        <a href="#"> Not at all easy </a>
+  </div>
+
+  <div class="dropdown">
+      <label style = "margin-bottom: 5px; margin-left: 35px; font-size: 15px; margin-top: 20px;"> <strong> How effectively does our website fulfill your needs? (Gaano kahusay na natugunan ng aming website ang iyong mga pangangailangan?) </strong> </label> <br>
+      <button class="dropbtn" onclick="toggleDropdown3()"> -- Select Here -- <i class="fas fa-caret-down"></i></button>
+      <div class="dropdown-content" id="myDropdown3">
+        <a href="#"> Extremely well </a>
+        <a href="#"> Very well </a>
+        <a href="#"> Somewhat well </a>
+        <a href="#"> Not so well </a>
+        <a href="#"> Not at all well </a>
+  </div>
+
+  <h1 style="font-size: 15px; margin-top: 35px; font-size: 15px; margin-left: 35px;"> <strong> Please rate the performance of the office. (Mangyaring magbigay ng marka sa tanggapan.) </strong></h1> <br> <!-- required!! -->
+  <div class = "star-rating" style = "margin-left: 35px;">
+    <input type = "radio" name = "star" id = "star1"> <label for = "star1"> </label>
+    <input type = "radio" name = "star" id = "star2"> <label for = "star2"> </label>
+    <input type = "radio" name = "star" id = "star3"> <label for = "star3"> </label>
+    <input type = "radio" name = "star" id = "star4"> <label for = "star4"> </label>
+    <input type = "radio" name = "star" id = "star5"> <label for = "star5"> </label>
+  </div>
+  
+  <h1 style="font-size: 15px; margin-top: -5px; font-size: 15px; margin-left: 35px;"> <strong> Please rate the performance of the website. (Mangyaring magbigay ng marka sa karanasan sa paggamit ng website.) </strong></h1> <br> <!-- required!! -->
+  <div class = "star-rating" style = "margin-left: 35px;">
+    <input type = "radio" name = "star" id = "star1"> <label for = "star1"> </label>
+    <input type = "radio" name = "star" id = "star2"> <label for = "star2"> </label>
+    <input type = "radio" name = "star" id = "star3"> <label for = "star3"> </label>
+    <input type = "radio" name = "star" id = "star4"> <label for = "star4"> </label>
+    <input type = "radio" name = "star" id = "star5"> <label for = "star5"> </label>
+  </div>
+    <div class="input-box">
+        <h1 style="font-size: 15px; margin-top: -10px; font-size: 15px;"> <strong> Comments/Suggestions for the improvement of the services. (Mga Komento/Suhestiyon para sa pagpapabuti ng Serbisyo) </strong></h1> <!-- required!! -->
+        <textarea required> </textarea>
+    </div>
+    <script>
+  function toggleDropdown() {
+  var dropdownContent = document.getElementById("myDropdown");
+  if (dropdownContent.style.display === "block") {
+    dropdownContent.style.display = "none";
+  } else {
+    dropdownContent.style.display = "block";
+  }
+  }
+
+// Close the dropdown if the user clicks outside of it
+  window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    for (var i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.style.display === "block") {
+        openDropdown.style.display = "none";
+      }
+    }
+  }
+  }
+
+  function toggleDropdown1() {
+  var dropdownContent1 = document.getElementById("myDropdown1");
+  if (dropdownContent1.style.display === "block") {
+    dropdownContent1.style.display = "none";
+  } else {
+    dropdownContent1.style.display = "block";
+  }
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    for (var i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.style.display === "block") {
+        openDropdown.style.display = "none";
+      }
+    }
+  }
+}
+
+function toggleDropdown2() {
+  var dropdownContent1 = document.getElementById("myDropdown2");
+  if (dropdownContent1.style.display === "block") {
+    dropdownContent1.style.display = "none";
+  } else {
+    dropdownContent1.style.display = "block";
+  }
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content2");
+    for (var i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.style.display === "block") {
+        openDropdown.style.display = "none";
+      }
+    }
+  }
+}
+
+function toggleDropdown3() {
+  var dropdownContent1 = document.getElementById("myDropdown3");
+  if (dropdownContent1.style.display === "block") {
+    dropdownContent1.style.display = "none";
+  } else {
+    dropdownContent1.style.display = "block";
+  }
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content2");
+    for (var i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.style.display === "block") {
+        openDropdown.style.display = "none";
+      }
+    }
+  }
+}
+</script>
+  </body>
+</html>
