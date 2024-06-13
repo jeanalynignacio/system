@@ -73,6 +73,57 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 WHERE b.Beneficiary_Id = '$beneID'";
        
     }
+    
+         
+    elseif ($Status == "Done") {
+        date_default_timezone_set('Asia/Manila');
+        $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
+        $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
+        
+     $beneID = $_POST['Beneficiary_Id'];
+     
+     $SQL = mysqli_query($con,"SELECT b.*, t.*, f.*
+     FROM beneficiary b
+     INNER JOIN transaction t ON b.Beneficiary_Id = t.Beneficiary_Id
+     INNER JOIN financialassistance f ON b.Beneficiary_Id = f.Beneficiary_ID
+     WHERE b.Beneficiary_Id = '$beneID'");
+
+if($result = mysqli_fetch_assoc($SQL)){
+
+$TransactionType = $result['TransactionType'];
+$AssistanceType1 = $result['AssistanceType'];
+$FA_Type = $result['FA_Type'];
+$AssistanceType = $AssistanceType1 . "-" . $FA_Type;
+$ReceivedAssistance = $result['Amount'];
+$beneID = $_POST['Beneficiary_Id'];
+$query ="INSERT INTO history( Beneficiary_ID, ReceivedDate, ReceivedTime,TransactionType,AssistanceType,ReceivedAssistance,Emp_ID) VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', ' $TransactionType', '$AssistanceType', '$ReceivedAssistance','$EmpID' )";
+if(mysqli_query($con, $query)){
+    
+    $sql1 = "DELETE FROM transaction  WHERE Beneficiary_Id='$beneID'";
+    $sql2 = "DELETE FROM financialassistance  WHERE Beneficiary_ID='$beneID'";
+
+    $result1 = mysqli_query($con, $sql1);
+    $result2 = mysqli_query($con, $sql2);
+    
+    if($result1 && $result2) {
+
+                    echo '<body>
+                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script>
+                    swal("This beneficiary already received his/her assistance","","success")
+                   
+                    </script>';
+                      echo '<script>
+                     setTimeout(function(){
+                        window.location.href="assistance.php";
+                    } , 2000);
+                  </script>
+                  </body>';
+}
+}
+
+}
+}
         elseif ($Status == "For Schedule") {
 
             $transaction_time = $_POST['time'];
@@ -96,15 +147,15 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         });
         </script>
         </body>';
-            } else{
-            $query = "UPDATE financialassistance f
-            INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
-            INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-            SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
-            WHERE b.Beneficiary_Id = '$beneID'";
-              $result2 = mysqli_query($con, $query);
-        
-        if ($result2) {
+            }else{
+                $query = "UPDATE financialassistance f
+                INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+                INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+                SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
+                WHERE b.Beneficiary_Id = '$beneID'";
+                  $result2 = mysqli_query($con, $query);
+            
+         if ($result2) {
             $Status = $_POST['Status'];
             if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
             require 'phpmailer/src/Exception.php';
@@ -143,7 +194,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     <p>I am writing to inform you that your request for scheduling has been approved.</p>
                     <p>Your schedule has been set for $Date at $transaction_time. We kindly expect your presence on the said date.</p>
                     <p> We kindly expect your presence on the said date.<br><br></p>
-                    <p>   If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='http://localhost/public_html/requestresched.php'> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.<br> 
+                    <p>   If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='https://pgbataansap24.000webhostapp.com/requestresched.php'> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.<br> 
                    Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.</p>
                     <p>Best regards,<br>$employeeName</p>
                    
@@ -190,6 +241,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
          
             }
         }
+        
+    
         elseif ($Status == "Pending for Payout") {
             date_default_timezone_set('Asia/Manila');
             $Date = date('Y-m-d'); // Set the current date for Given_Sched
@@ -310,7 +363,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             date_default_timezone_set('Asia/Manila');
             $Date = date('Y-m-d'); // Set the current date for Given_Sched
             $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
-            
+            $amount = $_POST['amount'];
             $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID' ";
             $overlapResult = mysqli_query($con, $overlapQuery);
 
@@ -330,7 +383,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             $query = "UPDATE financialassistance f
             INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
             INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-            SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
+            SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID',f.Amount='$amount'
             WHERE b.Beneficiary_Id = '$beneID'";
              $result2 = mysqli_query($con, $query);
              if ($result2) {
@@ -364,12 +417,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 $mail->isHTML(true); // Set email format to HTML
                 if($status == 'For Payout') {
                     $employeeName = $_POST['EmpName'];
+                    $amount = $_POST['amount'];
                     $mail->Subject = 'For Payout';
                     $mail->Body = "
                         <html>
                         <body>
                         <p>Dear Mr./Ms./Mrs. $lastName,</p>
                         <p>Your assistance request is currently for payout on $Date at $transaction_time.</p>
+                         You will received a total amount of $amount<br>
                         Kindly proceed to PGB-Hermosa Branch<br>
                         <p>Thank you for your patience and cooperation.</p>
                         <p>Best regards,</p>
@@ -473,11 +528,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     </body>
                     </html>
                     ";
-
-
-
-              
-                
+    
                 }
          
 
@@ -540,9 +591,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         </script>
         </body>';
             }else{
-                
-                
-            
+              
             $query = "UPDATE financialassistance f
             INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
             INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
@@ -634,6 +683,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         }
         }
 
+
+
         else{
             date_default_timezone_set('Asia/Manila');
             $Date = date('Y-m-d'); // Set the current date for Given_Sched
@@ -653,12 +704,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
                       WHERE b.Beneficiary_Id = '$beneID'";
         }
-        // Construct the update query
+    
     }
-
-
-
-      
 
 ?>
 
@@ -731,17 +778,18 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     </select>
                 </div>
 
-                <!--<div class="input-box">
-                    <span class="details">Given Schedule</span>
-                    <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" />
-                </div>-->
+               
             </div>
             
             <input type="hidden" name="confirmed" id="confirmed" value="no">
             <br>
 
+       
+            <div id="payouttype" class="emailformat">
+                    </div>
             <div id="requirements" style="display: none;"></div>
             <div id="emailFormat" class="emailformat">
+            
                     <!-- Email content will be updated based on the selected status -->
                 </div>
            
@@ -759,7 +807,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     var emailFormat = document.getElementById('emailFormat');
     var requirements = document.getElementById('requirements');
     var faType = "<?php echo $record['FA_Type']; ?>";
-    
+    var payouttype = document.getElementById('payouttype');
+    payouttype.innerHTML = '';
     emailFormat.innerHTML = '';
     requirements.style.display = 'none'; // Hide requirements by default
 
@@ -864,13 +913,19 @@ Please note that your reasons may need to be verified to avoid any inconvenience
               
             `;
     } else if (status === 'For Payout') { 
+
+   
+
         emailFormat.innerHTML = `
+          
+     
          <div style = "color: black; padding:15px; background:white; margin-top:20px;">
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>Your assistance request is currently for payout on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
             at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
+            You will received a total amount of  <input type="text" name="amount" style="margin-top:15px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">.<br><br>
             Kindly proceed to PGB-Hermosa Branch<br>
-            Thank you for your patience and cooperation.<br><br>
+            Thank you for your patience and cooperation.<br><br>    
             Best regards,<br>
             <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
             Provincial Government of Bataan - Special Assistance Program</p>

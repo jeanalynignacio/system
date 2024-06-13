@@ -17,13 +17,28 @@ $res_Fname = $result['Firstname'];
     
     header("Location: employee-login.php");
 }
+if(isset($_POST['Beneficiary_Id'])) {
+    $beneID = $_POST['Beneficiary_Id'];
+    
+    $query = mysqli_query($con, "SELECT * FROM beneficiary WHERE Beneficiary_Id=$beneID");
+
+    if($result = mysqli_fetch_assoc($query)){
+    $res_Id = $result['Beneficiary_Id'];
+    $res_Fname = $result['Firstname'];
+     $res_Lname = $result['Lastname'];
+     $role=$result['CityMunicipality'];
+    }
+} else {
+    echo "User ID is not set.";
+    exit; // Exit if ID is not set
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Financial Assistance </title>
+    <title> History </title>
     <link rel = "stylesheet" href = "assistance.css"/>
     <link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
@@ -47,7 +62,7 @@ $res_Fname = $result['Firstname'];
                 </a>
             </li>
 
-            <li class = "active">
+            <li >
                 <a href = "#" onclick="assistance()">
                     <i class = "fas fa-handshake-angle"> </i>
                     <span> Financial Assistance </span>
@@ -107,35 +122,30 @@ $res_Fname = $result['Firstname'];
         <div class="header--wrapper">
             <div class="header--title">
                 <span> 1Bataan Malasakit - Special Assistance Program </span>
-                <h2> Financial Assistance </h2>
+                <h2> History of Assistance </h2>
             </div>
             <div class="user--info">
-                <div class="search--box">
-                <i class = "fa-solid fa-search"> </i>
-                <input type="text" id="Search" oninput="search()" placeholder="Search " autocomplete="off"/>
+                <div class="search--box1">
+                
             </div>
             <img src = "images/background.png" alt = "" />
             </div>
         </div>
 
         <div class="card--container">
-            <h3 class="main--title"> Type of Financial Assistance 
-                <ul class = "drop"> 
-                <li>
-                    <a href = "#"> Assistance <span> <i class="fa-solid fa-caret-down"> </i> </span> </a>
-                    <ul class = "dropdown">
-                        <li> <a href = "#" onclick="burial()"> Burial </a></li>
-                        <li> <a href = "#" onclick="chemrad()"> Chemotheraphy & Radiation </a></li>
-                        <li> <a href = "#" onclick="dialysis()"> Dialysis Patients </a></li>
-                    </ul>
-                    </ul>
+            <h3 class="main--title"> History 
+               
                 </li>
             </ul>
             </h3>
         </div>
 
         <div class="tabular--wrapper">
-            <h3 class="main--title"> Overall Data </h3>
+            
+            <h3 class="main--title">Beneficiary Name: <?php echo $res_Fname; ?> <?php echo $res_Lname; ?></h3>
+         
+  
+            
             <div class="table--container">
             <form id="assistance" action="http://localhost/public_html/assistance.php" method="POST">
                     
@@ -145,29 +155,23 @@ $res_Fname = $result['Firstname'];
                 <table>
                     <thead>
                         <tr>
-                            <th> Date: </th>
-                            <th> Time: </th>
-                           
-                            <th> Name: </th>
-                            <th> Municipality: </th>
-                            <th> Schedule Date:  </th>
-                            <th> Scheduled Time:  </th>
-                            <th> Transaction Type: </th>
-                            <th> Financial Assistance Type: </th>
-                            <th> Status: </th>
-                            <th> Action: </th>
-                            <th> History: </th>
+                        <th> Transaction Type: </th>
+                            <th>  Assistance Type: </th>
+                            <th> Received Assistance: </th>
+                             <th> Received Date:  </th>
+                            <th> Received Time:  </th>
+                            <th> Assisted By:  </th>
                         </tr>
                         <tbody>
                         <?php
 include("php/config.php");
 
-$sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched,t.Given_Time,t.TransactionType,  t.Status , f.FA_Type 
-        FROM financialassistance f 
-        INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
-        INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-where t.Status != 'Done' 
-       ORDER BY t.Date ASC, t.transaction_time ASC";
+$sql = "SELECT h.* , b.*
+        FROM history h 
+       INNER JOIN beneficiary b ON b.Beneficiary_Id = h.Beneficiary_ID
+        
+where h.Beneficiary_ID=$beneID 
+       ORDER BY h.ReceivedDate ASC";
 
 $result = $con->query($sql);
 
@@ -176,42 +180,32 @@ if (!$result) {
 }
 
 while ($row = $result->fetch_assoc()) {
+    $Emp_Id = $row["Emp_ID"]; 
+
+    $sql2 = "SELECT *  FROM employees
+    
+where Emp_ID=$Emp_Id";
+
+$result2 = $con->query($sql2);
+while ($row2 = $result2->fetch_assoc()) {
+
      $givenTime = "";
-if ($row["Given_Time"] !== NULL) {
-    $givenTime = date("h:i A", strtotime($row["Given_Time"]));
+if ($row["ReceivedDate"] !== NULL) {
+    $givenTime = date("h:i A", strtotime($row["ReceivedDate"]));
 }
-      $transaction_time = date("h:i A", strtotime($row["transaction_time"]));
+      $transaction_time = date("h:i A", strtotime($row["ReceivedTime"]));
     echo "<tr>
-            <td>" . $row["Date"] . " </td>
-            <td>" . $transaction_time . " </td>
+ <td>" . $row["TransactionType"] . " </td>
+ <td>" . $row["AssistanceType"] . " </td>
+ <td>" . $row["ReceivedAssistance"] . " </td>
+
+ <td>" . $row["ReceivedDate"] . " </td>
+<td>" . $transaction_time . " </td>
+  <td>" . $row2["Firstname"]. " " . $row2["Lastname"] . " </td>
            
-            <td>" . $row["Lastname"] . ", " . $row["Firstname"] . " </td>
-            <td>" . $row["CityMunicipality"] . " </td>
-            <td>" . $row["Given_Sched"] . " </td>
-           <td>" . $givenTime . " </td>
-            <td>" . $row["TransactionType"] . " </td>
-            <td>" . $row["FA_Type"] . " </td>
-            <td>" . $row["Status"] . " </td>
-            <td>".
-            "<form method='post' action='editformassistance.php'>" .
-            "<input type='hidden' name='Beneficiary_Id' value='" . $row['Beneficiary_Id'] . "'>" .
-            "<input type='hidden' name='Status' value='" . $row['Status'] . "'>" .
-            "<button type='submit'>View</button>" .
-           
-       
-            "</form>" .
-            "</td>
-            <td>".
-            "<form method='post' action='history.php'>" .
-            "<input type='hidden' name='Beneficiary_Id' value='" . $row['Beneficiary_Id'] . "'>" .
-            "<input type='hidden' name='Status' value='" . $row['Status'] . "'>" .
-            "<button type='submit' style='color:blue'>View</button>" .
-           
-       
-            "</form>" .
-            "</td>
             
               </tr>";
+}
 }
 ?>
 <input type="hidden" id="confirmed" name="confirmed" value="">

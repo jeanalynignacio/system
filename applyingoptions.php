@@ -65,13 +65,13 @@ if (isset($_POST['myself'])) {
 
                 if ($userLastname === $beneficiaryLastname && $userFirstname === $beneficiaryFirstname) {
                     // Check for transactions with status 'Done' in the last 3 months
-                    $query3 = "SELECT * FROM transaction WHERE Beneficiary_Id = $beneficiaryId AND Status = 'Done' AND Given_Sched >= '$threeMonthsAgo'";
+                    $query3 = "SELECT * FROM history WHERE Beneficiary_ID = $beneficiaryId  AND ReceivedDate >= '$threeMonthsAgo'";
                     $result3 = mysqli_query($con, $query3);
                    
                     if (mysqli_num_rows($result3) > 0) {
                             // Fetch the last transaction date
                             $row = mysqli_fetch_assoc($result3);
-                            $lastTransactionDate = $row['Given_Sched'];
+                            $lastTransactionDate = $row['ReceivedDate'];
                             $date = new DateTime($lastTransactionDate);
                             $formattedDate = $date->format('m/d/Y');
                         

@@ -83,6 +83,57 @@ $query = "UPDATE laboratories l
       WHERE b.Beneficiary_Id = '$beneID'";
  
 }
+
+         
+elseif ($Status == "Done") {
+    date_default_timezone_set('Asia/Manila');
+    $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
+    $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
+    
+ $beneID = $_POST['Beneficiary_Id'];
+ 
+ $SQL = mysqli_query($con,"SELECT b.*, t.*, l.*
+ FROM beneficiary b
+ INNER JOIN transaction t ON b.Beneficiary_Id = t.Beneficiary_Id
+ INNER JOIN laboratories l ON b.Beneficiary_Id = l.Beneficiary_ID
+ WHERE b.Beneficiary_Id = '$beneID'");
+
+if($result = mysqli_fetch_assoc($SQL)){
+
+$TransactionType = $result['TransactionType'];
+$AssistanceType = $result['AssistanceType'];
+$LabType = $result['LabType'];
+
+$ReceivedAssistance = $LabType;
+$beneID = $_POST['Beneficiary_Id'];
+$query ="INSERT INTO history( Beneficiary_ID, ReceivedDate, ReceivedTime,TransactionType,AssistanceType,ReceivedAssistance,Emp_ID) VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', ' $TransactionType', '$AssistanceType', '$ReceivedAssistance','$EmpID' )";
+if(mysqli_query($con, $query)){
+
+$sql1 = "DELETE FROM transaction  WHERE Beneficiary_Id='$beneID'";
+$sql2 = "DELETE FROM financialassistance  WHERE Beneficiary_ID='$beneID'";
+
+$result1 = mysqli_query($con, $sql1);
+$result2 = mysqli_query($con, $sql2);
+
+if($result1 && $result2) {
+
+                echo '<body>
+                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                <script>
+                swal("This beneficiary already received his/her assistance","","success")
+               
+                </script>';
+                  echo '<script>
+                 setTimeout(function(){
+                    window.location.href="laboratories.php";
+                } , 2000);
+              </script>
+              </body>';
+}
+}
+
+}
+}
 elseif ($Status == "For Schedule") {
 
     $transaction_time = $_POST['time'];

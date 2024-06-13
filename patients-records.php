@@ -109,6 +109,7 @@ if (!$transactionResult) {
                         <th>Barangay:</th>
                         <th>Email:</th>
                         <th>Action:</th>
+                        <th> History: </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -130,6 +131,17 @@ if (!$transactionResult) {
                                     <button type='submit' style='color:green'>View</button>
                                 </form>
                             </td>
+
+            <td>".
+            "<form method='post' action='history.php'>" .
+            "<input type='hidden' name='Beneficiary_Id' value='" . $row['Beneficiary_Id'] . "'>" .
+           
+            "<button type='submit'>View</button>" .
+           
+       
+            "</form>" .
+            "</td>
+
                         </tr>";
                     }
                     ?>

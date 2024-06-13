@@ -23,17 +23,17 @@ if(isset($_POST['submit'])){
         if(is_array($row) && !empty($row)){
             if($Password ==$row['Password']){
                 if ($row['status'] == 1){
-                   echo '<body>
-                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                        <script>
-                        swal("Log in successful!","","success")
-                        .then((value) => {
-                            if (value) {
-                                window.location.href = "usershomepage.php";
-                            }
-                        });
-                        </script>
-                        </body>'; 
+                    echo '<body>
+                                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                                    <script>
+                                    swal("Log in successful!", "", "success")
+                                    </script>';
+                                      echo '<script>
+                                     setTimeout(function(){
+                                        window.location.href="usershomepage.php";
+                                    } , 2000);
+                                  </script>
+                                  </body>';
                      
         $_SESSION['valid'] = $row['Lastname'];
         $_SESSION['firstname'] = $row['Firstname'];

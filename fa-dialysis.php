@@ -146,6 +146,7 @@ $res_Fname = $result['Firstname'];
                             <th> Amount Received: </th>
                             <th> Status: </th>
                             <th> Action: </th>
+                            <th> History: </th>
                         </tr>
                         <tbody>
                         <?php
@@ -187,7 +188,17 @@ $transaction_time = date("h:i A", strtotime($row["transaction_time"]));
              "<input type='hidden' name='Status' value='" . $row['Status'] . "'>" .
              "<button type='submit'>View</button>" .
              "</form>" .
-             "</td>  </tr>";
+             "</td> 
+              <td>".
+            "<form method='post' action='history.php'>" .
+            "<input type='hidden' name='Beneficiary_Id' value='" . $row['Beneficiary_Id'] . "'>" .
+           
+            "<button type='submit' style='color:blue'>View</button>" .
+           
+       
+            "</form>" .
+            "</td>
+             </tr>";
              
 }
 
