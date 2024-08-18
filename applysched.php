@@ -96,7 +96,7 @@
                         swal("Thank you for submitting your request. Please wait for an email with your scheduled appointment","","success")
                         .then((value) => {
                             if (value) {
-                                window.location.href = "usershomepage.php";
+                                window.location.href = "feedback.php";
                             }
                         });
                         </script>
@@ -135,7 +135,8 @@
             background-color: #ccc;
             cursor: not-allowed;
         }
-        </style>
+     
+    </style>
 </head>
 
 <body >
@@ -231,15 +232,26 @@
                             FINANCIAL ASSISTANCE FOR BURIAL
                             
                         </label><br>-->
-                        <input type="text" name="medType" placeholder="Medicine Type" autocomplete="off"  required>                      
-              
+                      
+                    <select id="status" name="medType" required >
+                        <?php
+                        $status = array('Amlodipine','Losartan','Metformin','Pending for Release Medicine' ,'Releasing of Medicine','Request for Re-schedule','For Re-schedule', 'Decline Request for Re-schedule', 'Release Medicine');
+                        foreach ($status as $stat) {
+                            $selected = ($record['MedicineType'] == $stat) ? 'selected' : '';
+                            echo "<option $selected>$stat</option>";
+                        }
+                        ?>
+                    </select>
                   <h1>ASSISTANCE FOR MEDICINES REQUIREMENTS</h1>
-                    <ul style = "text-align: left; margin-left:60px">
-                        <input type="checkbox" onclick="checkAllChecked()"> Updated Medical Certificate/Medical Abstract (1 ORIGINAL, 1 PHOTOCOPY)<br>
+                  <ul style = "text-align: left; margin-left:60px">
+                        <input type="checkbox" onclick="checkAllChecked()"> Updated Medical Certificate/Medical Abstract (1 ORIGINAL, 1 PHOTOCOPY) <br>
+                        
+         
                         <input type="checkbox" onclick="checkAllChecked()"> Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)<br>
                        <input type="checkbox" onclick="checkAllChecked()"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia<br>
                         <input type="checkbox" onclick="checkAllChecked()"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng Naglalakad w/ 3 signatures<br>
                        <input type="checkbox" onclick="checkAllChecked()"> Brgy. Indigency (Pasyente) / Brgy. Indigency (Representative)<br>
+                   
                     </ul>
                     <h1>SUPPORTING DOCUMENTS</h1>
                     <ul style = "text-align: left; margin-left:60px">
@@ -418,6 +430,10 @@
         }
         let subMenu= document.getElementById("subMenu");
         function toggleMenu(){
+            subMenu.classList.toggle("open-menu");
+   }
+   let subMenu2= document.getElementById("subMenu2");
+        function toggleMenu2(){
             subMenu.classList.toggle("open-menu");
    }
 

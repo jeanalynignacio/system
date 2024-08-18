@@ -58,6 +58,7 @@ if($result = mysqli_fetch_assoc($query)){
                     $stError = "";
                     $emailError = "";
                 $benelnameError = "";
+                $relationError="";
                   
                     $Errors = "";
                     if(isset($_POST['submit'])){
@@ -76,6 +77,7 @@ if($result = mysqli_fetch_assoc($query)){
                     $Barangay = $_POST['Barangay'];
                     $HousenoStreet = $_POST['HousenoStreet'];
                     $Email = $_POST['Email'];
+                    $relationship = $_POST['relationship'];
                     $Representative_ID = $_POST['Representative_ID'];
                     $Lnamebeneficiary = $_POST['BeneficiaryLastname'];
                     $check_user = "SELECT * FROM beneficiary WHERE Email='$Email' LIMIT 1";
@@ -89,7 +91,12 @@ if($result = mysqli_fetch_assoc($query)){
                     $Date = date('Y-m-d'); 
                     $TIME = date('H:i:s'); 
 
-
+                    $minDate = new DateTime();
+                    $maxDate = new DateTime();
+$minDate->modify('-0 years');
+$maxDate->modify('-150 years');
+// Convert $Birthday to a DateTime object for comparison
+$selectedDate = new DateTime($Birthday);
                   
                     if(empty($Lastname))
                     {
@@ -116,6 +123,13 @@ else {
                     {
                       array_push($errors, $bdayError = "Birthday is required");
                     }
+                      
+                  elseif ($selectedDate > $minDate) {
+                    array_push($errors, $bdayError = "The beneficiary must be atleast 1 year old");
+                }
+                elseif ($selectedDate < $maxDate) {
+                  array_push($errors, $bdayError = "You must be at least 100 years old");
+              }
                 
                     if(empty($Contactnumber))
                     {
@@ -133,9 +147,14 @@ else {
                     elseif (strlen($Contactnumber) < 11) {
                             array_push($errors,  $numError = "Mobile number must be minimum of 11 characters");
                             }
+                      
                     if(empty($Province))
                     {
                       array_push($errors, $provError = "Province is required");
+                    }
+                    if(empty($relationship))
+                    {
+                      array_push($errors, $relationError = "Province is required");
                     }
                     if($CityMunicipality=="Select")
                     {
@@ -167,7 +186,7 @@ else {
 
 
 // Use the complete user ID in the INSERT query
-$query ="INSERT INTO beneficiary( Lastname, Firstname, Middlename, Birthday, Contactnumber, Province, CityMunicipality, Barangay, HousenoStreet, Email, Representative_ID,Date,time) VALUES ('$Lastname', '$Firstname', '$Middlename', '$Birthday', '$Contactnumber', '$Province', '$CityMunicipality', '$Barangay', '$HousenoStreet', '$Email', '$Representative_ID','$Date','$TIME')";
+$query ="INSERT INTO beneficiary( Lastname, Firstname, Middlename, Birthday, Contactnumber, Province, CityMunicipality, Barangay, HousenoStreet, Email, Representative_ID,Date,time,Relationship) VALUES ('$Lastname', '$Firstname', '$Middlename', '$Birthday', '$Contactnumber', '$Province', '$CityMunicipality', '$Barangay', '$HousenoStreet', '$Email', '$Representative_ID','$Date','$TIME','$relationship')";
 if(mysqli_query($con, $query)){
   ?>
   <script>
@@ -214,7 +233,6 @@ if(mysqli_query($con, $query)){
                     <input type="text" name="Contactnumber" id="Contactnumber" autocomplete="off" value="<?php echo $_POST['Contactnumber'] ?? ''; ?>">                  
                     <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $numError ?></p>
                    
-              
                   </div>
                 <div class="field input">
                     <label for = "Province" style="font-size: 18px;">Province</label>
@@ -347,6 +365,32 @@ barangayDropdown.setAttribute("name", "Barangay");
                     <input type="text" name="Email" id="Email" autocomplete="off" value="<?php echo $_POST['Email'] ?? ''; ?>">                  
                     <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $emailError ?></p>
                   </div>
+
+                  <div class="field input">
+                    <label for = "Contactnumber" style="font-size: 18px;">Representative Name</label>
+                    <input type="text" disabled name="repname" id="Contactnumber" autocomplete="off" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>">                  
+                    
+                  </div>
+                
+                  <div class="field input" style="margin-top:20px;">
+                <?php
+// Define variables to store selected city and barangay
+$relationshipselect = $_POST['relationship'] ?? 'Select';
+$selectedBarangay = $_POST['Barangay'] ?? 'Select';
+?>
+                    <label for = "CityMunicipality" style="font-size: 18px;">Relationship to Beneficiary</label>
+                    <select id="relationDropdown" name="relationship" style="height:40px;">
+                    <option value="Select" <?php if ($relationshipselect === 'Select') echo 'selected'; ?>>Select</option>
+                    <option value="Mother" <?php if ($relationshipselect === 'Mother') echo 'selected'; ?>>Mother</option>
+                    <option value="Father" <?php if ($relationshipselect === 'Father') echo 'selected'; ?>>Father</option>
+                    <option value="Sister" <?php if ($relationshipselect === 'Sister') echo 'selected'; ?>>Sister</option>
+                    <option value="Brother" <?php if ($relationshipselect=== 'Brother') echo 'selected'; ?>>Brother</option>
+                   
+                   
+                      </select>  
+                      <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $relationError ?></p>
+                             
+                </div>
               
                    <div class="field">
                     <input type="submit" class="btn" name="submit" value="Apply for Assistance">                  

@@ -191,3 +191,6 @@ form input[type="date"] {
     width: 0;
   }
 }
+.hidden {
+  display: none;
+}

@@ -11,6 +11,7 @@ $res_Id = $result['Emp_ID'];
 $res_Fname = $result['Firstname'];
  $res_Lname = $result['Lastname'];
  $role=$result['role'];
+ $branch=$result['Office'];
 }
   }
   else{
@@ -127,8 +128,8 @@ $res_Fname = $result['Firstname'];
                 
         
                 
-                <button class="cards" onclick="loadHospitalData('Bataan Doctors Hospital &amp; Medical Center')">
-                    <img src = "images/bdhmc.jpg">
+            <button class="cards" onclick="loadHospitalData('Bataan Doctor\'s Hospital & Medical Center')">
+            <img src = "images/bdhmc.jpg">
                     <div class="card-content">
                         <h3>Bataan Doctors Hospital & Medical Center</h3>
                     </div>
@@ -237,7 +238,37 @@ $res_Fname = $result['Firstname'];
                 <div class="search--box">
                 <i class = "fa-solid fa-search"> </i>
                 <input type = "text" id="Search" oninput="search()" placeholder="Search " autocomplete="off"/>
+
             </div>
+            <?php
+
+$sql = "SELECT * FROM budget 
+WHERE AssistanceType IN ('Hospital Bills') 
+AND branch='$branch'";
+$result = $con->query($sql);
+
+if (!$result) {
+die("Invalid query: " . $con->error);
+}
+$totalRemainingBal = 0;
+if ($result->num_rows > 0) {
+while ($row = $result->fetch_assoc()) {
+$totalRemainingBal += $row['RemainingBal'];
+}
+?>
+<h3 style="margin-left:20%; margin-top:-5%; color:#003399; cursor:default;">Budget:
+<input type="text" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
+</h3>
+<?php
+
+} else {
+?>
+<h3 style="margin-left:70%; margin-top:-2%; color:#003399; cursor:default;">Budget:
+<input type="text" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
+</h3>
+<?php
+}
+?>
             </div>
            
           <br>
@@ -273,6 +304,27 @@ if(isset($_POST['hospital'])) {
     // Default to NULL if hospital parameter is not provided
     $selectedHospital = NULL;
 }
+if ($role === 'Admin'){
+
+    $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, t.TransactionType, h.PartneredHospital, h.billamount, t.Status, t.AssistanceType,t.Given_Sched,t.Given_Time 
+        FROM hospitalbill h
+        INNER JOIN beneficiary b ON b.Beneficiary_Id = h.Beneficiary_ID
+        INNER JOIN transaction t ON t.Beneficiary_Id = h.Beneficiary_ID";
+    
+// Add a WHERE clause only if a specific hospital is selected
+if ($selectedHospital !== NULL && $selectedHospital !== '') {
+    $sql .= " WHERE h.PartneredHospital = '$selectedHospital' AND t.AssistanceType = 'Hospital Bills'";
+}
+
+// Add a WHERE clause only if a specific hospital is selected
+if ($selectedHospital == NULL ) {
+    $sql .= " WHERE t.AssistanceType = 'Hospital Bills' AND t.Status='Pending for Release of Guarantee Letter' AND h.branch='$branch'";
+}
+
+// Add ORDER BY clause to sort by date in descending order
+$sql .= "  ORDER BY t.Date ASC, t.transaction_time ASC";
+ }
+    else{
 
 
 // Modify the SQL query to fetch records for all hospitals when $selectedHospital is NULL
@@ -280,7 +332,7 @@ $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.First
         FROM hospitalbill h
         INNER JOIN beneficiary b ON b.Beneficiary_Id = h.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = h.Beneficiary_ID";
-
+    
 // Add a WHERE clause only if a specific hospital is selected
 if ($selectedHospital !== NULL && $selectedHospital !== '') {
     $sql .= " WHERE h.PartneredHospital = '$selectedHospital' AND t.AssistanceType = 'Hospital Bills'";
@@ -293,7 +345,7 @@ if ($selectedHospital == NULL ) {
 
 // Add ORDER BY clause to sort by date in descending order
 $sql .= "  ORDER BY t.Date ASC, t.transaction_time ASC";
-
+    }
 // Execute the query
 $result = $con->query($sql);
 

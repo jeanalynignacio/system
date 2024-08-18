@@ -114,7 +114,7 @@ if (isset($_POST['myself'])) {
                         echo '<body>
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                         <script>
-                        swal("Notification", "You already pending for req. Please wait for the email to know when your schedule of appearance to the office is. Thank you.")
+                        swal("Notification", "You already pending for requirements. Please wait for the email to know when your schedule of appearance to the office is. Thank you.")
                         .then((value) => {
                             if (value) {
                                 window.location.href = "applyingoptions.php";
@@ -258,9 +258,10 @@ elseif (isset($_POST['relative'])) {
                 $beneficiaryLastname = $beneficiary['Lastname'];
                 $beneficiaryFirstname = $beneficiary['Firstname'];
                 $beneficiaryId = $beneficiary['Beneficiary_Id'];
-
+               
                 // Check if the user and beneficiary names match
                 if ($userLastname === $beneficiaryLastname && $userFirstname === $beneficiaryFirstname) {
+                    
                     echo '<body>
                     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                     <script>
@@ -273,11 +274,12 @@ elseif (isset($_POST['relative'])) {
                     </script>
                     </body>';
                     exit();
+                   
                 } else {
                     $threeMonthsAgo = date('Y-m-d', strtotime('-3 months'));
 
                     // Check if there's any transaction for the beneficiary done more than 3 months ago
-                    $query3 = "SELECT * FROM transaction WHERE Beneficiary_Id = '$beneficiaryId' AND Status = 'Done' AND Given_Sched >= '$threeMonthsAgo'";
+                    $query3 = "SELECT * FROM history WHERE Beneficiary_ID = '$beneficiaryId'  AND ReceivedDate >= '$threeMonthsAgo'";
                     $result3 = mysqli_query($con, $query3);
 
                     if ($result3 && mysqli_num_rows($result3) > 0) {
@@ -318,14 +320,15 @@ elseif (isset($_POST['relative'])) {
                     }
                 }
             }
-        } else {
+        }
+     } else {
             // No beneficiary associated with the user
             echo "<script>window.location.href = 'beneficiaryinfo.php';</script>";
             exit();
         }
     } 
     
-}
+
 
 ?>
 <!DOCTYPE html>

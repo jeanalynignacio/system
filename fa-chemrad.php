@@ -11,6 +11,7 @@ $res_Id = $result['Emp_ID'];
 $res_Fname = $result['Firstname'];
  $res_Lname = $result['Lastname'];
  $role=$result['role'];
+ $branch=$result['Office'];
 }
   }
   else{
@@ -129,6 +130,35 @@ $res_Fname = $result['Firstname'];
                 </li>
             </ul>
             </h3>
+            <?php
+
+            $sql = "SELECT * FROM budget 
+        WHERE AssistanceType ='Financial Assistance-Chemotherapy & Radiation' 
+        AND branch='$branch'";
+$result = $con->query($sql);
+
+if (!$result) {
+    die("Invalid query: " . $con->error);
+}
+$totalRemainingBal = 0;
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $totalRemainingBal += $row['RemainingBal'];
+    }
+        ?>
+        <h3 style="margin-left:70%; margin-top:-2%; color:#003399; cursor:default;">Budget:
+            <input type="text" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
+        </h3>
+        <?php
+    
+} else {
+    ?>
+    <h3 style="margin-left:70%; margin-top:-2%; color:#003399; cursor:default;">Budget:
+        <input type="text" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
+    </h3>
+    <?php
+}
+?>
         </div>
 
         <div class="tabular--wrapper">
@@ -185,7 +215,7 @@ $transaction_time = date("h:i A", strtotime($row["transaction_time"]));
             <td>" . $row["Amount"] . " </td>
             <td>" . $row["Status"] . " </td>
             <td>".
-            "<form method='post' action='editformfassistance.php'>" .
+            "<form method='post' action='editformassistance.php'>" .
             "<input type='hidden' name='Beneficiary_Id' value='" . $row['Beneficiary_Id'] . "'>" .
             "<input type='hidden' name='Status' value='" . $row['Status'] . "'>" .
             "<button type='submit'>View</button>" .

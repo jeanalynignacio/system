@@ -56,8 +56,9 @@
                     $user_phone = mysqli_fetch_assoc($results);
                   
                     $minDate = new DateTime();
+                    $maxDate = new DateTime();
 $minDate->modify('-18 years');
-
+$maxDate->modify('-100 years');
 // Convert $Birthday to a DateTime object for comparison
 $selectedDate = new DateTime($Birthday);
 
@@ -80,6 +81,9 @@ $selectedDate = new DateTime($Birthday);
                   elseif ($selectedDate > $minDate) {
                       array_push($errors, $bdayError = "You must be at least 18 years old");
                   }
+                  elseif ($selectedDate < $maxDate) {
+                    array_push($errors, $bdayError = "You must be at least 100 years old");
+                }
                     if(empty($Contactnumber))
                     {
                       array_push($errors, $numError = "Contact Number is required");
@@ -256,7 +260,7 @@ $user = mysqli_fetch_assoc($result);
                   </div>
                 <div class="field input">
                     <label for = "Birthday" style="font-size: 18px;">Birthday</label>
-                    <input type="date" name="Birthday" id="Birthday" value="<?php echo $_POST['Birthday'] ?? ''; ?>"> 
+                    <input type="date" name="Birthday" id="Birthday" max="" value="<?php echo $_POST['Birthday'] ?? ''; ?>"> 
                     <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $bdayError ?></p>                  
                 </div>
                 <div class="field input">
@@ -442,7 +446,16 @@ barangayDropdown.setAttribute("name", "Barangay");
         }
 
     
-    
+        const today = new Date();
+
+// Subtract 18 years from the current date
+const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+
+// Format the date as YYYY-MM-DD
+const formattedDate = maxDate.toISOString().split('T')[0];
+
+// Set the max attribute of the input
+document.getElementById('Birthday').max = formattedDate;
        
     </script>
 </body>

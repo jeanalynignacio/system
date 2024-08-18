@@ -22,6 +22,7 @@ if(isset($_SESSION['Emp_ID'])) {
       $res_Fname = $result['Firstname'];
       $res_Lname = $result['Lastname'];
       $role = $result['role'];
+      $branch1 = $result['Office'];
   }
 } else {
   header("Location: employee-login.php");
@@ -54,16 +55,25 @@ if(isset($_SESSION['Emp_ID'])) {
       $EmpID = $_POST['Emp_ID'];
   
       
-      // Construct the update query
-   
-
-      
 if ($Status == "For Validation") {
   date_default_timezone_set('Asia/Manila');
  $Date = date('Y-m-d'); // Set the current date for Given_Sched
  $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
- $billamount=$_POST['billamount'];
- $MedicineType=$_POST['MedicineType'];
+ 
+ $checkedRequirements = isset($_POST['requirement']) ? $_POST['requirement'] : array();
+ $EmpID = $_POST['Emp_ID'];
+ $newStatus = $_POST['Status'];
+
+ 
+    // Determine if all requirements are checked
+    $allChecked = count($checkedRequirements) === 8; // Replace 8 with the actual number of requirements
+
+    // Determine new status based on all requirements being checked
+    if ($allChecked) {
+        $newStatus = 'Pending for Release Of Medicine';
+    } else {
+        $newStatus = 'Pending for Requirements';
+    }
 
 $query = "UPDATE medicines m
       INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
@@ -71,15 +81,34 @@ $query = "UPDATE medicines m
       SET t.Given_Sched  = '$Date',
           t.Given_Time = '$transaction_time',
           t.Emp_ID='$EmpID',
-          m.MedicineType = '$MedicineType',
-          t.Status = '$Status'
-      
-      WHERE b.Beneficiary_Id = '$beneID'";
- 
+        
+            t.Status = '$newStatus'
+        WHERE b.Beneficiary_Id = '$beneID'";
+
+    $result = mysqli_query($con, $query);
+
+   
+if ($result) {
+    // Query executed successfully
+    echo '<body>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+    swal("Update successfully","","success")
+    .then((value) => {
+        if (value) {
+            window.location.href = "medicines.php";
+        }
+    });
+    </script>
+    </body>';
+} else {
+    // Error in query execution
+    echo "Error: " . mysqli_error($con);
+}
 }
 
          
-elseif ($Status == "Done") {
+elseif ($Status == "Release Medicine") {
     date_default_timezone_set('Asia/Manila');
     $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
     $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
@@ -93,18 +122,18 @@ elseif ($Status == "Done") {
  WHERE b.Beneficiary_Id = '$beneID'");
 
 if($result = mysqli_fetch_assoc($SQL)){
-
+    $branch = $result['branch'];
 $TransactionType = $result['TransactionType'];
 $AssistanceType = $result['AssistanceType'];
 $MedicineType = $result['MedicineType'];
-
-$ReceivedAssistance = $MedicineType;
+$EmpID = $_POST['Emp_ID'];
+$ReceivedAssistance = "Medicine";
 $beneID = $_POST['Beneficiary_Id'];
-$query ="INSERT INTO history( Beneficiary_ID, ReceivedDate, ReceivedTime,TransactionType,AssistanceType,ReceivedAssistance,Emp_ID) VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', ' $TransactionType', '$AssistanceType', '$ReceivedAssistance','$EmpID' )";
+$query ="INSERT INTO history( Beneficiary_ID, ReceivedDate, ReceivedTime,TransactionType,AssistanceType,ReceivedAssistance,Emp_ID,branch) VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', ' $TransactionType', '$AssistanceType','$MedicineType','$EmpID','$branch' )";
 if(mysqli_query($con, $query)){
 
 $sql1 = "DELETE FROM transaction  WHERE Beneficiary_Id='$beneID'";
-$sql2 = "DELETE FROM financialassistance  WHERE Beneficiary_ID='$beneID'";
+$sql2 = "DELETE FROM medicines  WHERE Beneficiary_ID='$beneID'";
 
 $result1 = mysqli_query($con, $sql1);
 $result2 = mysqli_query($con, $sql2);
@@ -152,6 +181,7 @@ if($result1 && $result2) {
     </script>
     </body>';
         } else{
+            
        $query = "UPDATE medicines m
       INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
       INNER JOIN transaction t ON t.Beneficiary_Id = m.Beneficiary_ID
@@ -165,14 +195,15 @@ if($result1 && $result2) {
     
     if ($result2) {
         $Status = $_POST['Status'];
-        if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+        if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Medicine") {    
         require 'phpmailer/src/Exception.php';
         require 'phpmailer/src/PHPMailer.php';
         require 'phpmailer/src/SMTP.php';
 
         $mail = new PHPMailer(true);
         $lastName = $record['Lastname'];
-       
+        $transaction_time = $_POST['time'];
+        $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert to 12-hour format          
         $Email = $record['Email'];
         $status= $_POST['Status'];
 
@@ -200,7 +231,7 @@ if($result1 && $result2) {
                 <body>
                 <p>Dear Mr./Ms./Mrs. $lastName,</p>
                 <p>I am writing to inform you that your request for scheduling has been approved.</p>
-                <p>Your schedule has been set for $Date at $transaction_time. We kindly expect your presence on the said date.</p>
+                <p>Your schedule has been set for $Date at $transaction_time_12hr. We kindly expect your presence on the said date.</p>
                 <p> We kindly expect your presence on the said date.<br><br></p>
                 <p>   If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='http://localhost/public_html/requestresched.php'> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.<br> 
                Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.</p>
@@ -220,7 +251,7 @@ if($result1 && $result2) {
                     swal("Update and email send successful","","success")
                     .then((value) => {
                         if (value) {
-                            window.location.href = "assistance.php";
+                            window.location.href = "medicines.php";
                         }
                     });
                     </script>
@@ -235,7 +266,7 @@ if($result1 && $result2) {
         swal("Updated successfully","","success")
         .then((value) => {
             if (value) {
-                window.location.href = "assistance.php";
+                window.location.href = "medicines.php";
             }
         });
         </script>
@@ -243,17 +274,17 @@ if($result1 && $result2) {
 
     } else {
         echo "Error updating records: " . mysqli_error($con);
-        header("Location: assistance.php");
+        header("Location: medicines.php");
         exit();
     }
      
         }
     }
-    elseif ($Status == "Pending for Payout") {
+    elseif ($Status == "Pending for Release Of Medicine") {
         date_default_timezone_set('Asia/Manila');
         $Date = date('Y-m-d'); // Set the current date for Given_Sched
         $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
-        $Status = "For Validation";
+        $EmpID = $_POST['Emp_ID'];
 
         $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
         $overlapResult = mysqli_query($con, $overlapQuery);
@@ -283,7 +314,7 @@ if($result1 && $result2) {
           $result2 = mysqli_query($con, $query);
          if ($result2) {
         $Status = $_POST['Status'];
-        if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+        if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Medicine") {    
             require 'PHPMailer/src/Exception.php';
             require 'PHPMailer/src/PHPMailer.php';
             require 'PHPMailer/src/SMTP.php';
@@ -309,9 +340,9 @@ if($result1 && $result2) {
 
             // Content
             $mail->isHTML(true); // Set email format to HTML
-            if($status == 'Pending for Payout') {
+            if($status == 'Pending for Release Of Medicine') {
                 $employeeName = $_POST['EmpName'];
-                $mail->Subject = 'Pending for Payout';
+                $mail->Subject = 'Pending for Release Of Medicine';
                 $mail->Body = "
                     <html>
                     <body>
@@ -338,7 +369,7 @@ if($result1 && $result2) {
                     swal("Update and email send successful","","success")
                     .then((value) => {
                         if (value) {
-                            window.location.href = "assistance.php";
+                            window.location.href = "medicines.php";
                         }
                     });
                     </script>
@@ -353,7 +384,7 @@ if($result1 && $result2) {
         swal("Updated successfully","","success")
         .then((value) => {
             if (value) {
-                window.location.href = "assistance.php";
+                window.location.href = "medicines.php";
             }
         });
         </script>
@@ -361,18 +392,19 @@ if($result1 && $result2) {
 
     } else {
         echo "Error updating records: " . mysqli_error($con);
-        header("Location: assistance.php");
+        header("Location: medicines.php");
         exit();
     }
         }
        
     }
     
-    elseif ($Status == "For Payout") {
+    elseif ($Status == "Releasing Of Medicines") {
         date_default_timezone_set('Asia/Manila');
         $Date = date('Y-m-d'); // Set the current date for Given_Sched
         $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
-        
+        $branch = $_POST['branch'];
+        $PayoutType = "medicines";
         $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID' ";
         $overlapResult = mysqli_query($con, $overlapQuery);
 
@@ -388,20 +420,19 @@ if($result1 && $result2) {
             });
             </script>
             </body>';
+            
         }else{
        $query = "UPDATE medicines m
       INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
       INNER JOIN transaction t ON t.Beneficiary_Id = m.Beneficiary_ID
-      SET t.Given_Sched  = '$Date',
-          t.Given_Time = '$transaction_time',
-          t.Emp_ID='$EmpID',
-          t.Status = '$Status'
+      SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID',m.receivedassistance='$PayoutType', m.branch='$branch'
+    
       
       WHERE b.Beneficiary_Id = '$beneID'";
           $result2 = mysqli_query($con, $query);
          if ($result2) {
         $Status = $_POST['Status'];
-        if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+        if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Medicine") {    
         require 'phpmailer/src/Exception.php';
         require 'phpmailer/src/PHPMailer.php';
         require 'phpmailer/src/SMTP.php';
@@ -411,7 +442,9 @@ if($result1 && $result2) {
        
         $Email = $record['Email'];
         $status= $_POST['Status'];
-
+        $transaction_time = $_POST['time'];
+        $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert to 12-hour format
+      
         try {
             // Server settings
             $mail->isSMTP();
@@ -428,18 +461,20 @@ if($result1 && $result2) {
 
             // Content
             $mail->isHTML(true); // Set email format to HTML
-            if($status == 'For Payout') {
+            if($status == 'Releasing Of Medicines') {
                 $employeeName = $_POST['EmpName'];
-                $mail->Subject = 'For Payout';
-                $mail->Body = "
+                $mail->Subject = 'Releasing Of Medicines';
+                  $mail->Body = "
                     <html>
                     <body>
                     <p>Dear Mr./Ms./Mrs. $lastName,</p>
-                    <p>Your assistance request is currently for payout on $Date at $transaction_time.</p>
-                    Kindly proceed to PGB-Hermosa Branch<br>
-                    <p>Thank you for your patience and cooperation.</p>
-                    <p>Best regards,</p>
-                    <p>$employeeName</p>
+                    <p>Your request for Medicine assistance has been approved. You may go on $Date at  $transaction_time_12hr.
+                     You will receive a Medicine<br>
+                    Kindly proceed to $branch to claim your Medicine.<br>
+                    Please bring a valid ID and show this email upon arrival.<br>
+                    Thank you for your patience and cooperation.</p>
+                    <p>Best regards,<br>
+                    $employeeName</p>
                     <p>Provincial Government of Bataan - Special Assistance Program</p>
                     </body>
                     </html>
@@ -455,7 +490,7 @@ if($result1 && $result2) {
                     swal("Update and email send successful","","success")
                     .then((value) => {
                         if (value) {
-                            window.location.href = "assistance.php";
+                            window.location.href = "medicines.php";
                         }
                     });
                     </script>
@@ -470,7 +505,7 @@ if($result1 && $result2) {
         swal("Updated successfully","","success")
         .then((value) => {
             if (value) {
-                window.location.href = "assistance.php";
+                window.location.href = "medicines.php";
             }
         });
         </script>
@@ -478,7 +513,7 @@ if($result1 && $result2) {
 
     } else {
         echo "Error updating records: " . mysqli_error($con);
-        header("Location: assistance.php");
+        header("Location: medicines.php");
         exit();
     }
         }
@@ -497,7 +532,7 @@ if($result1 && $result2) {
         $result2 = mysqli_query($con, $query);
         if ($result2) {
         $Status = $_POST['Status'];
-        if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+        if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Medicine") {    
         require 'phpmailer/src/Exception.php';
         require 'phpmailer/src/PHPMailer.php';
         require 'phpmailer/src/SMTP.php';
@@ -542,10 +577,6 @@ if($result1 && $result2) {
                 </html>
                 ";
 
-
-
-          
-            
             }
      
 
@@ -556,7 +587,7 @@ if($result1 && $result2) {
                     swal("Update and email send successful","","success")
                     .then((value) => {
                         if (value) {
-                            window.location.href = "assistance.php";
+                            window.location.href = "medicines.php";
                         }
                     });
                     </script>
@@ -571,16 +602,24 @@ if($result1 && $result2) {
         swal("Updated successfully","","success")
         .then((value) => {
             if (value) {
-                window.location.href = "assistance.php";
+                window.location.href = "medicines.php";
             }
         });
         </script>
         </body>';}
 
     } else {
-        echo "Error updating records: " . mysqli_error($con);
-        header("Location: assistance.php");
-        exit();
+        echo '<body>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+        swal("Error updating records: " . mysqli_error($con),"","success")
+        .then((value) => {
+            if (value) {
+                window.location.href = "medicines.php";
+            }
+        });
+        </script>
+        </body>';
     } 
     }
     }
@@ -623,7 +662,7 @@ if($result1 && $result2) {
         $result2 = mysqli_query($con, $query);
         if ($result2) {
         $Status = $_POST['Status'];
-        if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+        if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Medicine") {    
         require 'phpmailer/src/Exception.php';
         require 'phpmailer/src/PHPMailer.php';
         require 'phpmailer/src/SMTP.php';
@@ -676,7 +715,7 @@ if($result1 && $result2) {
                     swal("Update and email send successful","","success")
                     .then((value) => {
                         if (value) {
-                            window.location.href = "assistance.php";
+                            window.location.href = "medicines.php";
                         }
                     });
                     </script>
@@ -691,7 +730,7 @@ if($result1 && $result2) {
         swal("Updated successfully","","success")
         .then((value) => {
             if (value) {
-                window.location.href = "assistance.php";
+                window.location.href = "medicines.php";
             }
         });
         </script>
@@ -699,7 +738,7 @@ if($result1 && $result2) {
 
     } else {
         echo "Error updating records: " . mysqli_error($con);
-        header("Location: assistance.php");
+        header("Location: medicines.php");
         exit();
     } 
     }
@@ -768,7 +807,7 @@ if($result1 && $result2) {
                     <span class="details" style="color:  #f5ca3b;">Transaction Type</span>
                     <input disabled type = "text" required value = "<?php echo $record['TransactionType']; ?>">
                 </div>
-        </div>
+</div>
         
         <div class="user-details">
                 <div class="input-box">
@@ -777,15 +816,61 @@ if($result1 && $result2) {
                 </div>
      
                 <div class="input-box">
-                    <span class="details" style="color:  #f5ca3b;">Status</span>
-                    <select id="status" name="Status" onchange="handleStatusChange()">
-                        <?php
-                        $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Payout' ,'For Payout','Request for Re-schedule','For Re-schedule', 'Decline Request for Re-schedule', 'Done');
-                        foreach ($status as $stat) {
-                            $selected = ($record['Status'] == $stat) ? 'selected' : '';
-                            echo "<option $selected>$stat</option>";
-                        }
-                        ?>
+                    <span class="details" style="color:  #f5ca3b; ">Status</span>
+                   
+                           <?php
+                       
+                       $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Release Of Medicine' ,'Releasing Of Medicines','Request for Re-schedule','For Re-schedule', 'Decline Request for Re-schedule','Release Medicine');
+                   
+                       if ($record['Status'] == 'For Schedule') {
+                           // If the current status is "For Schedule", display an input field instead of a dropdown
+                           echo "<input type='text' id='status' name='Status' value='For Schedule' readonly>";
+                       } 
+                       if ($record['Status'] == 'For Validation') {
+                           // If the current status is "For Schedule", display an input field instead of a dropdown
+                           echo "<input type='text' id='status' name='Status' value='For Validation' readonly>";
+                       }
+                       elseif ($record['Status'] == 'Pending for Requirements') {
+                           // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+                           echo "<input type='text' id='status' name='Status' value='For Validation' readonly>";
+                       }
+                       elseif ($record['Status'] == 'Pending for Release Of Medicine') {
+                           // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+                           echo "<input type='text' id='status' name='Status' value='Releasing Of Medicines' readonly>";
+                       }
+                       elseif ($record['Status'] == 'Request for Re-schedule') {
+                           // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+                           echo "<select id='status' name='Status' onchange='handleStatusChange()'>";
+                           echo "<option value='For Re-schedule'>For Re-schedule</option>";
+                           echo "<option value='Decline Request for Re-schedule'>Decline Request for Re-schedule</option>";
+                           echo "</select>";
+                       }
+                       elseif ($record['Status'] == 'For Re-schedule') {
+                           // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+                           echo "<input type='text' id='status' name='Status' value='For Validation' readonly>";
+                       }
+                       elseif ($record['Status'] == 'Decline Request for Re-schedule') {
+                           // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+                           echo "<input type='text' id='status' name='Status' value='Request for Re-schedule Declined' readonly>";
+                   
+                       }
+                       elseif ($record['Status'] == 'Releasing Of Medicines') {
+                           // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+                          if ($role === 'Admin'){
+                       
+                               // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+                               echo "<select id='status' name='Status' onchange='handleStatusChange()'>";
+                               echo "<option value='Releasing Of Medicines'>Releasing Of Medicines</option>";
+                               echo "<option value='Release Medicine'>Release Medicine</option>";
+                               echo "</select>";
+                            
+                          }else{
+                           echo "<input type='text' id='status' name='Status' value='Releasing Of Medicines' readonly>";
+                          
+                          }
+                       }
+                      
+                       ?>
                     </select>
                 </div>
         </div>
@@ -798,59 +883,66 @@ if($result1 && $result2) {
             </div>
            
                 <div class="button-row">
-                    <input type="submit" value="Submit" name="submit" onclick="showConfirmation()" />
+                    <input type="submit"  id="submitbtn" value="Submit" name="submit" onclick="showConfirmation()" />
                     <input type="button" value="Cancel" name="cancel" onclick="cancelEdit()" />
                 </div>
       </form>
     </div>
     <script>
   function handleStatusChange() {
-
+  
             var status = document.getElementById('status').value;
             var emailFormat = document.getElementById('emailFormat');
             var requirements = document.getElementById('requirements');
-            
+            var submitbtn = document.getElementById('submitbtn');
+
+    var beneID = document.querySelector('input[name="Beneficiary_Id"]').value;
+var empID = document.querySelector('input[name="Emp_ID"]').value;
+
             emailFormat.innerHTML = '';
             requirements.style.display = 'none'; // Hide requirements by default
             
             if (status === 'For Schedule') {
-                emailFormat.innerHTML = `
-                    <div style="color: black; padding:15px; background:white; margin-top:20px;">
-                        Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-                        <p>I am writing to inform you that your request for scheduling has been approved.<br>
-                        Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" />
-                        at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br><br>
-                        If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this <a href='http://localhost/public_html/requestresched.php' style="color:  blue;">link.</a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.
-                        Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.
-                        Best regards,<br>
-                        <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-                        Provincial Government of Bataan - Special Assistance Program</p>
-                    </div>
-                `;
+        submitbtn.style.display = 'inline';
+        emailFormat.innerHTML = `
+           <div style = "color: black; padding:15px; background:white; margin-top:20px;"> 
+            Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
+            <p>I am writing to inform you that your request for scheduling has been approved.<br>
+            Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
+            at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br>
+          <br>
+         
+            Best regards,<br>
+            <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+            Provincial Government of Bataan - Special Assistance Program</p>
+         </div> 
+        `;
             } else if (status === 'For Validation') {
+                submitbtn.style.display = 'inline';
                 requirements.style.display = 'block';
                 requirements.innerHTML = `
                     <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         
                         <h3 style = "color: blue;">REQUIREMENTS FOR MEDICINES ASSISTANCE VALIDATION</h3>
                         <ul style = "text-align: left; margin-left:60px">
-                            <input type="checkbox" name="requirement" value="Updated Medical Certificate/Medical Abstract (1 ORIGINAL, 1 PHOTOCOPY)"> Updated Medical Certificate/Medical Abstract (1 ORIGINAL, 1 PHOTOCOPY) <br>
-                            <input type="checkbox" name="requirement" value="Barangay Certificate of Indigency">  Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES) <br>
-                            <input type="checkbox" name="requirement" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia <br>
-                            <input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng Naglalakad w/ 3 signatures"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng Naglalakad w/ 3 signatures <br>
-                            <input type="checkbox" name="requirement" value="Brgy. Indigency (Pasyente) / Brgy. Indigency (Representative)"> Brgy. Indigency (Pasyente) / Brgy. Indigency (Representative) <br>
+                            <input type="checkbox" name="requirement[]" value="Updated Medical Certificate/Medical Abstract (1 ORIGINAL, 1 PHOTOCOPY)"> Updated Medical Certificate/Medical Abstract (1 ORIGINAL, 1 PHOTOCOPY) <br>
+                            <input type="checkbox" name="requirement[]" value="Barangay Certificate of Indigency">  Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES) <br>
+                            <input type="checkbox" name="requirement[]" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia <br>
+                            <input type="checkbox" name="requirement[]" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng Naglalakad w/ 3 signatures"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng Naglalakad w/ 3 signatures <br>
+                            <input type="checkbox" name="requirement[]" value="Brgy. Indigency (Pasyente) / Brgy. Indigency (Representative)"> Brgy. Indigency (Pasyente) / Brgy. Indigency (Representative) <br>
                        
                         </ul>
                         <h3 style = "color: blue;">SUPPORTING DOCUMENTS</h3>
                         <ul style = "text-align: left; margin-left:60px">
-                        <input type="checkbox" name="requirement" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
-                        <input type="checkbox" name="requirement" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
-                        <input type="checkbox" name="requirement" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
+                        <input type="checkbox" name="requirement[]" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
+                        <input type="checkbox" name="requirement[]" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
+                        <input type="checkbox" name="requirement[]" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
                            
                         </ul>
                     </div>
                 `;
-            } else if (status === 'Pending for Payout') {
+            } else if (status === 'Pending for Release Of Medicine') {
+                submitbtn.style.display = 'inline';
                 emailFormat.innerHTML = `
                     <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
@@ -862,53 +954,54 @@ if($result1 && $result2) {
                         Provincial Government of Bataan - Special Assistance Program</p>
                     </div>
                 `;
+               
             } else if (status === 'Request for Re-schedule') {
                 requirements.style.display = 'block';
                 requirements.innerHTML = `
                     <h3 style="color: white;">Click this <a href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox" target="_blank" style="color:  #3cd82e;">link</a> to check the email of beneficiary.</h3>
                 `;
-            } else if (status === 'For Payout') {
+                submitbtn.style.display = 'none'; // Hide the submit button
+           
+            } else if (status === 'Releasing Of Medicines') {
+                submitbtn.style.display = 'inline';
                 emailFormat.innerHTML = `
                     <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-                        <p>Your assistance request is currently for payout on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" />
+                        <p>Your request for Medicine assistance has been approved. You may go on <input type="date" id="calendar" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
                         at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
-                        Kindly proceed to PGB-Hermosa Branch<br>
-                        Thank you for your patience and cooperation.<br><br>
-                        Best regards,<br>
-                        <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-                        Provincial Government of Bataan - Special Assistance Program</p>
-                    </div>
+                        You will receive a Medicine<br>
+                 Kindly proceed to <select name="branch" id="branch" style="margin-top:5px;">
+    <option value="PGB-Balanga Branch" <?php if ($record['branch'] == "PGB-Balanga Branch") echo 'selected="selected"'; ?>>PGB-Balanga Branch</option>
+    <option value="PGB-Dinalupihan Branch" <?php if ($record['branch'] == "PGB-Dinalupihan Branch") echo 'selected="selected"'; ?>>PGB-Dinalupihan Branch</option>
+    <option value="PGB-Hermosa Branch" <?php if ($record['branch'] == "PGB-Hermosa Branch") echo 'selected="selected"'; ?>>PGB-Hermosa Branch</option>
+    <option value="PGB-Mariveles Branch" <?php if ($record['branch'] == "PGB-Mariveles Branch") echo 'selected="selected"'; ?>>PGB-Mariveles Branch</option>
+</select>to claim your medicine. <br>
+
+                    Please bring a valid ID and show this email upon arrival.<br><br>
+                    Thank you for your patience and cooperation.<br><br>    
+                    Best regards,<br>
+                    <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+                    Provincial Government of Bataan - Special Assistance Program
+                </p>
+                </div>
                 `;
             } else if (status === 'For Re-schedule') {
+                submitbtn.style.display = 'inline';
                 emailFormat.innerHTML = `
-                    <div style="color: black; padding:15px; background:white; margin-top:20px;">
-                        Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-                        <p>Your request for reschedule has been approved.<br>
-                        Your new schedule is on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" />
-                        at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
-                        Kindly proceed to PGB-Hermosa Branch on the new schedule.<br><br>
-                        Thank you for your understanding.<br><br>
-                        Best regards,<br>
-                        <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-                        Provincial Government of Bataan - Special Assistance Program</p>
-                    </div>
-                `;
-            } else if (status === 'Pending for Requirements') {
-                emailFormat.innerHTML = `
-                    <div style="color: black; padding:15px; background:white; margin-top:20px;">
-                        Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-                        <p>We are currently awaiting additional requirements for your assistance request.<br>
-                        Please submit the necessary documents at your earliest convenience to proceed with your application.<br><br>
-                        Thank you for your cooperation.<br><br>
-                        Best regards,<br>
-                        <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-                        Provincial Government of Bataan - Special Assistance Program</p>
-                    </div>
-                `;
+            <div style = "color: black; padding:15px; background:white; margin-top:20px;">
+            Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
+            <p>Your request for re-schedule has been accepted. Your new schedule is on <input type="date" id="calendar" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
+            at <input type="time" id="time" name="time"  />.<br>
+            We kindly expect your presence on the said date.<br><br>
+            Best regards,<br>
+            <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+            Provincial Government of Bataan - Special Assistance Program</p>
+         </div> 
+        `;
             }
         else if (status === 'Decline Request for Re-schedule') {
-        emailFormat.innerHTML = `
+            submitbtn.style.display = 'inline';
+            emailFormat.innerHTML = `
          <div style = "color: black; padding:15px; background:white; margin-top:20px;">
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>We have received your request for rescheduling. Unfortunately, we regret to inform you that your request cannot be accommodated at this time.<br>
@@ -923,9 +1016,17 @@ if($result1 && $result2) {
          </div>
         `;
     }
+    else if (status === 'Pending for Requirements') {
+            submitbtn.style.display = 'none'; 
+       
+    }
+    else if (status === 'Release Medicine') {
+        submitbtn.style.display = 'inline';
+       
+    }
 
         }
-
+    
         // Call handleStatusChange on page load to set the initial state
         document.addEventListener('DOMContentLoaded', function() {
             handleStatusChange();
@@ -945,6 +1046,8 @@ if($result1 && $result2) {
                 document.getElementById("confirmed").value = "no";
             }
         }
+
+    
         window.onload = handleStatusChange;
     </script>
 

@@ -11,6 +11,7 @@ $res_Id = $result['Emp_ID'];
 $res_Fname = $result['Firstname'];
  $res_Lname = $result['Lastname'];
  $role=$result['role'];
+ $branch=$result['Office'];
 }
   }
   else{
@@ -129,9 +130,40 @@ $res_Fname = $result['Firstname'];
                         <li> <a href = "#" onclick="dialysis()"> Dialysis Patients </a></li>
                     </ul>
                     </ul>
+                  
                 </li>
-            </ul>
-            </h3>
+               
+            </ul> </h3>
+            <?php
+  
+            $sql = "SELECT * FROM budget 
+        WHERE AssistanceType IN ('Financial Assistance-Burial', 'Financial Assistance-Chemotherapy & Radiation', 'Financial Assistance-Dialysis') 
+        AND branch='$branch'";
+$result = $con->query($sql);
+
+if (!$result) {
+    die("Invalid query: " . $con->error);
+}
+$totalRemainingBal = 0;
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $totalRemainingBal += $row['RemainingBal'];
+    }
+
+        ?>
+        <h3 style="margin-left:70%; margin-top:-2%; color:#003399; cursor:default;">Budget:
+            <input type="text" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
+        </h3>
+        <?php
+    
+} else {
+    ?>
+    <h3 style="margin-left:70%; margin-top:-2%; color:#003399; cursor:default;">Budget:
+        <input type="text" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
+    </h3>
+    <?php
+}
+?>
         </div>
 
         <div class="tabular--wrapper">
@@ -148,7 +180,7 @@ $res_Fname = $result['Firstname'];
                             <th> Date: </th>
                             <th> Time: </th>
                            
-                            <th> Name: </th>
+                            <th> Beneficiary Name: </th>
                             <th> Municipality: </th>
                             <th> Schedule Date:  </th>
                             <th> Scheduled Time:  </th>
@@ -161,14 +193,23 @@ $res_Fname = $result['Firstname'];
                         <tbody>
                         <?php
 include("php/config.php");
+if ($role === 'Accounting Staff'){
 
 $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched,t.Given_Time,t.TransactionType,  t.Status , f.FA_Type 
         FROM financialassistance f 
         INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+where t.Status != 'Done' && t.Status='For Payout' && f.branch='$branch'
+       ORDER BY t.Date ASC, t.transaction_time ASC";
+}
+else{
+    $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched,t.Given_Time,t.TransactionType,  t.Status , f.FA_Type 
+        FROM financialassistance f 
+        INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+        INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
 where t.Status != 'Done' 
        ORDER BY t.Date ASC, t.transaction_time ASC";
-
+}
 $result = $con->query($sql);
 
 if (!$result) {
@@ -213,6 +254,7 @@ if ($row["Given_Time"] !== NULL) {
             
               </tr>";
 }
+
 ?>
 <input type="hidden" id="confirmed" name="confirmed" value="">
 

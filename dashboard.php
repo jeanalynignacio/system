@@ -169,7 +169,7 @@ $totalEntriesSTAT = $row['totalEntriesSTAT'];
             </li>
            
         <?php endif; ?>
-
+       
             <li class="user" >
             <a href="#" onclick="profile()">
                     <i class="fas fa-user"></i>
@@ -195,10 +195,17 @@ $totalEntriesSTAT = $row['totalEntriesSTAT'];
                 <h2>Dashboard</h2>
             </div>
             <div class="user--info">
-                <div class="search--box">
-                    <i class="fa-solid fa-search"></i>
-                    <input type="text" id="Search" oninput="search()" placeholder="Search " autocomplete="off"/>
-                </div>
+            <?php if ($role === 'Admin'): ?>
+                <form action="budget.php" method="post">
+    <input type="submit" style="background:none; margin-right:30px; color:#003399;" value="Budget" name="submit" />
+</form>
+<form action="reports.php" method="post">
+    <input type="submit" style="background:none; margin-right:30px; color:#003399;" value="Reports" name="submit" />
+</form>
+<form action="feedbackreports.php" method="post">
+    <input type="submit" style="background:none; margin-right:30px; color:#003399;" value="Feedbacks" name="submit" />
+</form>
+        <?php endif; ?>
                 <img src="images/background.png" alt=""/>
             </div>
         </div>
@@ -257,6 +264,12 @@ $totalEntriesSTAT = $row['totalEntriesSTAT'];
 
         <div class="tabular--wrapper">
             <h3 class="main--title">Overall Data</h3>
+            <div class="user--info">
+            <div class="search--box" style="margin-bottom:20px;border-color:black;  ">
+                    <i class="fa-solid fa-search"></i>
+                    <input  style="width:500px; height: 40px;"type="text" id="Search" oninput="search()" placeholder="Search " autocomplete="off"/>
+                </div>
+                </div>
             <div class="table--container">
                 <table>
                     <thead>

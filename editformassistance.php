@@ -26,6 +26,7 @@ if(isset($_SESSION['Emp_ID'])) {
         $res_Fname = $result['Firstname'];
         $res_Lname = $result['Lastname'];
         $role = $result['role'];
+        $branch1 = $result['Office'];
     }
 } else {
     header("Location: employee-login.php");
@@ -53,8 +54,6 @@ $record = mysqli_fetch_assoc($result);
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     if(isset($_POST['confirmed']) && $_POST['confirmed'] === "yes") {
         $beneID = $_POST['Beneficiary_Id'];
-        //$Date = $_POST['Date'];
-         //$TransactionType = $_POST['TransactionType'];
         $FA_Type = $_POST['FA_Type'];
         $Status = $_POST['Status'];
         $EmpID = $_POST['Emp_ID'];
@@ -63,19 +62,50 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             date_default_timezone_set('Asia/Manila');
                 $Date = date('Y-m-d'); // Set the current date for Given_Sched
                 $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
-    
-               
-                $query = "UPDATE financialassistance f
-                INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
-                INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-                SET t.Status = '$Status', t.Emp_ID='$EmpID',t.Given_Sched = '$Date',
-            t.Given_Time = '$transaction_time'
-                WHERE b.Beneficiary_Id = '$beneID'";
-       
-    }
+                $newStatus = $_POST['Status'];
+                $checkedRequirements = isset($_POST['requirement']) ? $_POST['requirement'] : array();
+                $EmpID = $_POST['Emp_ID'];
+                // Determine if all requirements are checked
+                $allChecked = !in_array(false, $checkedRequirements);
+                
+                // Determine new status based on all requirements being checked
+                if ($allChecked) {
+                    $newStatus = 'Pending for Payout';
+                } else {
+                    $newStatus = 'Pending for Requirements';
+                }
+   // Build and execute the query to update database
+   $query = "UPDATE financialassistance f
+             INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+             INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+             SET t.Status = '$newStatus', t.Emp_ID='$EmpID', t.Given_Sched = '$Date',
+                 t.Given_Time = '$transaction_time'
+             WHERE b.Beneficiary_Id = '$beneID'";
+   
+   $result = mysqli_query($con, $query);
+   
+   if ($result) {
+       // Query executed successfully
+       echo '<body>
+       <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+       <script>
+       swal("Update successfully","","success")
+       .then((value) => {
+           if (value) {
+               window.location.href = "assistance.php";
+           }
+       });
+       </script>
+       </body>';
+   } else {
+       // Error in query execution
+       echo "Error: " . mysqli_error($con);
+   }
+}
+
     
          
-    elseif ($Status == "Done") {
+    elseif ($Status == "Release Payout") {
         date_default_timezone_set('Asia/Manila');
         $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
         $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
@@ -89,23 +119,68 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
      WHERE b.Beneficiary_Id = '$beneID'");
 
 if($result = mysqli_fetch_assoc($SQL)){
-
+ $branch = $result['branch'];
 $TransactionType = $result['TransactionType'];
 $AssistanceType1 = $result['AssistanceType'];
+$AssistanceType2 = $result['AssistanceType'] . '-' . $result['FA_Type'];
+
 $FA_Type = $result['FA_Type'];
 $AssistanceType = $AssistanceType1 . "-" . $FA_Type;
-$ReceivedAssistance = $result['Amount'];
+$Amount = $result['Amount'];
+$ReceivedAssistance = $result['PayoutType'];
 $beneID = $_POST['Beneficiary_Id'];
-$query ="INSERT INTO history( Beneficiary_ID, ReceivedDate, ReceivedTime,TransactionType,AssistanceType,ReceivedAssistance,Emp_ID) VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', ' $TransactionType', '$AssistanceType', '$ReceivedAssistance','$EmpID' )";
+$query ="INSERT INTO history( Beneficiary_ID, ReceivedDate, ReceivedTime,TransactionType,AssistanceType,ReceivedAssistance,Emp_ID,Amount,branch) VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', ' $TransactionType', '$AssistanceType', '$ReceivedAssistance','$EmpID','$Amount','$branch' )";
 if(mysqli_query($con, $query)){
     
     $sql1 = "DELETE FROM transaction  WHERE Beneficiary_Id='$beneID'";
     $sql2 = "DELETE FROM financialassistance  WHERE Beneficiary_ID='$beneID'";
+          
+    $sql3="Select RemainingBal From budget WHERE AssistanceType='$AssistanceType2' && branch='$branch'";
+$result3 = mysqli_query($con, $sql3);
 
+if ($result3) {
+    // Fetch the result as an associative array
+    if ($resultbal = mysqli_fetch_assoc($result3)) {
+        // Check if RemainingBal is not 0
+        if ($resultbal['RemainingBal'] != 0) {
+            $updateQuery = "UPDATE budget SET RemainingBal = RemainingBal - $Amount WHERE branch = '$branch1' && AssistanceType = '$AssistanceType2'";
+            $result4=mysqli_query($con, $updateQuery);
+
+        } else {
+            echo '<body>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script>
+            swal("You have insufficient balance","","error")
+            .then((value) => {
+                if (value) {
+                    window.location.href = "assistance.php";
+                }
+            });
+            </script>
+            </body>';
+
+        }
+    } else {
+        echo '<body>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script>
+            swal("This branch has no budget","","error")
+            .then((value) => {
+                if (value) {
+                    window.location.href = "assistance.php";
+                }
+            });
+            </script>
+            </body>';
+    }
+} else {
+    // Query failed
+    // Add your code here to handle this case
+}
     $result1 = mysqli_query($con, $sql1);
     $result2 = mysqli_query($con, $sql2);
     
-    if($result1 && $result2) {
+    if($result1 && $result2 && $result4) {
 
                     echo '<body>
                     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -121,7 +196,6 @@ if(mysqli_query($con, $query)){
                   </body>';
 }
 }
-
 }
 }
         elseif ($Status == "For Schedule") {
@@ -129,7 +203,7 @@ if(mysqli_query($con, $query)){
             $transaction_time = $_POST['time'];
             $Date = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
             $timestamp = strtotime($transaction_time);
-         $transaction_time_24hr = date("H:i", $timestamp);
+           $transaction_time_24hr = date("H:i", $timestamp);
          
             $Status = "For Validation";
               $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time_24hr' AND Beneficiary_Id != '$beneID'";
@@ -157,14 +231,16 @@ if(mysqli_query($con, $query)){
             
          if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Payout") {    
             require 'phpmailer/src/Exception.php';
             require 'phpmailer/src/PHPMailer.php';
             require 'phpmailer/src/SMTP.php';
 
             $mail = new PHPMailer(true);
             $lastName = $record['Lastname'];
-           
+            $transaction_time = $_POST['time'];
+$transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert to 12-hour format
+
             $Email = $record['Email'];
             $status= $_POST['Status'];
 
@@ -192,11 +268,9 @@ if(mysqli_query($con, $query)){
                     <body>
                     <p>Dear Mr./Ms./Mrs. $lastName,</p>
                     <p>I am writing to inform you that your request for scheduling has been approved.</p>
-                    <p>Your schedule has been set for $Date at $transaction_time. We kindly expect your presence on the said date.</p>
+                    <p>Your schedule has been set for $Date at  $transaction_time_12hr. We kindly expect your presence on the said date.</p>
                     <p> We kindly expect your presence on the said date.<br><br></p>
-                    <p>   If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='https://pgbataansap24.000webhostapp.com/requestresched.php'> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.<br> 
-                   Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.</p>
-                    <p>Best regards,<br>$employeeName</p>
+                   <p>Best regards,<br>$employeeName</p>
                    
                     <p>Provincial Government of Bataan - Special Assistance Program</p>
                     </body>
@@ -247,7 +321,8 @@ if(mysqli_query($con, $query)){
             date_default_timezone_set('Asia/Manila');
             $Date = date('Y-m-d'); // Set the current date for Given_Sched
             $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
-            $Status = "For Validation";
+            $EmpID = $_POST['Emp_ID'];
+           
 
             $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
             $overlapResult = mysqli_query($con, $overlapQuery);
@@ -273,7 +348,7 @@ if(mysqli_query($con, $query)){
              $result2 = mysqli_query($con, $query);
              if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Payout") {    
                 require 'PHPMailer/src/Exception.php';
                 require 'PHPMailer/src/PHPMailer.php';
                 require 'PHPMailer/src/SMTP.php';
@@ -283,7 +358,7 @@ if(mysqli_query($con, $query)){
            
             $Email = $record['Email'];
             $status= $_POST['Status'];
-
+           
             try {
                 // Server settings
                 $mail->isSMTP();
@@ -317,8 +392,6 @@ if(mysqli_query($con, $query)){
                         </html>
                     ";
 
-
-                
                 }
             
 
@@ -364,6 +437,8 @@ if(mysqli_query($con, $query)){
             $Date = date('Y-m-d'); // Set the current date for Given_Sched
             $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
             $amount = $_POST['amount'];
+            $branch = $_POST['branch'];
+            $PayoutType = $_POST['payouttypeSelect'];
             $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID' ";
             $overlapResult = mysqli_query($con, $overlapQuery);
 
@@ -383,22 +458,24 @@ if(mysqli_query($con, $query)){
             $query = "UPDATE financialassistance f
             INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
             INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-            SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID',f.Amount='$amount'
+            SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID',f.Amount='$amount',f.PayoutType='$PayoutType', f.branch='$branch'
             WHERE b.Beneficiary_Id = '$beneID'";
              $result2 = mysqli_query($con, $query);
              if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Payout") {    
             require 'phpmailer/src/Exception.php';
             require 'phpmailer/src/PHPMailer.php';
             require 'phpmailer/src/SMTP.php';
 
             $mail = new PHPMailer(true);
             $lastName = $record['Lastname'];
-           
+            $transaction_time = $_POST['time'];
+            $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert to 12-hour format
+            
             $Email = $record['Email'];
             $status= $_POST['Status'];
-
+            $branch= $_POST['branch'];
             try {
                 // Server settings
                 $mail->isSMTP();
@@ -423,20 +500,25 @@ if(mysqli_query($con, $query)){
                         <html>
                         <body>
                         <p>Dear Mr./Ms./Mrs. $lastName,</p>
-                        <p>Your assistance request is currently for payout on $Date at $transaction_time.</p>
-                         You will received a total amount of $amount<br>
-                        Kindly proceed to PGB-Hermosa Branch<br>
-                        <p>Thank you for your patience and cooperation.</p>
-                        <p>Best regards,</p>
-                        <p>$employeeName</p>
+                        <p>Your assistance request is currently for payout on $Date at  $transaction_time_12hr.
+                         You will received a total amount of $amount.<br>
+                        Kindly proceed to $branch<br>
+                        Please bring a valid ID and show this email upon arrival.<br>
+                        Thank you for your patience and cooperation.</p><br>
+                        <i>Important Reminder: You may request assistance again after 3 months  </i>
+
+
+                        <p>Best regards,<br>
+                        $employeeName</p>
                         <p>Provincial Government of Bataan - Special Assistance Program</p>
+
+
                         </body>
                         </html>
                     ";
 
                 }
-            
-
+        
                 $mail->send();
                 echo '<body>
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -484,7 +566,7 @@ if(mysqli_query($con, $query)){
              $result2 = mysqli_query($con, $query);
             if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Payout") {    
             require 'phpmailer/src/Exception.php';
             require 'phpmailer/src/PHPMailer.php';
             require 'phpmailer/src/SMTP.php';
@@ -566,7 +648,7 @@ if(mysqli_query($con, $query)){
             exit();
         } 
         }
-        }
+        
 
         elseif ($Status == "For Re-schedule") {
             $transaction_time = $_POST['time'];
@@ -601,14 +683,16 @@ if(mysqli_query($con, $query)){
              $result2 = mysqli_query($con, $query);
             if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Payout") {    
             require 'phpmailer/src/Exception.php';
             require 'phpmailer/src/PHPMailer.php';
             require 'phpmailer/src/SMTP.php';
 
             $mail = new PHPMailer(true);
             $lastName = $record['Lastname'];
-           
+            $transaction_time = $_POST['time'];
+            $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert to 12-hour format
+            
             $Email = $record['Email'];
             $status= $_POST['Status'];
 
@@ -635,7 +719,7 @@ if(mysqli_query($con, $query)){
                         <html>
                         <body>
                         <p>Dear Mr./Ms./Mrs. $lastName,</p>
-                        <p>Your request for re-schedule has been accepted. Your new schedule is on $Date at $transaction_time.</p>
+                        <p>Your request for re-schedule has been accepted. Your new schedule is on $Date at  $transaction_time_12hr.</p>
                         <p> We kindly expect your presence on the said date.<br><br></p>
 <p>Best regards,<br>$employeeName</p>
                    
@@ -662,50 +746,41 @@ if(mysqli_query($con, $query)){
             } catch (Exception $e) {
                 echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
             }
-         } else{ 
-            echo '<body>
-            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-            <script>
-            swal("Updated successfully","","success")
-            .then((value) => {
-                if (value) {
-                    window.location.href = "assistance.php";
-                }
-            });
-            </script>
-            </body>';}
-
-        } else {
-            echo "Error updating records: " . mysqli_error($con);
-            header("Location: assistance.php");
-            exit();
-        } 
+         }
         }
-        }
-
-
-
-        else{
+    }
+}
+        elseif ($Status == "Pending for Requirements"  ) {
             date_default_timezone_set('Asia/Manila');
             $Date = date('Y-m-d'); // Set the current date for Given_Sched
             $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
     
-            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
-            $overlapResult = mysqli_query($con, $overlapQuery);
-
-            if(mysqli_num_rows($overlapResult) > 0) {
-                echo "The selected date and time are already booked. Please choose a different time.";
-                exit();
-            }
+          
             $query = "UPDATE financialassistance f
                       INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
                       INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
                       SET  t.Given_Sched = '$Date',
         t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
                       WHERE b.Beneficiary_Id = '$beneID'";
-        }
+          $result2 = mysqli_query($con, $query);
+          if ($result2) {
+            echo '<body>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script>
+            swal("Update and email send successful","","success")
+            .then((value) => {
+                if (value) {
+                    window.location.href = "assistance.php";
+                }
+            });
+            </script>
+            </body>';
+          }
+
+    }
     
     }
+}
 
 ?>
 
@@ -730,22 +805,18 @@ if(mysqli_query($con, $query)){
                     <span class="details" style="color:#f5ca3b;">Date of Application:</span>
                     <span id="calendar" style="color:white; margin-top:10px;"><?php echo $record['Date']; ?></span>
                 </div>
-               <!-- <div class="input-box">
-                    <span class="details" style="color:  #f5ca3b;">Time of Application:</span>
-                    <span id="time" style="color:  white;"><?php echo date("h:i A", strtotime($record['transaction_time'])); ?></span>
-                    <input type="hidden" required value="<?php echo $record['Beneficiary_ID']; ?>" name="Beneficiary_ID" disabled />
-                </div>-->
+             
             </div>
 
             <div class="user-details">
                 <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;">Full Name</span>
-                    <input disabled type = "text" required value = "<?php echo $record['Firstname'] . " " . $record['Lastname']; ?>" > 
+                    <input disabled name="f" type = "text" required value = "<?php echo $record['Firstname'] . " " . $record['Lastname']; ?>" > 
                 </div>
 
                 <div class="input-box">
                     <span class="details">Transaction Type</span>
-                    <input disabled type = "text" required value = "<?php echo $record['TransactionType']; ?>">
+                    <input disabled name="ff" type = "text" required value = "<?php echo $record['TransactionType']; ?>">
                 </div>
             </div>
             
@@ -753,147 +824,276 @@ if(mysqli_query($con, $query)){
                 <div class="input-box">
                     <span class="details">Financial Assistance Type</span>
                     <input disabled type = "text" required value = "<?php echo $record['FA_Type']; ?>">
-                       <input type = "hidden" name="FA_Type" required value = "<?php echo $record['FA_Type']; ?>">
-                   <!-- <select name="FA_Type">
-                       
-                        $FA_type = array('Burial', 'Chemotherapy & Radiation', 'Dialysis', 'Medicine');
-                        foreach ($FA_type as $FA) {
-                            $selected = ($record['FA_Type'] == $FA) ? 'selected' : '';
-                            echo "<option $selected>$FA</option>";
-                        }
-                        ?>
-                    </select>-->
+                       <input type = "hidden" id="d" name="FA_Type" required value = "<?php echo $record['FA_Type']; ?>">
+                
+                    
                 </div>
 
-                <div class="input-box">
-                    <span class="details">Status</span>
-                    <select id="status" name="Status" onchange="handleStatusChange()">
-                        <?php
-                       $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Payout' ,'For Payout','Request for Re-schedule','For Re-schedule', 'Decline Request for Re-schedule', 'Done');
-                        foreach ($status as $stat) {
-                            $selected = ($record['Status'] == $stat) ? 'selected' : '';
-                            echo "<option $selected>$stat</option>";
-                        }
-                        ?>
+              <div class="input-box">
+    <span class="details">Status</span>
+    <?php
+    $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Payout' ,'For Payout','Request for Re-schedule','For Re-schedule', 'Decline Request for Re-schedule');
+
+    if ($record['Status'] == 'For Schedule') {
+        // If the current status is "For Schedule", display an input field instead of a dropdown
+        echo "<input type='text' id='status' name='Status' value='For Schedule' readonly>";
+    } 
+    if ($record['Status'] == 'For Validation') {
+        // If the current status is "For Schedule", display an input field instead of a dropdown
+        echo "<input type='text' id='status' name='Status' value='For Validation' readonly>";
+    }
+    elseif ($record['Status'] == 'Pending for Requirements') {
+        // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+        echo "<input type='text' id='status' name='Status' value='For Validation' readonly>";
+    }
+    elseif ($record['Status'] == 'Pending for Payout') {
+        // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+        echo "<input type='text' id='status' name='Status' value='For Payout' readonly>";
+    }
+    elseif ($record['Status'] == 'Request for Re-schedule') {
+        // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+        echo "<select id='status' name='Status' onchange='handleStatusChange()'>";
+        echo "<option value='For Re-schedule'>For Re-schedule</option>";
+        echo "<option value='Decline Request for Re-schedule'>Decline Request for Re-schedule</option>";
+        echo "</select>";
+    }
+    elseif ($record['Status'] == 'For Re-schedule') {
+        // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+        echo "<input type='text' id='status' name='Status' value='For Validation' readonly>";
+    }
+    elseif ($record['Status'] == 'Decline Request for Re-schedule') {
+        // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+        echo "<input type='text' id='status' name='Status' value='Request for Re-schedule Declined' readonly>";
+
+    }
+    elseif ($record['Status'] == 'For Payout') {
+        // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+       if ($role === 'Accounting Staff'){
+    
+            // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+            echo "<select id='status' name='Status' onchange='handleStatusChange()'>";
+            echo "<option value='For Payout'>For Payout</option>";
+            echo "<option value='Release Payout'>Release Payout</option>";
+            echo "</select>";
+         
+       }else{
+        echo "<input type='text' id='status' name='Status' value='For Payout' readonly>";
+       
+       }
+    }
+ 
+    ?>
                     </select>
                 </div>
 
-               
             </div>
             
             <input type="hidden" name="confirmed" id="confirmed" value="no">
             <br>
-
-       
-            <div id="payouttype" class="emailformat">
-                    </div>
+            <div id="payoutContainer" style="display: none;">
+    <label for="payouttypeSelect" style="color:white;">Payout Type</label>
+    <select id="payouttypeSelect" style="width:100px;" name="payouttypeSelect">
+    <option value="Cash" <?php if ($record['PayoutType'] == "Cash") echo 'selected="selected"'; ?>>Cash</option>
+    <option value="Cheque" <?php if ($record['PayoutType'] == "Cheque") echo 'selected="selected"'; ?>>Cheque</option>
+    </select>
+</div>
             <div id="requirements" style="display: none;"></div>
-            <div id="emailFormat" class="emailformat">
-            
-                    <!-- Email content will be updated based on the selected status -->
-                </div>
+            <div id="emailFormat" class="emailformat">    </div>
            
 
             <div class="button-row">
-                <input type="submit" value="Submit" name="submit" onclick="showConfirmation()" />
+                <input type="submit" value="<?php echo $submitButtonText; ?>" id="submitbtn"name="submit" onclick="showConfirmation()" />
                 <input type="button" value="Cancel" name="cancel" onclick="cancelEdit()" />
             </div>
         </form>
     </div>
     <script>
-      
+        document.getElementById('calendar').min = new Date().toISOString().split("T")[0];
+      function updateButtonText() {
+    var status = document.getElementById("status").value;
+    var submitBtn = document.getElementById("submitbtn");
+    
+    if (status == 'Release Payout') {
+        submitbtn.style.display = 'inline';
+        submitBtn.value = 'Release Payout';
+
+    }
+    else{submitBtn.value = 'Submit';}
+
+}
       function handleStatusChange() {
-    var status = document.getElementById('status').value;
+        updateButtonText();
+        var status = document.getElementById('status').value;
     var emailFormat = document.getElementById('emailFormat');
     var requirements = document.getElementById('requirements');
     var faType = "<?php echo $record['FA_Type']; ?>";
-    var payouttype = document.getElementById('payouttype');
-    payouttype.innerHTML = '';
+    var payoutType = document.getElementById('payouttypeSelect');
+    var payoutContainer = document.getElementById('payoutContainer');
+    var submitbtn = document.getElementById('submitbtn');
+
+    var beneID = document.querySelector('input[name="Beneficiary_Id"]').value;
+var empID = document.querySelector('input[name="Emp_ID"]').value;
+
     emailFormat.innerHTML = '';
-    requirements.style.display = 'none'; // Hide requirements by default
+    requirements.style.display = 'none'; 
+    payoutContainer.style.display = 'none';
+
+      
 
     if (status === 'For Schedule') {
+        submitbtn.style.display = 'inline';
         emailFormat.innerHTML = `
          <div style = "color: black; padding:15px; background:white; margin-top:20px;"> 
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>I am writing to inform you that your request for scheduling has been approved.<br>
-            Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
+            Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
             at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br>
           <br>
-          If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='https://pgbataansap24.000webhostapp.com/requestresched.php' style = "color:  blue;"> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.
-Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.
- 
+         
             Best regards,<br>
             <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
             Provincial Government of Bataan - Special Assistance Program</p>
          </div> 
         `;
     } else if (status === 'For Validation') {
-        requirements.style.display = 'block'; 
+
+        submitbtn.addEventListener('click', function() {
+    let newStatus;
+    let checkedRequirements;
+
+    // Determine which checkboxes to check based on faType
+    if (faType === 'Burial') {
+        checkedRequirements = getCheckedRequirements('burial_requirement[]');
+    } else if (faType === 'Chemotherapy & Radiation') {
+        checkedRequirements = getCheckedRequirements('chemo_requirement[]');
+    } else if (faType === 'Dialysis') {
+        checkedRequirements = getCheckedRequirements('dialysis_requirement[]');
+    }
+
+    // Debug: Log the checked requirements
+    console.log("Checked Requirements: ", checkedRequirements);
+
+    // Check if all checkboxes are checked
+    let allChecked = areAllChecked(checkedRequirements);
+
+    // Debug: Log the allChecked value
+    console.log("All Checked: ", allChecked);
+
+    // Set the new status based on whether all checkboxes are checked
+    if (allChecked) {
+        newStatus = 'Pending for Payout';
+    } else {
+        newStatus = 'Pending for Requirements';
+    }
+
+    // Update the status in the form
+    document.getElementById('status').value = newStatus;
+    document.getElementById('requirements').value = JSON.stringify(checkedRequirements);
+    
+    // Submit the form
+    document.getElementById('statusForm').submit();
+});
+
+function areAllChecked(checkedRequirements) {
+    for (let i = 0; i < checkedRequirements.length; i++) {
+        if (!checkedRequirements[i]) {  // Check if the value is false
+            return false;
+        }
+    }
+    return true;
+}
+
+function getCheckedRequirements(name) {
+    let checkboxes = document.getElementsByName(name);
+    let checkedRequirements = [];
+    for (let i = 0; i < checkboxes.length; i++) {
+        checkedRequirements.push(checkboxes[i].checked); // Store the checked state (true/false)
+    }
+    return checkedRequirements;
+}
         if (faType === 'Burial') {
+            submitbtn.style.display = 'inline';
+        requirements.style.display = 'block'; 
+      
             requirements.innerHTML = `
             
              <div style = "color: black; padding:15px; background:white; margin-top:20px;">
                 <h3 style = "color: blue;">REQUIREMENTS FOR BURIAL ASSISTANCE VALIDATION</h3>
                   <ul style = "text-align: left; margin-left:60px">
-                    <input type="checkbox" name="requirement" value="Registered Death Certificate (2 PHOTOCOPIES)"> Registered Death Certificate (2 PHOTOCOPIES) <br>
-                    <input type="checkbox" name="requirement" value="Funeral Contract with Balance (2 PHOTOCOPIES)"> Funeral Contract with Balance (2 PHOTOCOPIES) <br>
-                    <input type="checkbox" name="requirement" value="Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY)"> Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY) <br>
-                    <input type="checkbox" name="requirement" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia <br>
-                    <input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad <br>
-                    <input type="checkbox" name="requirement" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad) <br>
+
+                    <input type="checkbox" name="burial_requirement[]" value="Registered Death Certificate (2 PHOTOCOPIES)"> Registered Death Certificate (2 PHOTOCOPIES) <br>
+                    <input type="checkbox" name="burial_requirement[]" value="Funeral Contract with Balance (2 PHOTOCOPIES)"> Funeral Contract with Balance (2 PHOTOCOPIES) <br>
+                    <input type="checkbox" name="burial_requirement[]" value="Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY)"> Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY) <br>
+                    <input type="checkbox" name="burial_requirement[]" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia <br>
+                    <input type="checkbox" name="burial_requirement[]" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad <br>
+                    <input type="checkbox" name="burial_requirement[]" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad) <br>
                     </ul>
                     <h3 style = "color: blue;">SUPPORTING DOCUMENTS</h3>
                     <ul style = "text-align: left; margin-left:60px">
-                    <input type="checkbox" name="requirement" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
-                    <input type="checkbox" name="requirement" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
-                    <input type="checkbox" name="requirement" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
+                    <input type="checkbox" name="burial_requirement[]" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
+                    <input type="checkbox" name="burial_requirement[]" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
+                    <input type="checkbox" name="burial_requirement[]" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
                     </ul>
              </div>
+              <input type="hidden"  name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+          
             `;
-            
-        } else if (faType === 'Chemotherapy & Radiation') {
+                 
+   
+        }
+
+      
+ else if (faType === 'Chemotherapy & Radiation') {
+    submitbtn.style.display = 'inline';
+    requirements.style.display = 'block'; 
             requirements.innerHTML = `
             
                   <div style = "color: black; padding:15px; background:white; margin-top:20px;">
                 <h3 style = "color: blue;">REQUIREMENTS FOR CHEMOTHERAPY & RADIATION ASSISTANCE VALIDATIONS</h3>
                   <ul style = "text-align: left; margin-left:60px">
-                    <input type="checkbox" name="requirement" value="Medical Abstract"> Medical Abstract <br>
-                    <input type="checkbox" name="requirement" value="Request Letter from Barangay Health Center"> Request Letter from Barangay Health Center <br>
-                    <input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente"> Xerox Valid ID ng Pasyente <br>
-                    <input type="checkbox" name="requirement" value="Xerox Valid ID ng Maglalakad"> Xerox Valid ID ng Maglalakad <br>
-                    <input type="checkbox" name="requirement" value="BRGY. INDIGENCY (PASYENTE)"> BRGY. INDIGENCY (PASYENTE) <br>
+                    <input type="checkbox" name="chemo_requirement[]" value="Medical Abstract"> Medical Abstract <br>
+                    <input type="checkbox" name="chemo_requirement[]" value="Request Letter from Barangay Health Center"> Request Letter from Barangay Health Center <br>
+                    <input type="checkbox" name="chemo_requirement[]" value="Xerox Valid ID ng Pasyente"> Xerox Valid ID ng Pasyente <br>
+                    <input type="checkbox" name="chemo_requirement[]" value="Xerox Valid ID ng Maglalakad"> Xerox Valid ID ng Maglalakad <br>
+                    <input type="checkbox" name="chemo_requirement[]" value="BRGY. INDIGENCY (PASYENTE)"> BRGY. INDIGENCY (PASYENTE) <br>
                     </ul>
                     <h3 style = "color: blue;">SUPPORTING DOCUMENTS</h3>
                     <ul style = "text-align: left; margin-left:60px">
-                    <input type="checkbox" name="requirement" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
-                    <input type="checkbox" name="requirement" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
-                    <input type="checkbox" name="requirement" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
+                    <input type="checkbox" name="chemo_requirement[]" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
+                    <input type="checkbox" name="chemo_requirement[]" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
+                    <input type="checkbox" name="chemo_requirement[]" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
                     </ul>
              </div>
+               <input type="hidden"  name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+          
             `;
         }
         else if (faType === 'Dialysis') {
+            submitbtn.style.display = 'inline';
+            requirements.style.display = 'block'; 
             requirements.innerHTML = `
              <div style = "color: black; padding:15px; background:white; margin-top:20px;">
                 <h3 style = "color: blue;" >REQUIREMENTS FOR DIALYSIS</h3>
                 <ul style = "text-align: left; margin-left:60px"><br>
-                       <input type="checkbox" name="requirement" value="Medical Abstract"> Medical Abstract<br>
-                    <input type="checkbox" name="requirement" value="Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)"> Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)<br>
-                   <input type="checkbox" name="requirement" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)<br>
-                    <input type="checkbox" name="requirement" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia<br>
-                   <input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad<br>
+                       <input type="checkbox"  name="dialysis_requirement[]"  value="Medical Abstract"> Medical Abstract<br>
+                    <input type="checkbox"  name="dialysis_requirement[]"  value="Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)"> Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)<br>
+                   <input type="checkbox"  name="dialysis_requirement[]" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)<br>
+                    <input type="checkbox"  name="dialysis_requirement[]"  value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia<br>
+                   <input type="checkbox"  name="dialysis_requirement[]"  value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad<br>
                 </ul><br>
                 <h3  style = "color: blue;">SUPPORTING DOCUMENTS</h3>
                     <ul style = "text-align: left; margin-left:60px"><br>
-                    <input type="checkbox" name="requirement" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
-                    <input type="checkbox" name="requirement" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
-                    <input type="checkbox" name="requirement" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
+                    <input type="checkbox"  name="dialysis_requirement[]"  value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
+                    <input type="checkbox"  name="dialysis_requirement[]"  value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
+                    <input type="checkbox"  name="dialysis_requirement[]"  value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
                     </ul>
              </div>
+               <input type="hidden"  name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+          
             `;
         }
     } else if (status === 'Pending for Payout') {
+        submitbtn.style.display = 'inline';
         emailFormat.innerHTML = `
          <div style = "color: black; padding:15px; background:white; margin-top:20px;">
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
@@ -902,40 +1102,146 @@ Please note that your reasons may need to be verified to avoid any inconvenience
             Thank you for your patience and cooperation.<br><br>
             Best regards,<br>
             <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-            Provincial Government of Bataan - Special Assistance Program</p>
+           Provincial Government of Bataan - Special Assistance Program</p>
          </div>
         `;
     }
     else if (status === 'Request for Re-schedule') {
+        
         requirements.style.display = 'block'; 
         requirements.innerHTML = `
+           
                 <h3 style = "color: white;">Click this   <a href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox" target="_blank" style = "color:  #3cd82e;">link</a> to check the email of beneficiary.</h3>
-              
+           
             `;
-    } else if (status === 'For Payout') { 
-
+            submitbtn.style.display = 'none'; // Hide the submit button
+           
+               
+    } 
+    
+    else if (status === 'For Payout') { 
+        function updateEmailFormat() {
+        var selectedPayoutType = payoutType.value;
+       
+       
+        if (selectedPayoutType === 'Cash') {
+           
+    // Branch field should be enabled regardless of amount field value
    
+            emailFormat.innerHTML = `
+                <div style="color: black; padding:15px; background:white; margin-top:20px;">
+                    Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
+                    <p>Your assistance request is currently for payout on <input type="date" id="calendar2" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
+                    at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
+                    You will receive a total amount of <input type="text" autocomplete="off" name="amount" style="margin-top:10px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">.<br><br>
+                    Kindly proceed to <select name="branch" id="branch" style="margin-top:5px;">
+    <option value="PGB-Balanga Branch" <?php if ($record['branch'] == "PGB-Balanga Branch") echo 'selected="selected"'; ?>>PGB-Balanga Branch</option>
+    <option value="PGB-Dinalupihan Branch" <?php if ($record['branch'] == "PGB-Dinalupihan Branch") echo 'selected="selected"'; ?>>PGB-Dinalupihan Branch</option>
+    <option value="PGB-Hermosa Branch" <?php if ($record['branch'] == "PGB-Hermosa Branch") echo 'selected="selected"'; ?>>PGB-Hermosa Branch</option>
+    <option value="PGB-Mariveles Branch" <?php if ($record['branch'] == "PGB-Mariveles Branch") echo 'selected="selected"'; ?>>PGB-Mariveles Branch</option>
+</select><br>
 
-        emailFormat.innerHTML = `
+                    Please bring a valid ID and show this email upon arrival.<br><br>
+                    Thank you for your patience and cooperation.<br><br>    
+                    Best regards,<br>
+                    <input type="text" id="empname" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+                    Provincial Government of Bataan - Special Assistance Program
+                </p>
+                </div>
+            `;
+            var amountField = document.getElementsByName('amount')[0];
+    var branchField = document.getElementById('branch');
+    var selectedPayoutType2 = document.getElementById('payouttypeSelect');
+    var date2 = document.getElementById('calendar2');
+    var time= document.getElementById('time');
+    var empname= document.getElementById('empname');
+    // Check if the amount field is empty or equal to 0
+    if (amountField.value.trim() === '' || amountField.value.trim() === '0') {
+        amountField.disabled = false;
+        branchField.disabled = false;
+        selectedPayoutType2.disabled=false;
+        time.disabled = false;
+        date2.disabled = false;
+        empname.disabled = false;
+        submitbtn.style.display = 'inline';
+    } else {
+        amountField.disabled = true;
+        branchField.disabled = true;
+        selectedPayoutType2.disabled=true;
+        time.disabled = true;
+       date2.disabled = true
+       empname.disabled = true;
+       submitbtn.style.display = 'none';
+    }
+        
+        } else if (selectedPayoutType === 'Cheque') {
+            submitbtn.style.display = 'inline';
+            emailFormat.innerHTML = `
+                <div style="color: black; padding:15px; background:white; margin-top:20px;">
+                    Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
+                    <p>Your assistance request is currently for cheque payout on <input type="date" id="calendar2" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
+                    at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
+                    You will receive a cheque with a total amount of <input type="text" autocomplete="off" name="amount" style="margin-top:10px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">.
+                    Kindly proceed to <select name="branch" id="branch" style="margin-top:5px;">
+    <option value="PGB-Balanga Branch" <?php if ($record['branch'] == "PGB-Balanga Branch") echo 'selected="selected"'; ?>>PGB-Balanga Branch</option>
+    <option value="PGB-Dinalupihan Branch" <?php if ($record['branch'] == "PGB-Dinalupihan Branch") echo 'selected="selected"'; ?>>PGB-Dinalupihan Branch</option>
+    <option value="PGB-Hermosa Branch" <?php if ($record['branch'] == "PGB-Hermosa Branch") echo 'selected="selected"'; ?>>PGB-Hermosa Branch</option>
+    <option value="PGB-Mariveles Branch" <?php if ($record['branch'] == "PGB-Mariveles Branch") echo 'selected="selected"'; ?>>PGB-Mariveles Branch</option>
+</select>
+ to collect your cheque.<br>
+                    Please bring a valid ID and show this email upon arrival.<br><br>
+                    Thank you for your patience and cooperation.<br><br>    
+                    Best regards,<br>
+                    <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+                    Provincial Government of Bataan - Special Assistance Program
+                </p>
+                </div>
+            `;
+            var amountField = document.getElementsByName('amount')[0];
+    var branchField = document.getElementById('branch');
+    var selectedPayoutType2 = document.getElementById('payouttypeSelect');
+    var date2 = document.getElementById('calendar2');
+    var time= document.getElementById('time');
+    var empname= document.getElementById('empname');
+    // Check if the amount field is empty or equal to 0
+    if (amountField.value.trim() === '' || amountField.value.trim() === '0') {
+        amountField.disabled = false;
+        branchField.disabled = false;
+        selectedPayoutType2.disabled=false;
+        time.disabled = false;
+        date2.disabled = false;
+        empname.disabled = false;
+        submitbtn.style.display = 'inline';
+    } else {
+        amountField.disabled = true;
+        branchField.disabled = true;
+        selectedPayoutType2.disabled=true;
+        time.disabled = true;
+       date2.disabled = true
+       empname.disabled = true;
+       submitbtn.style.display = 'none';
+    }
           
-     
-         <div style = "color: black; padding:15px; background:white; margin-top:20px;">
-            Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-            <p>Your assistance request is currently for payout on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
-            at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
-            You will received a total amount of  <input type="text" name="amount" style="margin-top:15px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">.<br><br>
-            Kindly proceed to PGB-Hermosa Branch<br>
-            Thank you for your patience and cooperation.<br><br>    
-            Best regards,<br>
-            <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-            Provincial Government of Bataan - Special Assistance Program</p>
-         </div>
-        `;
-    }else if (status === 'For Re-schedule') { 
+            }
+        }
+
+        payoutContainer.style.display = 'block';
+        updateEmailFormat(); // Initial call to update email format based on selected payout type
+
+        // Event listener to update email format when payout type changes
+        payoutType.addEventListener('change', function() {
+            updateEmailFormat();
+        });
+    }
+
+    
+    
+    else if (status === 'For Re-schedule') { 
+        submitbtn.style.display = 'inline';
         emailFormat.innerHTML = `
         <div style = "color: black; padding:15px; background:white; margin-top:20px;">
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-            <p>Your request for re-schedule has been accepted. Your new schedule is on <input type="date" id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" /> 
+            <p>Your request for re-schedule has been accepted. Your new schedule is on <input type="date" id="calendar" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
             at <input type="time" id="time" name="time"  />.<br>
             We kindly expect your presence on the said date.<br><br>
             Best regards,<br>
@@ -945,8 +1251,9 @@ Please note that your reasons may need to be verified to avoid any inconvenience
         `;
 }
 else if (status === 'Decline Request for Re-schedule') {
+    submitbtn.style.display = 'inline';
         emailFormat.innerHTML = `
-         <div style = "color: black; padding:15px; background:white; margin-top:20px;">
+         <div style = "color: black; padding:15px; background:white; margin-top:-8px;">
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
             <p>We have received your request for rescheduling. Unfortunately, we regret to inform you that your request cannot be accommodated at this time.<br>
             Please be assured that we are doing our best to process all applications and requests efficiently. However, due to the following reason, we are unable to grant your rescheduling request.<br><br>

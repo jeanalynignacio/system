@@ -155,12 +155,14 @@ if(isset($_POST['Beneficiary_Id'])) {
                 <table>
                     <thead>
                         <tr>
-                        <th> Transaction Type: </th>
-                            <th>  Assistance Type: </th>
+                        <th>  Assistance Type: </th>
+                        <th> Transaction Type: </th>  
                             <th> Received Assistance: </th>
                              <th> Received Date:  </th>
                             <th> Received Time:  </th>
+                            <th> Received Amount:  </th>
                             <th> Assisted By:  </th>
+                            <th> Office:  </th>
                         </tr>
                         <tbody>
                         <?php
@@ -195,21 +197,21 @@ if ($row["ReceivedDate"] !== NULL) {
 }
       $transaction_time = date("h:i A", strtotime($row["ReceivedTime"]));
     echo "<tr>
+     <td>" . $row["AssistanceType"] . " </td>
  <td>" . $row["TransactionType"] . " </td>
- <td>" . $row["AssistanceType"] . " </td>
- <td>" . $row["ReceivedAssistance"] . " </td>
 
+ <td>" . $row["ReceivedAssistance"] . " </td>
  <td>" . $row["ReceivedDate"] . " </td>
 <td>" . $transaction_time . " </td>
+<td>" . $row["Amount"] . " </td>
   <td>" . $row2["Firstname"]. " " . $row2["Lastname"] . " </td>
-           
+     <td>" . $row2["Office"]." </td>      
             
               </tr>";
 }
 }
 ?>
 <input type="hidden" id="confirmed" name="confirmed" value="">
-
 
 
                         </tbody>

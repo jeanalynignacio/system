@@ -114,6 +114,14 @@ if($result = mysqli_fetch_assoc($query)){
         
     </button>
 </form>
+<form action="status.php" method="POST" class="sub-menu-link">
+    <input type="hidden" name="userId" value="<?php echo $res_Id; ?>">
+    <button type="submit" class="btn-edit-profile" >
+        <img src="images/profile.png">
+        <p>Status </p>
+        
+    </button>
+</form>
    
         <a href="logout.php" class="sub-menu-link">
                 <img src="images/logout.png">
@@ -125,8 +133,6 @@ if($result = mysqli_fetch_assoc($query)){
           </div>
         </div>
       </nav>
-      <!-- navbar end -->
-      <!-- home section -->
       
 <p class="welcome-message">Hello and welcome to PGB-SAP, <?php echo $res_Fname; ?>.</p>
 

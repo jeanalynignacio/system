@@ -180,7 +180,7 @@ awesome/6.4.0/css/all.min.css"/>
 <th>First Name:</th>
 <th>Email:</th>
 <th>Role:</th>
-
+<th>Office:</th>
 <th>Action:</th>
 </tr>
 </thead>
@@ -199,6 +199,7 @@ echo "<tr>
 <td>" . $row["Firstname"] . "</td>
 <td>" . $row["Email"] . "</td>
 <td>" . $row["role"] . "</td>
+<td>" . $row["Office"] . "</td>
 <td>
 <form method='post'
 
@@ -328,7 +329,8 @@ var row = rows[i];
 var lnamecell = row.cells[0];
 var fnamecell = row.cells[1];
 var emailcell = row.cells[2];
-if (lnamecell && fnamecell && emailcell ) {
+var officecell = row.cells[4];
+if (lnamecell && fnamecell && emailcell && officecell) {
 
 // Get the text content of the cells and convert them to uppercase
 
@@ -337,10 +339,12 @@ var fnametext =
 fnamecell.textContent.toUpperCase();
 var emailtext =
 emailcell.textContent.toUpperCase();
+var officetext =
+officecell.textContent.toUpperCase();
 
 
 // Check if the search input value matches any of the columns
-if (lnametext.indexOf(input) > -1 || fnametext.indexOf(input) > -1 || emailtext.indexOf(input) > -1) {
+if (lnametext.indexOf(input) > -1 || fnametext.indexOf(input) > -1 || emailtext.indexOf(input) > -1|| officetext.indexOf(input) > -1) {
 // If there's a match, display the table row
 row.style.display = "";
 } else {

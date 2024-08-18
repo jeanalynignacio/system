@@ -32,6 +32,7 @@
                     $unameError = "";
                     $passError = "";
                     $roleError = "";
+                    $officeError = "";
                     $Errors = "";
 
                     $otp_str = str_shuffle("0123456789");
@@ -47,7 +48,7 @@
                     $Username = $_POST['Username'];
                     $Password = $_POST['Password'];
                     $role = $_POST['role'];
-                   
+                    $office = $_POST['office'];
             if(empty($Lastname))
                     {
                       array_push($errors, $lastError = "Lastname is required");
@@ -74,6 +75,10 @@
                     {
                         array_push($errors, $roleError = "Please select Role");
                     }
+                    if($office=="Select")
+                    {
+                        array_push($errors, $roleError = "Please select Office");
+                    }
 
 
                     
@@ -82,7 +87,7 @@
 
 
 // Use the complete user ID in the INSERT query
-$query ="INSERT INTO employees( Lastname, Firstname, Username,Email, password_hash,role,verification_code,status) VALUES ('$Lastname', '$Firstname', '$Username','$Email', '$Password','$role','$verification_code',0)";
+$query ="INSERT INTO employees( Lastname, Firstname, Username,Email, password_hash,role,verification_code,status,Office) VALUES ('$Lastname', '$Firstname', '$Username','$Email', '$Password','$role','$verification_code',0,'$office')";
 if(mysqli_query($con, $query)){
   
   echo '<body>
@@ -129,9 +134,27 @@ $selectedBarangay = $_POST['role'] ?? 'Select';
                     <option value="Select" <?php if ($selectedRole === 'Select') echo 'selected'; ?>>Select</option>
                     <option value="Admin" <?php if ($selectedRole === 'Admin') echo 'selected'; ?>>Admin</option>
                     <option value="Community Affairs Officer" <?php if ($selectedRole === 'Community Affairs Officer') echo 'selected'; ?>>Community Affairs Officer</option>
-                    
+                    <option value="Accounting Staff" <?php if ($selectedRole === 'Accounting Staff') echo 'selected'; ?>>Accounting Staff</option>
+                   
                       </select>  
                       <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $roleError ?></p>
+                             
+                      <div class="field input">
+                <?php
+// Define variables to store selected city and barangay
+$selectedOffice = $_POST['office'] ?? 'Select';
+$selectedBarangay1 = $_POST['office'] ?? 'Select';
+?>
+                    <label for = "role" style="font-size: 18px;">Office</label>
+                    <select id="cityDropdown" name="office" onchange="populateBarangays2()">
+                    <option value="Select" <?php if ($selectedOffice === 'Select') echo 'selected'; ?>>Select</option>
+                    <option value="PGB-Balanga Branch" <?php if ($selectedOffice === 'PGB-Balanga Branch') echo 'selected'; ?>>PGB-Balanga Branch</option>
+                    <option value="PGB-Dinalupihan Branch" <?php if ($selectedOffice === 'PGB-Dinalupihan Branch') echo 'selected'; ?>>PGB-Dinalupihan Branch</option>
+                    <option value="PGB-Hermosa Branch" <?php if ($selectedOffice === 'PGB-Hermosa Branch') echo 'selected'; ?>>PGB-Hermosa Branch</option>
+                    <option value="PGB-Mariveles Branch" <?php if ($selectedOffice === 'PGB-Mariveles Branch') echo 'selected'; ?>>PGB-Mariveles Branch</option>
+                    
+                      </select>  
+                      <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $officeError ?></p>
                              
                
               <!--  <div class="field input">

@@ -23,6 +23,8 @@ if(isset($_SESSION['Emp_ID'])) {
       $res_Fname = $result['Firstname'];
       $res_Lname = $result['Lastname'];
       $role = $result['role'];
+      
+      $branch1 = $result['Office'];
   }
 } else {
   header("Location: employee-login.php");
@@ -54,86 +56,151 @@ if(isset($_SESSION['Emp_ID'])) {
       $Status=$_POST['Status'];
       $EmpID = $_POST['Emp_ID'];
   
-      
-      // Construct the update query
    
 
 if ($Status == "For Validation") {
   date_default_timezone_set('Asia/Manila');
  $Date = date('Y-m-d'); // Set the current date for Given_Sched
  $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
- 
- $LabType=$_POST['LabType'];
- $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
- $overlapResult = mysqli_query($con, $overlapQuery);
+ $checkedRequirements = isset($_POST['requirement']) ? $_POST['requirement'] : array();
+ $EmpID = $_POST['Emp_ID'];
+ $newStatus = $_POST['Status'];
 
- if(mysqli_num_rows($overlapResult) > 0) {
-     echo "The selected date and time are already booked. Please choose a different time.";
-     exit();
- }
+ 
+ $allChecked = count($checkedRequirements) === 8; // Replace 8 with the actual number of requirements
+
+    // Determine new status based on all requirements being checked
+    if ($allChecked) {
+        $newStatus = 'Pending for Releasing Guarantee Letter';
+    } else {
+        $newStatus = 'Pending for Requirements';
+    }
+
 $query = "UPDATE laboratories l
       INNER JOIN beneficiary b ON b.Beneficiary_Id = l.Beneficiary_ID
       INNER JOIN transaction t ON t.Beneficiary_Id = l.Beneficiary_ID
       SET t.Given_Sched  = '$Date',
           t.Given_Time = '$transaction_time',
           t.Emp_ID='$EmpID',
-          l.LabType = '$LabType',
-          t.Status = '$Status'
+        t.Status = '$newStatus'
       
       WHERE b.Beneficiary_Id = '$beneID'";
- 
+ $result = mysqli_query($con, $query);
+
+   
+if ($result) {
+    // Query executed successfully
+    echo '<body>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+    swal("Update successfully","","success")
+    .then((value) => {
+        if (value) {
+            window.location.href = "laboratories.php";
+        }
+    });
+    </script>
+    </body>';
+} else {
+    // Error in query execution
+    echo "Error: " . mysqli_error($con);
+}
 }
 
-         
-elseif ($Status == "Done") {
+
+elseif ($Status == "Release Guarantee Letter") {
     date_default_timezone_set('Asia/Manila');
     $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
     $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
     
- $beneID = $_POST['Beneficiary_Id'];
- 
- $SQL = mysqli_query($con,"SELECT b.*, t.*, l.*
- FROM beneficiary b
- INNER JOIN transaction t ON b.Beneficiary_Id = t.Beneficiary_Id
- INNER JOIN laboratories l ON b.Beneficiary_Id = l.Beneficiary_ID
- WHERE b.Beneficiary_Id = '$beneID'");
+    $beneID = $_POST['Beneficiary_Id'];
 
-if($result = mysqli_fetch_assoc($SQL)){
+    $SQL = mysqli_query($con, "SELECT b.*, t.*, l.*
+                               FROM beneficiary b
+                               INNER JOIN transaction t ON b.Beneficiary_Id = t.Beneficiary_Id
+                               INNER JOIN laboratories l ON b.Beneficiary_Id = l.Beneficiary_ID
+                               WHERE b.Beneficiary_Id = '$beneID'");
 
-$TransactionType = $result['TransactionType'];
-$AssistanceType = $result['AssistanceType'];
-$LabType = $result['LabType'];
+    if($result = mysqli_fetch_assoc($SQL)){
+        $branch = $result['branch'];
+        $TransactionType = $result['TransactionType'];
+        $AssistanceType = $result['AssistanceType'];
+        $LabType = $result['LabType'];
+        $EmpID = $_POST['Emp_ID'];  // Assuming Emp_ID is passed via POST
 
-$ReceivedAssistance = $LabType;
-$beneID = $_POST['Beneficiary_Id'];
-$query ="INSERT INTO history( Beneficiary_ID, ReceivedDate, ReceivedTime,TransactionType,AssistanceType,ReceivedAssistance,Emp_ID) VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', ' $TransactionType', '$AssistanceType', '$ReceivedAssistance','$EmpID' )";
-if(mysqli_query($con, $query)){
+        // Insert into history table
+        $query = "INSERT INTO history (Beneficiary_ID, ReceivedDate, ReceivedTime, TransactionType, AssistanceType, ReceivedAssistance, Emp_ID, branch)
+                  VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', '$TransactionType', '$AssistanceType', '$LabType', '$EmpID', '$branch')";
 
-$sql1 = "DELETE FROM transaction  WHERE Beneficiary_Id='$beneID'";
-$sql2 = "DELETE FROM financialassistance  WHERE Beneficiary_ID='$beneID'";
+        if(mysqli_query($con, $query)){
+            // Send the email
+            $lastName = $result['Lastname'];  // Assuming 'Lastname' is part of the $result array
+            $Email = $result['Email'];  // Assuming 'Email' is part of the $result array
+            $employeeName = $_POST['EmpName'];
 
-$result1 = mysqli_query($con, $sql1);
-$result2 = mysqli_query($con, $sql2);
+            require 'phpmailer/src/Exception.php';
+            require 'phpmailer/src/PHPMailer.php';
+            require 'phpmailer/src/SMTP.php';
 
-if($result1 && $result2) {
+            $mail = new PHPMailer(true);
+            try {
+                // Server settings
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'bataanpgbsap@gmail.com'; // Your Gmail address
+                $mail->Password = 'cmpp hltn mxuc tcgl'; // Your Gmail password or App Password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
 
+                // Recipients
+                $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
+                $mail->addAddress($Email);
+
+                // Content
+                $mail->isHTML(true);
+                $mail->Subject = 'Released Guarantee Letter';
+                $mail->Body = "
+                    <html>
+                    <body>
+                    <p>Dear Mr./Ms./Mrs. $lastName,</p>
+                    <p>We have successfully provided your Guarantee Letter. Please note that you may request another assistance after a period of 3 months.</p>
+                    <p>Thank you for your cooperation. God Bless!<br><br></p>
+                    <p>Best regards,<br>$employeeName</p>
+                    <p>Provincial Government of Bataan - Special Assistance Program</p>
+                    </body>
+                    </html>
+                ";
+
+                $mail->send();
+            } catch (Exception $e) {
+                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
+
+            // Delete records from transaction and laboratories tables after email is sent
+            $sql1 = "DELETE FROM transaction WHERE Beneficiary_Id='$beneID'";
+            $sql2 = "DELETE FROM laboratories WHERE Beneficiary_ID='$beneID'";
+
+            $result1 = mysqli_query($con, $sql1);
+            $result2 = mysqli_query($con, $sql2);
+
+            if($result1 && $result2) {
                 echo '<body>
                 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                 <script>
-                swal("This beneficiary already received his/her assistance","","success")
-               
-                </script>';
-                  echo '<script>
-                 setTimeout(function(){
+                swal("This beneficiary already received his/her assistance","","success");
+                setTimeout(function(){
                     window.location.href="laboratories.php";
                 } , 2000);
-              </script>
-              </body>';
-}
+                </script>
+                </body>';
+            }
+        }
+    }
 }
 
-}
-}
+
+
 elseif ($Status == "For Schedule") {
 
     $transaction_time = $_POST['time'];
@@ -171,14 +238,16 @@ swal("The selected date and time are already taken. Please choose a different ti
       $result2 = mysqli_query($con, $query);
 if ($result2) {
     $Status = $_POST['Status'];
-    if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+    if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Guarantee Letter") {    
     require 'phpmailer/src/Exception.php';
     require 'phpmailer/src/PHPMailer.php';
     require 'phpmailer/src/SMTP.php';
 
     $mail = new PHPMailer(true);
     $lastName = $record['Lastname'];
-   
+    $transaction_time = $_POST['time'];
+            $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert to 12-hour format
+
     $Email = $record['Email'];
     $status= $_POST['Status'];
 
@@ -206,13 +275,12 @@ if ($result2) {
             <body>
             <p>Dear Mr./Ms./Mrs. $lastName,</p>
             <p>I am writing to inform you that your request for scheduling has been approved.</p>
-            <p>Your schedule has been set for $Date at $transaction_time. We kindly expect your presence on the said date.</p>
+            <p>Your schedule has been set for $Date at $transaction_time_12hr. We kindly expect your presence on the said date.</p>
             <p> We kindly expect your presence on the said date.<br><br></p>
             <p>   If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='http://localhost/public_html/requestresched.php'> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.<br> 
            Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.</p>
-            <p>Best regards,<br>$employeeName</p>
-           
-            <p>Provincial Government of Bataan - Special Assistance Program</p>
+            <p>Best regards,<br>$employeeName<br>
+            Provincial Government of Bataan - Special Assistance Program</p>
             </body>
             </html>
             ";
@@ -226,7 +294,7 @@ if ($result2) {
                 swal("Update and email send successful","","success")
                 .then((value) => {
                     if (value) {
-                        window.location.href = "assistance.php";
+                        window.location.href = "laboratories.php";
                     }
                 });
                 </script>
@@ -241,7 +309,7 @@ if ($result2) {
     swal("Updated successfully","","success")
     .then((value) => {
         if (value) {
-            window.location.href = "assistance.php";
+            window.location.href = "laboratories.php";
         }
     });
     </script>
@@ -249,13 +317,13 @@ if ($result2) {
 
 } else {
     echo "Error updating records: " . mysqli_error($con);
-    header("Location: assistance.php");
+    header("Location: laboratories.php");
     exit();
 }
  
     }
 }
-elseif ($Status == "Pending for Payout") {
+elseif ($Status == "Pending for Releasing Guarantee Letter") {
     date_default_timezone_set('Asia/Manila');
     $Date = date('Y-m-d'); // Set the current date for Given_Sched
     $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
@@ -290,7 +358,7 @@ elseif ($Status == "Pending for Payout") {
      $result2 = mysqli_query($con, $query);
      if ($result2) {
     $Status = $_POST['Status'];
-    if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+    if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Guarantee Letter") {    
         require 'PHPMailer/src/Exception.php';
         require 'PHPMailer/src/PHPMailer.php';
         require 'PHPMailer/src/SMTP.php';
@@ -317,9 +385,9 @@ elseif ($Status == "Pending for Payout") {
 
         // Content
         $mail->isHTML(true); // Set email format to HTML
-        if($status == 'Pending for Payout') {
+        if($status == 'Pending for Releasing Guarantee Letter') {
             $employeeName = $_POST['EmpName'];
-            $mail->Subject = 'Pending for Payout';
+            $mail->Subject = 'Pending for Releasing Guarantee Letter';
             $mail->Body = "
                 <html>
                 <body>
@@ -346,7 +414,7 @@ elseif ($Status == "Pending for Payout") {
                 swal("Update and email send successful","","success")
                 .then((value) => {
                     if (value) {
-                        window.location.href = "assistance.php";
+                        window.location.href = "laboratories.php";
                     }
                 });
                 </script>
@@ -361,7 +429,7 @@ elseif ($Status == "Pending for Payout") {
     swal("Updated successfully","","success")
     .then((value) => {
         if (value) {
-            window.location.href = "assistance.php";
+            window.location.href = "laboratories.php";
         }
     });
     </script>
@@ -369,18 +437,19 @@ elseif ($Status == "Pending for Payout") {
 
 } else {
     echo "Error updating records: " . mysqli_error($con);
-    header("Location: assistance.php");
+    header("Location: laboratories.php");
     exit();
 }
     }
    
 }
 
-elseif ($Status == "For Payout") {
+elseif ($Status == "Releasing Guarantee Letter") {
     date_default_timezone_set('Asia/Manila');
     $Date = date('Y-m-d'); // Set the current date for Given_Sched
     $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
-    
+    $branch = $_POST['branch'];
+    $PayoutType = "laboratories";
     $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID' ";
     $overlapResult = mysqli_query($con, $overlapQuery);
 
@@ -403,20 +472,23 @@ elseif ($Status == "For Payout") {
         SET t.Given_Sched  = '$Date',
             t.Given_Time = '$transaction_time',
             t.Emp_ID='$EmpID',
-            t.Status = '$Status'
+            t.Status = '$Status',
+            l.branch='$branch'
         
         WHERE b.Beneficiary_Id = '$beneID'";
      $result2 = mysqli_query($con, $query);
      if ($result2) {
     $Status = $_POST['Status'];
-    if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+    if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Guarantee Letter") {    
     require 'phpmailer/src/Exception.php';
     require 'phpmailer/src/PHPMailer.php';
     require 'phpmailer/src/SMTP.php';
 
     $mail = new PHPMailer(true);
     $lastName = $record['Lastname'];
-   
+    $transaction_time = $_POST['time'];
+            $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert to 12-hour format
+
     $Email = $record['Email'];
     $status= $_POST['Status'];
 
@@ -436,19 +508,23 @@ elseif ($Status == "For Payout") {
 
         // Content
         $mail->isHTML(true); // Set email format to HTML
-        if($status == 'For Payout') {
+        if($status == 'Releasing Guarantee Letter') {
             $employeeName = $_POST['EmpName'];
-            $mail->Subject = 'For Payout';
+            $branch=$_POST['branch'];
+            $mail->Subject = 'Releasing Guarantee Letter';
             $mail->Body = "
                 <html>
                 <body>
                 <p>Dear Mr./Ms./Mrs. $lastName,</p>
-                <p>Your assistance request is currently for payout on $Date at $transaction_time.</p>
-                Kindly proceed to PGB-Hermosa Branch<br>
+                <p>You are currently set to receive your requested assistance. You may go on $Date at $transaction_time_12hr.</p>
+                <p> You will receive an assistance in laboratory.<br></p>
+               <p> Kindly proceed to $branch to claim your guarantee letter.<br></p>
+                <p> Please bring a valid ID and show this email upon arrival.<br></p>
+               
                 <p>Thank you for your patience and cooperation.</p>
-                <p>Best regards,</p>
-                <p>$employeeName</p>
-                <p>Provincial Government of Bataan - Special Assistance Program</p>
+                <p>Best regards,<br>
+                $employeeName<br>
+                Provincial Government of Bataan - Special Assistance Program</p>
                 </body>
                 </html>
             ";
@@ -463,7 +539,7 @@ elseif ($Status == "For Payout") {
                 swal("Update and email send successful","","success")
                 .then((value) => {
                     if (value) {
-                        window.location.href = "assistance.php";
+                        window.location.href = "laboratories.php";
                     }
                 });
                 </script>
@@ -478,7 +554,7 @@ elseif ($Status == "For Payout") {
     swal("Updated successfully","","success")
     .then((value) => {
         if (value) {
-            window.location.href = "assistance.php";
+            window.location.href = "laboratories.php";
         }
     });
     </script>
@@ -486,7 +562,7 @@ elseif ($Status == "For Payout") {
 
 } else {
     echo "Error updating records: " . mysqli_error($con);
-    header("Location: assistance.php");
+    header("Location: laboratories.php");
     exit();
 }
     }
@@ -506,7 +582,7 @@ elseif ($Status == "Decline Request for Re-schedule") {
   $result2 = mysqli_query($con, $query);
     if ($result2) {
     $Status = $_POST['Status'];
-    if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+    if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Guarantee Letter") {    
     require 'phpmailer/src/Exception.php';
     require 'phpmailer/src/PHPMailer.php';
     require 'phpmailer/src/SMTP.php';
@@ -560,7 +636,7 @@ elseif ($Status == "Decline Request for Re-schedule") {
                 swal("Update and email send successful","","success")
                 .then((value) => {
                     if (value) {
-                        window.location.href = "assistance.php";
+                        window.location.href = "laboratories.php";
                     }
                 });
                 </script>
@@ -575,7 +651,7 @@ elseif ($Status == "Decline Request for Re-schedule") {
     swal("Updated successfully","","success")
     .then((value) => {
         if (value) {
-            window.location.href = "assistance.php";
+            window.location.href = "laboratories.php";
         }
     });
     </script>
@@ -595,6 +671,7 @@ elseif ($Status == "Decline Request for Re-schedule") {
     </body>';
    
 } 
+
 }
 }
 
@@ -633,14 +710,16 @@ swal("The selected date and time are already taken. Please choose a different ti
          $result2 = mysqli_query($con, $query);
     if ($result2) {
     $Status = $_POST['Status'];
-    if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Done") {    
+    if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Guarantee Letter") {    
     require 'phpmailer/src/Exception.php';
     require 'phpmailer/src/PHPMailer.php';
     require 'phpmailer/src/SMTP.php';
 
     $mail = new PHPMailer(true);
     $lastName = $record['Lastname'];
-   
+    $transaction_time = $_POST['time'];
+    $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert to 12-hour format
+         
     $Email = $record['Email'];
     $status= $_POST['Status'];
 
@@ -667,7 +746,7 @@ swal("The selected date and time are already taken. Please choose a different ti
                 <html>
                 <body>
                 <p>Dear Mr./Ms./Mrs. $lastName,</p>
-                <p>Your request for re-schedule has been accepted. Your new schedule is on $Date at $transaction_time.</p>
+                <p>Your request for re-schedule has been accepted. Your new schedule is on $Date at $transaction_time_12hr.</p>
                 <p> We kindly expect your presence on the said date.<br><br></p>
 <p>Best regards,<br>$employeeName</p>
            
@@ -686,7 +765,7 @@ swal("The selected date and time are already taken. Please choose a different ti
                 swal("Update and email send successful","","success")
                 .then((value) => {
                     if (value) {
-                        window.location.href = "assistance.php";
+                        window.location.href = "laboratories.php";
                     }
                 });
                 </script>
@@ -701,7 +780,7 @@ swal("The selected date and time are already taken. Please choose a different ti
     swal("Updated successfully","","success")
     .then((value) => {
         if (value) {
-            window.location.href = "assistance.php";
+            window.location.href = "laboratories.php";
         }
     });
     </script>
@@ -709,11 +788,12 @@ swal("The selected date and time are already taken. Please choose a different ti
 
 } else {
     echo "Error updating records: " . mysqli_error($con);
-    header("Location: assistance.php");
+    header("Location: laboratories.php");
     exit();
 } 
 }
 }
+
 
 else{
     date_default_timezone_set('Asia/Manila');
@@ -739,7 +819,6 @@ else{
 }
 // Construct the update query
 }
-
 
 ?>
 
@@ -790,16 +869,61 @@ else{
                 </div>
 
             <div class="input-box">
-                    <span class="details" style="color:  #f5ca3b;">Status</span>
-                    <select id="status" name="Status" onchange="handleStatusChange()">
+                    <span class="details" style="color:  #f5ca3b;margin: left 20px;">Status</span>
                         <?php
-                        $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Payout' ,'For Payout','Request for Re-schedule','For Re-schedule', 'Decline Request for Re-schedule', 'Done');
-                        foreach ($status as $stat) {
-                            $selected = ($record['Status'] == $stat) ? 'selected' : '';
-                            echo "<option $selected>$stat</option>";
-                        }
-                        ?>
+                       
+    $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Releasing Guarantee Letter' ,'Releasing Guarantee Letter','Request for Re-schedule','For Re-schedule', 'Decline Request for Re-schedule','Release Guarantee Letter');
+
+    if ($record['Status'] == 'For Schedule') {
+        // If the current status is "For Schedule", display an input field instead of a dropdown
+        echo "<input type='text' id='status' name='Status' value='For Schedule' readonly>";
+    } 
+    if ($record['Status'] == 'For Validation') {
+        // If the current status is "For Schedule", display an input field instead of a dropdown
+        echo "<input type='text' id='status' name='Status' value='For Validation' readonly>";
+    }
+    elseif ($record['Status'] == 'Pending for Requirements') {
+        // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+        echo "<input type='text' id='status' name='Status' value='For Validation' readonly>";
+    }
+    elseif ($record['Status'] == 'Pending for Releasing Guarantee Letter') {
+        // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+        echo "<input type='text' id='status' name='Status' value='Releasing Guarantee Letter' readonly>";
+    }
+    elseif ($record['Status'] == 'Request for Re-schedule') {
+        // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+        echo "<select id='status' name='Status' onchange='handleStatusChange()'>";
+        echo "<option value='For Re-schedule'>For Re-schedule</option>";
+        echo "<option value='Decline Request for Re-schedule'>Decline Request for Re-schedule</option>";
+        echo "</select>";
+    }
+    elseif ($record['Status'] == 'For Re-schedule') {
+        // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+        echo "<input type='text' id='status' name='Status' value='For Validation' readonly>";
+    }
+    elseif ($record['Status'] == 'Decline Request for Re-schedule') {
+        // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+        echo "<input type='text' id='status' name='Status' value='Request for Re-schedule Declined' readonly>";
+    }
+    elseif ($record['Status'] == 'Releasing Guarantee Letter') {
+        // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+       if ($role === 'Admin'){
+    
+            // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
+            echo "<select id='status' name='Status' onchange='handleStatusChange()'>";
+            echo "<option value='Releasing Guarantee Letter'>Releasing Guarantee Letter</option>";
+            echo "<option value='Release Guarantee Letter'>Release Guarantee Letter</option>";
+            echo "</select>";
+         
+       }else{
+        echo "<input type='text' id='status' name='Status' value='Releasing Guarantee Letter' readonly>";
+       
+       }
+    }
+   
+    ?>
                     </select>
+             </div>
              </div>
                    <input type="hidden" name="confirmed" id="confirmed" value="no">
        
@@ -807,13 +931,12 @@ else{
             <div id="requirements" style="display: none; "></div>
             <div id="emailFormat" class="emailformat">
                     <!-- Email content will be updated based on the selected status -->
-                </div>
-           
+              
               
                 </div>
            
                 <div class="button-row">
-                <input type="submit" value="Submit" name="submit" onclick="showConfirmation()" />
+                <input type="submit" value="Submit" id="submitbtn" name="submit" onclick="showConfirmation()" />
                 <input type="button" value="Cancel" name="cancel" onclick="cancelEdit()" />
                 </div>
         
@@ -825,51 +948,58 @@ else{
     <script>
   function handleStatusChange() {
 
-            var status = document.getElementById('status').value;
+    var status = document.getElementById('status').value;
             var emailFormat = document.getElementById('emailFormat');
             var requirements = document.getElementById('requirements');
-            
+            var submitbtn = document.getElementById('submitbtn');
+
+    var beneID = document.querySelector('input[name="Beneficiary_Id"]').value;
+var empID = document.querySelector('input[name="Emp_ID"]').value;
+
             emailFormat.innerHTML = '';
             requirements.style.display = 'none'; // Hide requirements by default
             
             if (status === 'For Schedule') {
+                submitbtn.style.display = 'inline';
                 emailFormat.innerHTML = `
-                    <div style="color: black; padding:15px; background:white; margin-top:20px;">
-                        Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-                        <p>I am writing to inform you that your request for scheduling has been approved.<br>
-                        Your schedule has been set for <input type="date" style="height:15px; id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" />
-                        at <input type="time" id="time" " name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />.<br> We kindly expect your presence on the said date.<br><br>
-                        If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this <a href='http://localhost/public_html/requestresched.php' style="color: blue;">link.</a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.
-                        Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.<br><br>
-                        Best regards,<br>
-                        <input type="text" style="margin-top:10px;" name="EmpName" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-                        Provincial Government of Bataan - Special Assistance Program</p>
-                    </div>
+                     <div style = "color: black; padding:15px; background:white; margin-top:20px;"> 
+            Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
+            <p>I am writing to inform you that your request for scheduling has been approved.<br>
+            Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
+            at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br>
+          <br>
+         
+            Best regards,<br>
+            <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+            Provincial Government of Bataan - Special Assistance Program</p>
+         </div> 
                 `;
             } else if (status === 'For Validation') {
+                submitbtn.style.display = 'inline';
                 requirements.style.display = 'block';
                 requirements.innerHTML = `
                     <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         
                         <h3 style="color:blue;">REQUIREMENTS FOR LABORATORY ASSISTANCE VALIDATION</h3>
                         <ul style = "text-align: left; margin-left:60px" >
-                            <input type="checkbox" name="requirement" value="Death Laboratories result"> LABORATORIES RESULT <br>
-                            <input type="checkbox" name="requirement" value="Request Letter from Barangay Health Center"> REQUEST LETTER FROM BARANGAY HEALTH CENTER <br>
-                            <input type="checkbox" name="requirement" value="Xerox Valid ID ng Pasyente"> XEROX VALID ID NG PASYENTE <br>
-                            <input type="checkbox" name="requirement" value="Xerox Valid ID ng Maglalakad"> XEROX VALID ID NG MAGLALAKAD<br>
-                            <input type="checkbox" name="requirement" value="BRGY. INDIGENCY (PASYENTE)"> BRGY. INDIGENCY (PASYENTE) <br>
+                            <input type="checkbox" name="requirement[]" value="Death Laboratories result"> LABORATORIES RESULT <br>
+                            <input type="checkbox" name="requirement[]" value="Request Letter from Barangay Health Center"> REQUEST LETTER FROM BARANGAY HEALTH CENTER <br>
+                            <input type="checkbox" name="requirement[]" value="Xerox Valid ID ng Pasyente"> XEROX VALID ID NG PASYENTE <br>
+                            <input type="checkbox" name="requirement[]" value="Xerox Valid ID ng Maglalakad"> XEROX VALID ID NG MAGLALAKAD<br>
+                            <input type="checkbox" name="requirement[]" value="BRGY. INDIGENCY (PASYENTE)"> BRGY. INDIGENCY (PASYENTE) <br>
           
                         </ul>
                         <h3 style="color:blue;margin-top:15px;">SUPPORTING DOCUMENTS</h3>
                          <ul style = "text-align: left; margin-left:60px" >
-                            <input type="checkbox" name="requirement" value="XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE) <br>
-                            <input type="checkbox" name="requirement" value="XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE)"> XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE) <br>
-                            <input type="checkbox" name="requirement" value="BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE <br>
+                            <input type="checkbox" name="requirement[]" value="XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE) <br>
+                            <input type="checkbox" name="requirement[]" value="XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE)"> XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE) <br>
+                            <input type="checkbox" name="requirement[]" value="BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE <br>
                            
-                    
+                    </ul>
                     </div>
                 `;
-            } else if (status === 'Pending for Payout') {
+            } else if (status === 'Pending for Releasing Guarantee Letter') {
+                submitbtn.style.display = 'inline';
                 emailFormat.innerHTML = `
                     <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
@@ -881,50 +1011,53 @@ else{
                         Provincial Government of Bataan - Special Assistance Program</p>
                     </div>
                 `;
-            } else if (status === 'Request for Re-schedule') {
+                } else if (status === 'Request for Re-schedule') {
                 requirements.style.display = 'block';
                 requirements.innerHTML = `
                     <h3 style="color: white; margin-top:15px;" >Click this <a href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox" target="_blank" style="color:  #3cd82e;">link</a> to check the email of beneficiary.</h3>
                 `;
-            } else if (status === 'For Payout') {
+                submitbtn.style.display = 'none';
+            } else if (status === 'Releasing Guarantee Letter') {
+                submitbtn.style.display = 'inline';
+              
                 emailFormat.innerHTML = `
                     <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-                        <p>Your assistance request is currently for payout on <input type="date" style="height:15px; id="calendar" name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" />
-                        at <input type="time" id="time" name="time"value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
-                        Kindly proceed to PGB-Hermosa Branch<br>
-                        Thank you for your patience and cooperation.<br><br>
-                        Best regards,<br>
-                        <input type="text" name="EmpName" style="margin-top:15px;"  value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-                        Provincial Government of Bataan - Special Assistance Program</p>
-                    </div>
+                        <p>You are currently set to receive your requested assistance. You may go on <input type="date" id="calendar" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
+                        at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
+                        You will receive an assistance in laboratory<br>
+                 Kindly proceed to <select name="branch" id="branch" style="margin-top:5px;">
+    <option value="PGB-Balanga Branch" <?php if ($record['branch'] == "PGB-Balanga Branch") echo 'selected="selected"'; ?>>PGB-Balanga Branch</option>
+    <option value="PGB-Dinalupihan Branch" <?php if ($record['branch'] == "PGB-Dinalupihan Branch") echo 'selected="selected"'; ?>>PGB-Dinalupihan Branch</option>
+    <option value="PGB-Hermosa Branch" <?php if ($record['branch'] == "PGB-Hermosa Branch") echo 'selected="selected"'; ?>>PGB-Hermosa Branch</option>
+    <option value="PGB-Mariveles Branch" <?php if ($record['branch'] == "PGB-Mariveles Branch") echo 'selected="selected"'; ?>>PGB-Mariveles Branch</option>
+</select>to claim your guarantee letter. <br>
+
+                    Please bring a valid ID and show this email upon arrival.<br><br>
+                    Thank you for your patience and cooperation.<br><br>    
+                    Best regards,<br>
+                    <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+                    Provincial Government of Bataan - Special Assistance Program
+                </p>
+                </div>
                 `;
             } else if (status === 'For Re-schedule') {
+                submitbtn.style.display = 'inline';
                 emailFormat.innerHTML = `
-                    <div style="color: black; padding:15px; background:white; margin-top:20px;">
-                        Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-                        <p>Your request for reschedule has been approved.<br>
-                        Your new schedule is on <input type="date" id="calendar" style="height:15px; name="Given_Sched" value="<?php echo $record['Given_Sched']; ?>" />
-                        at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
-                        Kindly proceed to PGB-Hermosa Branch on the new schedule.<br><br>
-                        Thank you for your understanding.<br><br>
-                        Best regards,<br>
-                        <input type="text" name="EmpName" style="margin-top:15px;"  value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-                        Provincial Government of Bataan - Special Assistance Program</p>
-                    </div>
+                <div style = "color: black; padding:15px; background:white; margin-top:20px;">
+                Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
+                <p>Your request for re-schedule has been accepted. Your new schedule is on <input type="date" id="calendar" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
+                at <input type="time" id="time" name="time"  />.<br>
+                We kindly expect your presence on the said date.<br><br>
+                Best regards,<br>
+                <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+                Provincial Government of Bataan - Special Assistance Program</p>
+            </div> 
                 `;
             } else if (status === 'Pending for Requirements') {
-                emailFormat.innerHTML = `
-                    <div style="color: black; padding:15px; background:white; margin-top:20px;">
-                        Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-                        <p>We are currently awaiting additional requirements for your assistance request.<br>
-                        Please submit the necessary documents at your earliest convenience to proceed with your application.<br><br>
-                        Thank you for your cooperation.<br><br>
-                        Best regards,<br>
-                        <input type="text" name="EmpName" style="margin-top:15px;"  value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-                        Provincial Government of Bataan - Special Assistance Program</p>
-                    </div>
-                `;
+                
+               
+                submitbtn.style.display = 'none';
             }
             else if (status === 'Decline Request for Re-schedule') {
         emailFormat.innerHTML = `
@@ -941,6 +1074,24 @@ else{
             Provincial Government of Bataan - Special Assistance Program</p>
          </div>
         `;
+    }
+    else if (status === 'Pending for Requirements') {
+            submitbtn.style.display = 'none'; 
+       
+    }
+    else if (status === 'Release Guarantee Letter') {
+        submitbtn.style.display = 'inline';
+        emailFormat.innerHTML = `
+                <div style = "color: black; padding:15px; background:white; margin-top:20px;">
+                Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
+                <p>We have successfully provided your Guarantee Letter. Please note that you may request another assistance after a period of 3 months. <br>
+                Thank you for your cooperation. God Bless!<br> 
+                
+                Best regards,<br>
+                <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+                Provincial Government of Bataan - Special Assistance Program</p>
+            </div> 
+                `;
     }
         }
 
