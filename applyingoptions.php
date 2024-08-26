@@ -180,7 +180,7 @@ if (isset($_POST['myself'])) {
                     echo '<body>
                     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                     <script>
-                    swal("Notification", "You already applied for your relative.","info")
+                    swal("Notification", "You already applied for your relative. Please wait for further instructions. Always check your email for further updates. Thank you.","info")
                     .then((value) => {
                         if (value) {
                             window.location.href = "applyingoptions.php";
@@ -191,6 +191,7 @@ if (isset($_POST['myself'])) {
                     exit();
                 }
             }
+           
         } else {
             // No beneficiary found, create a new beneficiary record
             $query1 = "SELECT * FROM users WHERE Id = $userId";
@@ -258,24 +259,71 @@ elseif (isset($_POST['relative'])) {
                 $beneficiaryLastname = $beneficiary['Lastname'];
                 $beneficiaryFirstname = $beneficiary['Firstname'];
                 $beneficiaryId = $beneficiary['Beneficiary_Id'];
-               
+        
                 // Check if the user and beneficiary names match
-                if ($userLastname === $beneficiaryLastname && $userFirstname === $beneficiaryFirstname) {
-                    
-                    echo '<body>
-                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                    <script>
-                    swal("Notification", "You already requested a schedule for yourself. Please wait for the email to know when your schedule of appearance to the office is. Thank you.")
-                    .then((value) => {
-                        if (value) {
-                            window.location.href = "applyingoptions.php";
+                if ($userLastname === $beneficiaryLastname && $userFirstname !== $beneficiaryFirstname) {
+                    // Check for recent transactions
+                    $query5 = "SELECT * FROM transaction WHERE Beneficiary_Id = '$beneficiaryId'";
+                    $result5 = mysqli_query($con, $query5);
+        
+                    if ($result5 && mysqli_num_rows($result5) > 0) {
+                        // Fetch the status of the recent transaction
+                        $query4 = "SELECT * FROM transaction WHERE Beneficiary_Id = '$beneficiaryId' ";//AND (Status = 'For Schedule' OR Status = 'Pending for Requirements' OR Status = 'Pending for Payout')";
+                        $result4 = mysqli_query($con, $query4);
+        
+                        if ($result4 && mysqli_num_rows($result4) > 0) {
+                            // Status is "For Schedule"
+                            echo '<body>
+                            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                            <script>
+                             swal("Notification", "You have an existing application. Please wait for further instructions. Always check your email for further updates. Thank you.", "info")
+    .then((value) => {
+                                if (value) {
+                                    window.location.href = "applyingoptions.php";
+                                }
+                            });
+                            </script>
+                            </body>';
+                            exit();
                         }
-                    });
-                    </script>
-                    </body>';
-                    exit();
-                   
-                } else {
+                        
+                    } else {
+                        // No recent transactions found, check history
+                        $threeMonthsAgo = date('Y-m-d', strtotime('-3 months'));
+                        $query3 = "SELECT * FROM history WHERE Beneficiary_ID = '$beneficiaryId' AND ReceivedDate >= '$threeMonthsAgo'";
+                        $result3 = mysqli_query($con, $query3);
+        
+                        if ($result3 && mysqli_num_rows($result3) > 0) {
+                            // Recent history found, notify user to wait three months
+                            $row = mysqli_fetch_assoc($result3);
+                            $lastTransactionDate = $row['ReceivedDate'];
+                            $date = new DateTime($lastTransactionDate);
+                            $formattedDate = $date->format('m/d/Y');
+        
+                            echo '<body>
+                            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                            <script>
+                            swal("Notification", "You cannot apply at this time. You need at least three months before applying again. Your last transaction was on ' . $formattedDate . '", "info")
+                            .then((value) => {
+                                if (value) {
+                                    window.location.href = "applyingoptions.php";
+                                }
+                            });
+                            </script>
+                            </body>';
+                            exit();
+                        } else {
+                            // Status is not "For Schedule"
+                            echo "<script>window.location.href = 'applysched.php';</script>";
+                            exit();
+                        }
+                    }
+                }
+            }
+        }
+        
+
+             /*   } else {
                     $threeMonthsAgo = date('Y-m-d', strtotime('-3 months'));
 
                     // Check if there's any transaction for the beneficiary done more than 3 months ago
@@ -295,11 +343,12 @@ elseif (isset($_POST['relative'])) {
                         </script>
                         </body>';
                         exit();
-                    } else {
+                    } 
+                    else {
                         // Check for transactions with status 'For Schedule', 'Pending for Requirements', or 'Pending for Payout'
                         $query4 = "SELECT * FROM transaction WHERE Beneficiary_Id = '$beneficiaryId' AND (Status = 'For Schedule' OR Status = 'Pending for Requirements' OR Status = 'Pending for Payout')";
                         $result4 = mysqli_query($con, $query4);
-
+                      
                         if ($result4 && mysqli_num_rows($result4) > 0) {
                             echo '<body>
                             <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -313,20 +362,19 @@ elseif (isset($_POST['relative'])) {
                             </script>
                             </body>';
                             exit();
-                        } else {
-                            echo "<script>window.location.href = 'applysched.php';</script>";
-                            exit();
-                        }
-                    }
-                }
-            }
-        }
-     } else {
+                        }*/
+                      
+                       
+                    
+            
+        
+      else {
             // No beneficiary associated with the user
             echo "<script>window.location.href = 'beneficiaryinfo.php';</script>";
             exit();
         }
     } 
+}
     
 
 

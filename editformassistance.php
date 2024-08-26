@@ -322,7 +322,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
             $Date = date('Y-m-d'); // Set the current date for Given_Sched
             $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
             $EmpID = $_POST['Emp_ID'];
-           
+            $amount = $_POST['amount'];
 
             $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
             $overlapResult = mysqli_query($con, $overlapQuery);
@@ -340,6 +340,8 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                 </script>
                 </body>';
             }else{
+                
+            
             $query = "UPDATE financialassistance f
             INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
             INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
@@ -430,7 +432,8 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
         }
             }
            
-        }
+        
+    }
         
         elseif ($Status == "For Payout") {
             date_default_timezone_set('Asia/Manila');
@@ -441,7 +444,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
             $PayoutType = $_POST['payouttypeSelect'];
             $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID' ";
             $overlapResult = mysqli_query($con, $overlapQuery);
-
+            
             if(mysqli_num_rows($overlapResult) > 0) {
                 echo '<body>
                 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -449,12 +452,30 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                 swal("The selected date and time are already taken. Please choose a different time.","","error")
                 .then((value) => {
                     if (value) {
-                        exit(); // Prevent further execution
+                      window.location.href = "assistance.php";
                     }
                 });
                 </script>
                 </body>';
             }else{
+               
+                if ( $PayoutType=="Cash"){
+                if ($amount < 1 || $amount > 9999) {
+                    
+                    echo '<body>
+                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                <script>
+                 swal("The amount must be up to 9999. If you need a higher amount, kindly choose a cheque.","","error")
+                .then((value) => {
+                    if (value) {
+                        exit(); // Prevent further execution
+                    }
+                });
+                </script>
+                </body>';
+                   
+                }
+                else{
             $query = "UPDATE financialassistance f
             INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
             INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
@@ -554,8 +575,127 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
         }
             }
            
-        }
+        }else{
+            if ($amount < 10000) {
+                $error = "";
+                echo '<body>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script>
+            swal("The amount must be at least 10,000. If you need a lower amount, kindly choose cash","","error")
+            .then((value) => {
+                if (value) {
+                    exit(); // Prevent further execution
+                }
+            });
+            </script>
+            </body>';
+            
+            }
+            else{
+        $query = "UPDATE financialassistance f
+        INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+        INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+        SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID',f.Amount='$amount',f.PayoutType='$PayoutType', f.branch='$branch'
+        WHERE b.Beneficiary_Id = '$beneID'";
+         $result2 = mysqli_query($con, $query);
+         if ($result2) {
+        $Status = $_POST['Status'];
+        if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Payout") {    
+        require 'phpmailer/src/Exception.php';
+        require 'phpmailer/src/PHPMailer.php';
+        require 'phpmailer/src/SMTP.php';
+
+        $mail = new PHPMailer(true);
+        $lastName = $record['Lastname'];
+        $transaction_time = $_POST['time'];
+        $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert to 12-hour format
         
+        $Email = $record['Email'];
+        $status= $_POST['Status'];
+        $branch= $_POST['branch'];
+        try {
+            // Server settings
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'bataanpgbsap@gmail.com'; // Your Gmail address
+            $mail->Password = 'cmpp hltn mxuc tcgl'; // Your Gmail password or App Password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            // Recipients
+            $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
+            $mail->addAddress($Email); // Add a recipient
+
+            // Content
+            $mail->isHTML(true); // Set email format to HTML
+            if($status == 'For Payout') {
+                $employeeName = $_POST['EmpName'];
+                $amount = $_POST['amount'];
+                $mail->Subject = 'For Payout';
+                $mail->Body = "
+                    <html>
+                    <body>
+                    <p>Dear Mr./Ms./Mrs. $lastName,</p>
+                    <p>Your assistance request is currently for payout on $Date at  $transaction_time_12hr.
+                     You will received a total amount of $amount.<br>
+                    Kindly proceed to $branch<br>
+                    Please bring a valid ID and show this email upon arrival.<br>
+                    Thank you for your patience and cooperation.</p><br>
+                    <i>Important Reminder: You may request assistance again after 3 months  </i>
+
+
+                    <p>Best regards,<br>
+                    $employeeName</p>
+                    <p>Provincial Government of Bataan - Special Assistance Program</p>
+
+
+                    </body>
+                    </html>
+                ";
+
+            }
+    
+            $mail->send();
+            echo '<body>
+                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script>
+                    swal("Update and email send successful","","success")
+                    .then((value) => {
+                        if (value) {
+                            window.location.href = "assistance.php";
+                        }
+                    });
+                    </script>
+                    </body>';
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
+     } else{ 
+        echo '<body>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+        swal("Updated successfully","","success")
+        .then((value) => {
+            if (value) {
+                window.location.href = "assistance.php";
+            }
+        });
+        </script>
+        </body>';}
+
+    } else {
+        echo "Error updating records: " . mysqli_error($con);
+        header("Location: assistance.php");
+        exit();
+    }
+        }
+       
+    } 
+            
+        }
+    }
+    
         elseif ($Status == "Decline Request for Re-schedule") {
          $reason= $_POST['reason'];
             $query = "UPDATE financialassistance f
@@ -902,8 +1042,8 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
            
 
             <div class="button-row">
-                <input type="submit" value="<?php echo $submitButtonText; ?>" id="submitbtn"name="submit" onclick="showConfirmation()" />
-                <input type="button" value="Cancel" name="cancel" onclick="cancelEdit()" />
+                <input type="submit" style="margin-top:1px;" value="<?php echo $submitButtonText; ?>" id="submitbtn"name="submit" onclick="showConfirmation()" />
+                <input type="button" style="margin-top:1px;"value="Cancel" name="cancel" onclick="cancelEdit()" />
             </div>
         </form>
     </div>
@@ -1072,7 +1212,7 @@ function getCheckedRequirements(name) {
             submitbtn.style.display = 'inline';
             requirements.style.display = 'block'; 
             requirements.innerHTML = `
-             <div style = "color: black; padding:15px; background:white; margin-top:20px;">
+             <div style = "color: black; padding:15px; background:white; margin-top:-10px;">
                 <h3 style = "color: blue;" >REQUIREMENTS FOR DIALYSIS</h3>
                 <ul style = "text-align: left; margin-left:60px"><br>
                        <input type="checkbox"  name="dialysis_requirement[]"  value="Medical Abstract"> Medical Abstract<br>
@@ -1133,7 +1273,7 @@ function getCheckedRequirements(name) {
                     Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                     <p>Your assistance request is currently for payout on <input type="date" id="calendar2" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
                     at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
-                    You will receive a total amount of <input type="text" autocomplete="off" name="amount" style="margin-top:10px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">.<br><br>
+                    You will receive a total amount of <input type="text" autocomplete="off" min="1" max="9999" name="amount" style="margin-top:10px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">.<br><br>
                     Kindly proceed to <select name="branch" id="branch" style="margin-top:5px;">
     <option value="PGB-Balanga Branch" <?php if ($record['branch'] == "PGB-Balanga Branch") echo 'selected="selected"'; ?>>PGB-Balanga Branch</option>
     <option value="PGB-Dinalupihan Branch" <?php if ($record['branch'] == "PGB-Dinalupihan Branch") echo 'selected="selected"'; ?>>PGB-Dinalupihan Branch</option>
@@ -1284,6 +1424,7 @@ else if (status === 'Decline Request for Re-schedule') {
             }
         }
         window.onload = handleStatusChange;
+     
     </script>
 </body>
 </html>

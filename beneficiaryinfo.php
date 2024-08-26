@@ -93,7 +93,7 @@ if($result = mysqli_fetch_assoc($query)){
 
                     $minDate = new DateTime();
                     $maxDate = new DateTime();
-$minDate->modify('-0 years');
+                    $minDate->modify('-1 day');
 $maxDate->modify('-150 years');
 // Convert $Birthday to a DateTime object for comparison
 $selectedDate = new DateTime($Birthday);
@@ -102,6 +102,10 @@ $selectedDate = new DateTime($Birthday);
                     {
                       array_push($errors, $lastError = "Lastname is required");
                     }
+                    elseif (!preg_match('/^[a-zA-Z ]*$/', $Lastname)) {
+                     
+                      array_push($errors, $lastError = "Only alphabetic characters and spaces are allowed.");
+                  }
                      elseif ($Lastname == $_POST['BeneficiaryLastname']|| $Middlename == $_POST['BeneficiaryLastname']) {
   
 }
@@ -115,10 +119,18 @@ else {
                     {
                       array_push($errors, $firstError = "Firstname is required");
                     }
+                    elseif (!preg_match('/^[a-zA-Z ]*$/', $Firstname)) {
+                     
+                      array_push($errors, $firstError = "Only alphabetic characters and spaces are allowed.");
+                  }
                     if(empty($Middlename))
                     {
                       array_push($errors, $middleError = "Middlename is required");
                     }
+                    elseif (!preg_match('/^[a-zA-Z ]*$/', $Middlename)) {
+                     
+                      array_push($errors, $middleError = "Only alphabetic characters and spaces are allowed.");
+                  }
                     if(empty($Birthday))
                     {
                       array_push($errors, $bdayError = "Birthday is required");
@@ -406,5 +418,3 @@ $selectedBarangay = $_POST['Barangay'] ?? 'Select';
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
-
-   

@@ -136,14 +136,23 @@ $res_Fname = $result['Firstname'];
                         <tbody>
                         <?php
 include("php/config.php");
+if ($role === 'Admin'){
 
+    $sql = "SELECT t.Date, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType, f.Amount, t.Status
+            FROM financialassistance f 
+            INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+            INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+    where t.Status != 'Done' && t.Status='For Payout' && f.branch='$branch' && FA_type= 'Medicine'
+           ORDER BY t.Date ASC, t.transaction_time ASC";
+    }
+    else{
 $sql = "SELECT t.Date, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType, f.Amount, t.Status 
         FROM financialassistance f 
         INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
         where FA_type= 'Medicine'
         ORDER BY t.Date DESC"; 
-
+    }
 $result = $con->query($sql);
 
 if (!$result) {

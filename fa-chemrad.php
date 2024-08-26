@@ -183,14 +183,23 @@ if ($result->num_rows > 0) {
                         <tbody>
                         <?php
 include("php/config.php");
+if ($role === 'Accounting Staff'){
 
+    $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched,t.Given_Time,t.TransactionType,  t.Status , f.FA_Type 
+            FROM financialassistance f 
+            INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+            INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+    where t.Status != 'Done' && t.Status='For Payout' && f.branch='$branch' && FA_type= 'Chemotherapy & Radiation'
+           ORDER BY t.Date ASC, t.transaction_time ASC";
+    }
+    else{
 $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType, f.Amount, t.Status, t.Given_Time
         FROM financialassistance f 
         INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
         where FA_type= 'Chemotherapy & Radiation'
         ORDER BY t.Date ASC, t.transaction_time ASC";
-
+    }
 $result = $con->query($sql);
 
 if (!$result) {

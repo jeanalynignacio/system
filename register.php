@@ -1,3 +1,4 @@
+
 <?php 
        use PHPMailer\PHPMailer\PHPMailer;
        use PHPMailer\PHPMailer\SMTP;
@@ -66,14 +67,26 @@ $selectedDate = new DateTime($Birthday);
                     {
                       array_push($errors, $lastError = "Lastname is required");
                     }
+                    elseif (!preg_match('/^[a-zA-Z ]*$/', $Lastname)) {
+                     
+                      array_push($errors, $lastError = "Only alphabetic characters and spaces are allowed.");
+                  }
                     if(empty($Firstname))
                     {
                       array_push($errors, $firstError = "Firstname is required");
                     }
+                    elseif (!preg_match('/^[a-zA-Z ]*$/', $Firstname)) {
+                     
+                      array_push($errors, $firstError = "Only alphabetic characters and spaces are allowed.");
+                  }
                     if(empty($Middlename))
                     {
                       array_push($errors, $middleError = "Middlename is required");
                     }
+                    elseif (!preg_match('/^[a-zA-Z ]*$/', $Middlename)) {
+                     
+                      array_push($errors, $middleError = "Only alphabetic characters and spaces are allowed.");
+                  }
                     if(empty($Birthday))
                     {
                       array_push($errors, $bdayError = "Birthday is required");

@@ -316,9 +316,10 @@ if ($selectedHospital !== NULL && $selectedHospital !== '') {
     $sql .= " WHERE h.PartneredHospital = '$selectedHospital' AND t.AssistanceType = 'Hospital Bills'";
 }
 
-// Add a WHERE clause only if a specific hospital is selected
+// Add a WHERE clause only if a specific hospital is selected  
 if ($selectedHospital == NULL ) {
-    $sql .= " WHERE t.AssistanceType = 'Hospital Bills' AND t.Status='Pending for Release of Guarantee Letter' AND h.branch='$branch'";
+    $sql .= " WHERE t.AssistanceType = 'Hospital Bills' AND (t.Status = 'Pending for Release of Guarantee Letter' 
+      OR t.Status = 'Releasing Of Guarantee Letter')  AND h.branch='$branch'";
 }
 
 // Add ORDER BY clause to sort by date in descending order

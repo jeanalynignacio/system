@@ -11,6 +11,7 @@ $res_Id = $result['Emp_ID'];
 $res_Fname = $result['Firstname'];
  $res_Lname = $result['Lastname'];
  $role=$result['role'];
+ $branch=$result['Office'];
 }
   }
   else{
@@ -149,13 +150,22 @@ $query="SELECT * FROM employees where role='Employee'";
                         <tbody>
                         <?php
 include("php/config.php");
+if ($role === 'Admin'){
 
+    $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType, m.MedicineType, t.Status, t.Given_Time
+        FROM medicines m
+        INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
+        INNER JOIN transaction t ON t.Beneficiary_Id = m.Beneficiary_ID
+    where t.Status != 'Done' && t.Status='Releasing Of Medicines' && m.branch='$branch' 
+           ORDER BY t.Date ASC, t.transaction_time ASC";
+    }
+    else{
 $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType, m.MedicineType, t.Status, t.Given_Time
         FROM medicines m
         INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = m.Beneficiary_ID
          ORDER BY t.Date ASC, t.transaction_time ASC";
-
+    }
 $result = $con->query($sql);
 
 if (!$result) {
