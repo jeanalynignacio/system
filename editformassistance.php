@@ -97,7 +97,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
        });
        </script>
        </body>';
-   } else {
+   }
+   else {
        // Error in query execution
        echo "Error: " . mysqli_error($con);
    }
@@ -127,14 +128,10 @@ $AssistanceType2 = $result['AssistanceType'] . '-' . $result['FA_Type'];
 $FA_Type = $result['FA_Type'];
 $AssistanceType = $AssistanceType1 . "-" . $FA_Type;
 $Amount = $result['Amount'];
+$EmpID = $_POST['Emp_ID'];
 $ReceivedAssistance = $result['PayoutType'];
 $beneID = $_POST['Beneficiary_Id'];
-$query ="INSERT INTO history( Beneficiary_ID, ReceivedDate, ReceivedTime,TransactionType,AssistanceType,ReceivedAssistance,Emp_ID,Amount,branch) VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', ' $TransactionType', '$AssistanceType', '$ReceivedAssistance','$EmpID','$Amount','$branch' )";
-if(mysqli_query($con, $query)){
-    
-    $sql1 = "DELETE FROM transaction  WHERE Beneficiary_Id='$beneID'";
-    $sql2 = "DELETE FROM financialassistance  WHERE Beneficiary_ID='$beneID'";
-          
+         
     $sql3="Select RemainingBal From budget WHERE AssistanceType='$AssistanceType2' && branch='$branch'";
 $result3 = mysqli_query($con, $sql3);
 
@@ -145,7 +142,30 @@ if ($result3) {
         if ($resultbal['RemainingBal'] != 0) {
             $updateQuery = "UPDATE budget SET RemainingBal = RemainingBal - $Amount WHERE branch = '$branch1' && AssistanceType = '$AssistanceType2'";
             $result4=mysqli_query($con, $updateQuery);
-
+            $query ="INSERT INTO history( Beneficiary_ID, ReceivedDate, ReceivedTime,TransactionType,AssistanceType,ReceivedAssistance,Emp_ID,Amount,branch) VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', ' $TransactionType', '$AssistanceType', '$ReceivedAssistance','$EmpID','$Amount','$branch' )";
+            if(mysqli_query($con, $query)){
+                
+                $sql1 = "DELETE FROM transaction  WHERE Beneficiary_Id='$beneID'";
+                $sql2 = "DELETE FROM financialassistance  WHERE Beneficiary_ID='$beneID'";
+            }    
+            $result1 = mysqli_query($con, $sql1);
+            $result2 = mysqli_query($con, $sql2);
+            
+            if($result1 && $result2 && $result4) {
+        
+                            echo '<body>
+                            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                            <script>
+                            swal("This beneficiary already received his/her assistance","","success")
+                           
+                            </script>';
+                              echo '<script>
+                             setTimeout(function(){
+                                window.location.href="assistance.php";
+                            } , 2000);
+                          </script>
+                          </body>';
+        }        
         } else {
             echo '<body>
             <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -177,26 +197,9 @@ if ($result3) {
     // Query failed
     // Add your code here to handle this case
 }
-    $result1 = mysqli_query($con, $sql1);
-    $result2 = mysqli_query($con, $sql2);
-    
-    if($result1 && $result2 && $result4) {
+   
+}
 
-                    echo '<body>
-                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                    <script>
-                    swal("This beneficiary already received his/her assistance","","success")
-                   
-                    </script>';
-                      echo '<script>
-                     setTimeout(function(){
-                        window.location.href="assistance.php";
-                    } , 2000);
-                  </script>
-                  </body>';
-}
-}
-}
 }
         elseif ($Status == "For Schedule") {
 
@@ -225,7 +228,7 @@ if ($result3) {
                 $query = "UPDATE financialassistance f
                 INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
                 INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-                SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
+                SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID',f.branch='$branch'
                 WHERE b.Beneficiary_Id = '$beneID'";
                   $result2 = mysqli_query($con, $query);
             
@@ -267,9 +270,12 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                     <html>
                     <body>
                     <p>Dear Mr./Ms./Mrs. $lastName,</p>
-                    <p>I am writing to inform you that your request for scheduling has been approved.</p>
-                    <p>Your schedule has been set for $Date at  $transaction_time_12hr. We kindly expect your presence on the said date.</p>
-                    <p> We kindly expect your presence on the said date.<br><br></p>
+                    <p>I am writing to inform you that your request for scheduling for applying assistance has been approved.</p>
+                    <p>Your schedule has been set for $Date at  $transaction_time_12hr.</p>
+                   <p> We kindly expect your presence on the said date.<br><br></p>
+                   <p>   If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='http://localhost/public_html/requestresched.php'> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.<br> 
+               Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.</p>
+
                    <p>Best regards,<br>$employeeName</p>
                    
                     <p>Provincial Government of Bataan - Special Assistance Program</p>
@@ -322,25 +328,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
             $Date = date('Y-m-d'); // Set the current date for Given_Sched
             $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
             $EmpID = $_POST['Emp_ID'];
-            $amount = $_POST['amount'];
-
-            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
-            $overlapResult = mysqli_query($con, $overlapQuery);
-
-            if(mysqli_num_rows($overlapResult) > 0) {
-                echo '<body>
-                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                <script>
-                swal("The selected date and time are already taken. Please choose a different time.","","error")
-                .then((value) => {
-                    if (value) {
-                        exit(); // Prevent further execution
-                    }
-                });
-                </script>
-                </body>';
-            }else{
-                
+           
             
             $query = "UPDATE financialassistance f
             INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
@@ -401,7 +389,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                 echo '<body>
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                         <script>
-                        swal("Update and email send successful","","success")
+                        swal("Email send successfully","","success")
                         .then((value) => {
                             if (value) {
                                 window.location.href = "assistance.php";
@@ -430,10 +418,10 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
             header("Location: assistance.php");
             exit();
         }
-            }
+            
            
         
-    }
+        }
         
         elseif ($Status == "For Payout") {
             date_default_timezone_set('Asia/Manila');
@@ -442,7 +430,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
             $amount = $_POST['amount'];
             $branch = $_POST['branch'];
             $PayoutType = $_POST['payouttypeSelect'];
-            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID' ";
+            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Status = '$Status' AND Beneficiary_Id != '$beneID' ";
             $overlapResult = mysqli_query($con, $overlapQuery);
             
             if(mysqli_num_rows($overlapResult) > 0) {
@@ -544,7 +532,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                 echo '<body>
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                         <script>
-                        swal("Update and email send successful","","success")
+                        swal("Email send successful","","success")
                         .then((value) => {
                             if (value) {
                                 window.location.href = "assistance.php";
@@ -638,7 +626,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                     <body>
                     <p>Dear Mr./Ms./Mrs. $lastName,</p>
                     <p>Your assistance request is currently for payout on $Date at  $transaction_time_12hr.
-                     You will received a total amount of $amount.<br>
+                     You will received  a cheque with total amount of $amount.<br>
                     Kindly proceed to $branch<br>
                     Please bring a valid ID and show this email upon arrival.<br>
                     Thank you for your patience and cooperation.</p><br>
@@ -758,7 +746,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                 echo '<body>
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                         <script>
-                        swal("Update and email send successful","","success")
+                        swal("Email send successful","","success")
                         .then((value) => {
                             if (value) {
                                 window.location.href = "assistance.php";
@@ -783,9 +771,17 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
             </body>';}
 
         } else {
-            echo "Error updating records: " . mysqli_error($con);
-            header("Location: assistance.php");
-            exit();
+            echo '<body>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+        swal("Error updating records: " . mysqli_error($con),"","success")
+        .then((value) => {
+            if (value) {
+                window.location.href = "medicines.php";
+            }
+        });
+        </script>
+        </body>';
         } 
         }
         
@@ -796,7 +792,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
          
             $Status = "For Validation";
 
-            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
+            $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time'AND Status = '$Status' AND Beneficiary_Id != '$beneID'";
             $overlapResult = mysqli_query($con, $overlapQuery);
 
             if(mysqli_num_rows($overlapResult) > 0) {
@@ -875,7 +871,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                 echo '<body>
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                         <script>
-                        swal("Update and email send successful","","success")
+                        swal("Email send successful","","success")
                         .then((value) => {
                             if (value) {
                                 window.location.href = "assistance.php";
@@ -889,38 +885,40 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
          }
         }
     }
-}
-        elseif ($Status == "Pending for Requirements"  ) {
-            date_default_timezone_set('Asia/Manila');
-            $Date = date('Y-m-d'); // Set the current date for Given_Sched
-            $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
-    
-          
-            $query = "UPDATE financialassistance f
-                      INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
-                      INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-                      SET  t.Given_Sched = '$Date',
-        t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
-                      WHERE b.Beneficiary_Id = '$beneID'";
-          $result2 = mysqli_query($con, $query);
-          if ($result2) {
-            echo '<body>
-            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-            <script>
-            swal("Update and email send successful","","success")
-            .then((value) => {
-                if (value) {
-                    window.location.href = "assistance.php";
-                }
-            });
-            </script>
-            </body>';
-          }
+}  elseif ($Status == "Pending for Requirements"  ) {
+    date_default_timezone_set('Asia/Manila');
+    $Date = date('Y-m-d'); // Set the current date for Given_Sched
+    $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
 
-    }
-    
-    }
+  
+    $query = "UPDATE financialassistance f
+              INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+              INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+              SET  t.Given_Sched = '$Date',
+t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
+              WHERE b.Beneficiary_Id = '$beneID'";
+  $result2 = mysqli_query($con, $query);
+  if ($result2) {
+    echo '<body>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+    swal("Update and email send successful","","success")
+    .then((value) => {
+        if (value) {
+            window.location.href = "assistance.php";
+        }
+    });
+    </script>
+    </body>';
+  
+  }
+
 }
+
+}
+
+}  
+
 
 ?>
 
@@ -1085,7 +1083,7 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
         emailFormat.innerHTML = `
          <div style = "color: black; padding:15px; background:white; margin-top:20px;"> 
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-            <p>I am writing to inform you that your request for scheduling has been approved.<br>
+            <p>I am writing to inform you that your request for scheduling for applying assistance has been approved.<br>
             Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
             at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br>
           <br>

@@ -408,4 +408,64 @@ input[type="radio"]:checked {
 .star-rating input#star4:checked ~ label:nth-of-type(-n + 2),
 .star-rating input#star5:checked ~ label:nth-of-type(-n + 1) {
   color: blue;
+  
+}
+.face-rating {
+  margin-top: -50px;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: left;
+  gap: 20px;
+}
+
+.face-rating input {
+  display: none;
+}
+
+.face-rating label {
+  font-size: 3em; /* Adjust size as needed */
+  cursor: pointer;
+  transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+.face-rating input:checked ~ label {
+  color: gray; /* Default color for unselected */
+}
+
+.face-rating input:checked + label,
+.face-rating input:checked + label ~ label {
+  color: blue; /* Highlight color for selected */
+}
+
+.face-rating input#happy:checked ~ label:nth-of-type(-n + 1),
+.face-rating input#sad:checked ~ label:nth-of-type(-n + 2),
+.face-rating input#angry:checked ~ label:nth-of-type(-n + 3),
+.face-rating input#neutral:checked ~ label:nth-of-type(-n + 4),
+.face-rating input#excited:checked ~ label:nth-of-type(-n + 5) {
+  color: blue; /* Highlight color for selected faces */
+
+  }/* Style for the selected state */
+#emotion input[type="radio"] {
+ display: none;
+}
+
+/* Optional: Add some space around the images */
+#emotion label {
+  margin-right: 10px;
+}
+#emotion {
+  display: flex;
+  justify-content: center; /* Center the content horizontally */
+  align-items: center; /* Center the content vertically */
+  gap: 10px; /* Space between images */
+}
+
+#emotion img {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.3s; /* Smooth transition for hover effect */
+}
+
+#emotion img:hover {
+  transform: scale(1.1); /* Slight zoom effect on hover */
 }

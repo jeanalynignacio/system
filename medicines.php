@@ -126,6 +126,36 @@ $query="SELECT * FROM employees where role='Employee'";
             <h3 class="main--title"> Medicines
                 
             </h3>
+            <?php
+  
+  $sql = "SELECT * FROM budget 
+WHERE AssistanceType ='Medicine' 
+AND branch='$branch'";
+$result = $con->query($sql);
+
+if (!$result) {
+die("Invalid query: " . $con->error);
+}
+$totalRemainingBal = 0;
+if ($result->num_rows > 0) {
+while ($row = $result->fetch_assoc()) {
+$totalRemainingBal += $row['RemainingBal'];
+}
+
+?>
+<h3 style="margin-left:70%; margin-top:-2%; color:#003399; cursor:default;">Budget:
+  <input type="text" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
+</h3>
+<?php
+
+} else {
+?>
+<h3 style="margin-left:70%; margin-top:-2%; color:#003399; cursor:default;">Budget:
+<input type="text" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
+</h3>
+<?php
+}
+?>
         </div>
 
 
@@ -150,13 +180,13 @@ $query="SELECT * FROM employees where role='Employee'";
                         <tbody>
                         <?php
 include("php/config.php");
-if ($role === 'Admin'){
+if ($role === 'Accounting Staff'){
 
     $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType, m.MedicineType, t.Status, t.Given_Time
         FROM medicines m
         INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = m.Beneficiary_ID
-    where t.Status != 'Done' && t.Status='Releasing Of Medicines' && m.branch='$branch' 
+    where t.Status != 'Done' && t.Status='For Payout' && m.branch='$branch' 
            ORDER BY t.Date ASC, t.transaction_time ASC";
     }
     else{
@@ -164,6 +194,7 @@ $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.First
         FROM medicines m
         INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = m.Beneficiary_ID
+       where t.Status != 'Done' 
          ORDER BY t.Date ASC, t.transaction_time ASC";
     }
 $result = $con->query($sql);

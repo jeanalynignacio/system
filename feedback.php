@@ -24,20 +24,29 @@ if(isset($_SESSION['serviceType'])){
 
 if (isset($_POST['submit'])) {
     // Escape user inputs for security
-    $name = mysqli_real_escape_string($con, $_POST['name2']);
+ //   $name = mysqli_real_escape_string($con, $_POST['name2']);
     $date = mysqli_real_escape_string($con, $_POST['date']);
     $email = mysqli_real_escape_string($con, $_POST['email2']);
     $office = mysqli_real_escape_string($con, $_POST['office']);
     $assistance = mysqli_real_escape_string($con, $_POST['service']);
-    $ease = mysqli_real_escape_string($con, $_POST['easy']);
-    $effectiveness = mysqli_real_escape_string($con, $_POST['well']);
-    $office_rating = mysqli_real_escape_string($con, $_POST['office_rating']);
-    $website_rating = mysqli_real_escape_string($con, $_POST['website_rating']);
+    $CC1 = mysqli_real_escape_string($con, $_POST['CC1']);
+    $CC2 = mysqli_real_escape_string($con, $_POST['CC2']);
+    $CC3 = mysqli_real_escape_string($con, $_POST['CC3']);
+    $SQD0 = mysqli_real_escape_string($con, $_POST['SQD0']);
+    $SQD1 = mysqli_real_escape_string($con, $_POST['SQD1']);
+    $SQD2 = mysqli_real_escape_string($con, $_POST['SQD2']);
+    $SQD3 = mysqli_real_escape_string($con, $_POST['SQD3']);
+    $SQD4 = mysqli_real_escape_string($con, $_POST['SQD4']);
+    $SQD5 = mysqli_real_escape_string($con, $_POST['SQD5']);
+    $SQD6 = mysqli_real_escape_string($con, $_POST['SQD6']);
+    $SQD7 = mysqli_real_escape_string($con, $_POST['SQD7']);
+    $SQD8 = mysqli_real_escape_string($con, $_POST['SQD8']);
+
     $comments = mysqli_real_escape_string($con, $_POST['comments']);
 
   
-        $query = "INSERT INTO feedback (Name, Date, Email, Office, AssistanceType, Ease, Effectiveness, OfficeRate, WebsiteRate, Comments) 
-                  VALUES ('$name', '$date', '$email', '$office', '$assistance', '$ease', '$effectiveness', '$office_rating', '$website_rating', '$comments')";
+        $query = "INSERT INTO feedback ( Date, Email, Office, ServiceType, CC1, CC2, CC3,SQD0,SQD1,SQD2,SQD3,SQD4,SQD5,SQD6,SQD7,SQD8, Comments) 
+                  VALUES ( '$date', '$email', '$office', '$assistance', '$CC1', '$CC2', '$CC3', '$SQD0','$SQD1','$SQD2','$SQD3','$SQD4','$SQD5','$SQD6','$SQD7','$SQD8', '$comments')";
 
         if (mysqli_query($con, $query)) {
             echo '<body>
@@ -67,6 +76,9 @@ if (isset($_POST['submit'])) {
     <link rel="stylesheet" href="feedback.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+   
 </head>
 <body>
     <script>
@@ -156,30 +168,25 @@ if(isset($_SESSION['valid'])): ?>
 <?php endif; ?>
     <form action="" method="POST">
         <div class="feedback">
-            <center><h1>Feedback Form</h1></center>
+            <center><h2 style="margin-top:10px;">TULUNGAN MO KAMI MAS MAPABUTI ANG AMING MGA PROSESO AT SERBISYO</h2></center>
 
             <p class="eng" style="margin-top:50px;">
-                This feedback form monitors the experience of clients of
-                the government office. Your feedback on your recently completed
-                transaction will help this office provide better service. The personal
-                information shared will be kept confidential, and you always have the
-                option not to answer this form.
-            <p class="fil">
-                (Ang feedback form na ito ay sinusubaybayan ang karanasan ng mga kliyente ng tanggapan ng gobyerno.
-                Ang iyong feedback sa iyong kamakailang natapos na transaksyon sa PGB-SAP ay makakatulong sa opisinang ito na
-                makapagbigay ng mas mahusay na serbisyo. Ang personal na impormasyong ibinahagi ay pananatilihing kompidensyal at palagi kang may opsyon na
-                hindi sagutin ang form na ito.)
-            </p>
+                Ang Client Satisfaction Measurement (CSM) ay naglalayong masubaybayan ang karanasan ng taumbayan hinggil sa kanilang
+                pakikipagtransaksyon sa mga tanggapan ng gobyerno. Makatutulong ang inyong kasagutan ukol sa inyong naging karanasan sa kakatapos
+                lamang na transaksyon, upang mas mapabuti at lalong mapahusay ang aming serbisyo publiko. Ang personal na impormasyon an iyong 
+                ibabahagi ay mananatiling kumpidensyal. Maaari ring piliin na hindi sagutan ang serbey na ito.
+           
+           
             </p>
         </div>
         <div class="namee">
-        <h1 style="font-size: 15px; margin-top: 35px; font-size: 15px; margin-left: 35px;"><strong>Name</strong></h1>
+         <!--<h1 style="font-size: 15px; margin-top: 35px; font-size: 15px; margin-left: 35px;"><strong>Name</strong></h1>
  
-                     <input type="text"  disabled name="name" id="name" autocomplete="off"  style="font-size: 15px;  font-size: 15px; margin-left: 35px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>">                  
+                    <input type="text"  disabled name="name" id="name" autocomplete="off"  style="font-size: 15px;  font-size: 15px; margin-left: 35px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>">                  
                      <input type="hidden"   name="name2" id="name2" autocomplete="off"   value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>">                  
-                    
+
                      <input type="checkbox" id="anonymousCheck" name="anonymousCheck" onclick="toggleAnonymous()"> 
-<label for="anonymousCheck">Check if you want to remain anonymous</label><br>
+<label for="anonymousCheck">Check if you want to remain anonymous</label><br>-->
 </div>
 <div class="emaill">
         <h1 style="font-size: 15px; margin-top: 35px; font-size: 15px; margin-left: 35px;"><strong>Email</strong></h1>
@@ -232,54 +239,101 @@ if(isset($_SESSION['valid'])): ?>
     <input type="hidden" id="office" name="office" style="margin-left:40px; font-size: 15px; font-weight: bold;">
 
 </div><br>
- 
+<label style="margin-bottom: 5px;  margin-left: 35px; font-size: 20px; margin-top: 20px;">
+        <strong>INSTRUCTIONS: Choose your answer to the following questions about the Citizen's Charter (CC), It is an official document that contains the services of a government agency/office, the required documents can be found here , corresponding fees, and total processing time</strong>
+    </label> <br><br>
 
 
-  
+    <div class="radio-group">
+    <label style="margin-bottom: 5px; margin-left: 65px; font-size: 16px; margin-top: 20px;">
+    (<em>CC1</em>)  <span style="text-decoration: underline;">Alin sa mga sumusunod ang naglalarawan sa iyong kaalaman sa CC (Citizen's Charter)?</span>
+    </label> <br>
 
-  <div class="dropdown">
-      <label style = "margin-bottom: 5px; margin-left: 35px; font-size: 15px; margin-top: 20px;"> <strong> How easy was it to find the special assistance you were looking for on our website? (Gaano kadali mong natagpuan ang espesyal na tulong na hinahanap mo sa aming website?) </strong> </label> <br>
-      
-        <select name="easy" style="margin-left:40px; height:40px; width:400px" required>
-      <option value="">Select Here</option>
-      <option value="Extremely easy">Extremely easy</option>
-      <option value="Very easy">Very easy</option>
-      <option value="Somewhat easy">Somewhat easy</option>
-      <option value="Not easy">Not easy</option>
-      <option value="Not at all easy">Not at all easy</option>
-    </select>
-  </div><br>
+    <div style="margin-left: 90px;">
+        <input type="radio" id="alam" name="CC1" value="Alam ko ang CC at nakita ko ito sa napuntahang opisina">
+        <label for="alam">1. Alam ko ang CC at nakita ko ito sa napuntahang opisina</label><br>
 
-  <div class="dropdown">
-      <label style = "margin-bottom:  5px;margin-left: 35px; font-size: 15px; margin-top: 20px;"> <strong> How effectively does our website fulfill your needs? (Gaano kahusay na natugunan ng aming website ang iyong mga pangangailangan?) </strong> </label> <br>
-      <select name="well" style="margin-left:40px; height:40px; width:400px" required>
-      <option value="">Select Here</option>
-      <option value="Extremely easy">Extremely well</option>
-      <option value="Very easy">Very well</option>
-      <option value="Somewhat easy">Somewhat well</option>
-      <option value="Not easy">Not so well</option>
-      <option value="Not at all easy">Not at all well</option>
-    </select>
-  </div><br>
+        <input type="radio" id="wala" name="CC1" value="Alam ko ang CC pero hindi ko ito nakita sa napuntahang opisina">
+        <label for="wala">2. Alam ko ang CC pero hindi ko ito nakita sa napuntahang opisina</label><br>
+
+        <input type="radio" id="nalaman" name="CC1" value="Nalaman ko ang CC nang makita ko ito sa napuntahang opisina">
+        <label for="nalaman">3. Nalaman ko ang CC nang makita ko ito sa napuntahang opisina</label><br>
+
+        <input type="radio" id="hindialam" name="CC1" value="Hindi ko alam kung ano ang CC at wala akong nakita sa napuntahang opisina">
+        <label for="hindialam">4. Hindi ko alam kung ano ang CC at wala akong nakita sa napuntahang opisina</label>
+        (<em>Piliin ang opsyon 5 sa CC1 at CC2 kung ito ang pinili</em>)<br><br>
+    </div>
+</div>
+<div class="radio-group">
+    <label style="margin-bottom: 5px;  margin-left: 65px; font-size: 16px; margin-top: 20px;">
+    (<em>CC2</em>) <span style="text-decoration: underline;">Kung alam ang CC</span> (<em>Pinili ang opsyon 1-3 sa CC1</em>)<span style="text-decoration: underline;">, masasabi mo ba na ang CC nang napuntahang opisina ay...</span>
+    
+    </label> <br>
+
+    <div style="margin-left: 90px;">
+        <input type="radio" id="alam" name="CC2" value="Madaling makita">
+        <label for="alam">1. Madaling makita</label><br>
+
+        <input type="radio" id="wala" name="CC2" value="Medyo madaling makita">
+        <label for="wala">2. Medyo madaling makita</label><br>
+
+        <input type="radio" id="nalaman" name="CC2" value="Mahirap makita">
+        <label for="nalaman">3. Mahirap makita</label><br>
+
+        <input type="radio" id="hindialam" name="CC2" value="Hindi makita">
+        <label for="hindialam">4. Hindi makita</label><br>
+
+        <input type="radio" id="na" name="CC2" value="N/A">
+        <label for="na">5. N/A</label><br><br>
+    </div>
+</div>
+<div class="radio-group">
+    <label style="margin-bottom: 5px;  margin-left: 65px; font-size: 16px; margin-top: 20px;">
+    (<em>CC3</em>) <span style="text-decoration: underline;">Kung alam ang CC</span> (<em>Pinili ang opsyon 1-3 sa CC1</em>)<span style="text-decoration: underline;">,  gaano nakatulong ang CC sa transaksyon mo?    </span>
+    </label> <br>
+
+    <div style="margin-left: 90px;">
+        <input type="radio" id="c1" name="CC3" value="Sobrang nakatulong">
+        <label for="c1">1. Sobrang nakatulong</label><br>
+
+        <input type="radio" id="c2" name="CC3" value="Medyo madaling makita">
+        <label for="c2">2. Nakatulong naman</label><br>
+
+        <input type="radio" id="c3" name="CC3" value="Mahirap makita">
+        <label for="c3">3. Hindi nakatulong</label><br>
+
+        <input type="radio" id="c4" name="CC3" value="N/A">
+        <label for="c4">4. N/A</label><br><br>
+    </div>
+</div>
+
+<label style="margin-bottom: 5px;  margin-left: 40px; font-size: 20px; margin-top: 20px;">
+    (<em>PANUTO:</em>) <span style="text-decoration: underline;">Para sa SQD 0-8, piliin ang pinakaangkop sa iyong sagot  </span>
+    </label> <br>
 
   <h1 style="font-size: 15px; margin-top: 35px; font-size: 15px; margin-left: 35px;"><strong>Please rate the performance of the office. (Mangyaring magbigay ng marka sa tanggapan.)</strong></h1><br>
   <div class="star-rating" style="margin-left: 35px;">
-    <input type="radio" name="office_rating" id="office_star1" value="5"><label for="office_star1"></label>
-    <input type="radio" name="office_rating" id="office_star2" value="4"><label for="office_star2"></label>
-    <input type="radio" name="office_rating" id="office_star3" value="3"><label for="office_star3"></label>
-    <input type="radio" name="office_rating" id="office_star4" value="2"><label for="office_star4"></label>
-    <input type="radio" name="office_rating" id="office_star5" value="1"><label for="office_star5"></label>
+    <input type="radio" name="CC3" id="office_star1" value="5"><label for="office_star1"></label>
+    <input type="radio" name="CC3" id="office_star2" value="4"><label for="office_star2"></label>
+    <input type="radio" name="CC3" id="office_star3" value="3"><label for="office_star3"></label>
+    <input type="radio" name="CC3" id="office_star4" value="2"><label for="office_star4"></label>
+    <input type="radio" name="CC3" id="office_star5" value="1"><label for="office_star5"></label>
   </div>
 
-  <h1 style="font-size: 15px; margin-top: -5px; font-size: 15px; margin-left: 35px;"><strong>Please rate the performance of the website. (Mangyaring magbigay ng marka sa karanasan sa paggamit ng website.)</strong></h1><br>
-  <div class="star-rating" style="margin-left: 35px;">
-    <input type="radio" name="website_rating" id="website_star1" value="5"><label for="website_star1"></label>
-    <input type="radio" name="website_rating" id="website_star2" value="4"><label for="website_star2"></label>
-    <input type="radio" name="website_rating" id="website_star3" value="3"><label for="website_star3"></label>
-    <input type="radio" name="website_rating" id="website_star4" value="5"><label for="website_star4"></label>
-    <input type="radio" name="website_rating" id="website_star5" value="1"><label for="website_star5"></label>
-  </div>
 
+  <h1 style="font-size: 15px; margin-top: 35px; font-size: 15px; margin-left: 35px;"><strong>Please rate the performance of the office. (Mangyaring magbigay ng marka sa tanggapan.)</strong></h1><br>
+  <div class="emotion" style="margin-left: 35px;">
+  <input type="radio" name="emotion" id="happy" />
+<label for="happy" style="background-image: url('images/1.png'); width: 40px; height: 40px; display: inline-block; background-size: cover; cursor: pointer;"></label>
+
+        <label for="happy"><img src="images/3.png" style="width: 40px; height: 40px;" /></label>
+        <br>
+        
+</div>
+
+<br>
+
+    
   <div class="input-box">
     <h1 style="font-size: 15px; margin-top: -10px; font-size: 15px;"><strong>Comments/Suggestions for the improvement of the services. (Mga Komento/Suhestiyon para sa pagpapabuti ng Serbisyo)</strong></h1>
     <textarea name="comments"></textarea>
@@ -288,96 +342,7 @@ if(isset($_SESSION['valid'])): ?>
 </form>
    
     <script>
-  function toggleDropdown() {
-  var dropdownContent = document.getElementById("myDropdown");
-  if (dropdownContent.style.display === "block") {
-    dropdownContent.style.display = "none";
-  } else {
-    dropdownContent.style.display = "block";
-  }
-  }
-
-// Close the dropdown if the user clicks outside of it
-  window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
-    var dropdowns = document.getElementsByClassName("dropdown-content");
-    for (var i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.style.display === "block") {
-        openDropdown.style.display = "none";
-      }
-    }
-  }
-  }
-
-  function toggleDropdown1() {
-  var dropdownContent1 = document.getElementById("myDropdown1");
-  if (dropdownContent1.style.display === "block") {
-    dropdownContent1.style.display = "none";
-  } else {
-    dropdownContent1.style.display = "block";
-  }
-}
-
-// Close the dropdown if the user clicks outside of it
-window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
-    var dropdowns = document.getElementsByClassName("dropdown-content");
-    for (var i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.style.display === "block") {
-        openDropdown.style.display = "none";
-      }
-    }
-  }
-}
-
-function toggleDropdown2() {
-  var dropdownContent1 = document.getElementById("myDropdown2");
-  if (dropdownContent1.style.display === "block") {
-    dropdownContent1.style.display = "none";
-  } else {
-    dropdownContent1.style.display = "block";
-  }
-}
-
-// Close the dropdown if the user clicks outside of it
-window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
-    var dropdowns = document.getElementsByClassName("dropdown-content2");
-    for (var i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.style.display === "block") {
-        openDropdown.style.display = "none";
-      }
-    }
-  }
-}
-
-function toggleDropdown3() {
-  var dropdownContent1 = document.getElementById("myDropdown3");
-  if (dropdownContent1.style.display === "block") {
-    dropdownContent1.style.display = "none";
-  } else {
-    dropdownContent1.style.display = "block";
-  }
-}
-
-// Close the dropdown if the user clicks outside of it
-window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
-    var dropdowns = document.getElementsByClassName("dropdown-content2");
-    for (var i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.style.display === "block") {
-        openDropdown.style.display = "none";
-      }
-    }
-  }
-}
-
-   
-       
+ 
 
    
        
@@ -468,7 +433,7 @@ switch(service) {
 
 // Display the office in the paragraph
 serviceText.value =serviceValue;
-function toggleAnonymous() {
+/*function toggleAnonymous() {
         const nameInput = document.getElementById('name');
         const nameInput2 = document.getElementById('name2');
         const anonymousCheck = document.getElementById('anonymousCheck');
@@ -481,7 +446,7 @@ function toggleAnonymous() {
             nameInput.value = "<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>";
             nameInput2.value = "<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>";
         }
-    }
+    }*/
     function toggleAnonymous2() {
         const emailInput = document.getElementById('email');
         const emailInput2 = document.getElementById('email2');

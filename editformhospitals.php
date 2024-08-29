@@ -90,6 +90,7 @@ if ($Status == "For Validation") {
             t.Given_Sched = '$Date',
             t.Given_Time = '$transaction_time',
             t.Emp_ID='$EmpID',
+            h.branch='$branch1',
             h.billamount = '$billamount',
             t.Status = '$newStatus'
         WHERE b.Beneficiary_Id = '$beneID'";
@@ -536,6 +537,7 @@ elseif ($Status == "For Schedule") {
             t.Given_Sched = '$Date',
             t.Given_Time = '$transaction_time',
             t.Emp_ID='$EmpID',
+              h.branch='$branch1',
             t.Status = '$Status'
            
         WHERE b.Beneficiary_Id = '$beneID'";
