@@ -180,15 +180,25 @@ $totalRemainingBal += $row['RemainingBal'];
                         <tbody>
                         <?php
 include("php/config.php");
-if ($role === 'Accounting Staff'){
+if ($role === 'PSWD Employee' ){
 
     $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType, m.MedicineType, t.Status, t.Given_Time
         FROM medicines m
         INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = m.Beneficiary_ID
-    where t.Status != 'Done' && t.Status='For Payout' && m.branch='$branch' 
+    where t.Status != 'Done' && t.Status='For Payout' && m.branch='$branch' && m.PayoutType='Cash'
            ORDER BY t.Date ASC, t.transaction_time ASC";
     }
+    
+elseif ($role === 'DSWD Employee' ){
+    $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType, m.MedicineType, t.Status, t.Given_Time
+    FROM medicines m
+    INNER JOIN beneficiary b ON b.Beneficiary_Id = m.Beneficiary_ID
+    INNER JOIN transaction t ON t.Beneficiary_Id = m.Beneficiary_ID
+where t.Status != 'Done' && t.Status='For Payout' && m.branch='$branch' && m.PayoutType='Cheque'
+       ORDER BY t.Date ASC, t.transaction_time ASC";
+
+}
     else{
 $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType, m.MedicineType, t.Status, t.Given_Time
         FROM medicines m

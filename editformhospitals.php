@@ -242,6 +242,10 @@ if ($role == "Community Affairs Officer") {
         }
     }
 }else{
+    date_default_timezone_set('Asia/Manila');
+    $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
+    $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
+    
     $beneID = $_POST['Beneficiary_Id'];
 
     $SQL = mysqli_query($con, "SELECT b.*, t.*, h.*
@@ -260,7 +264,18 @@ if ($role == "Community Affairs Officer") {
                     $ReceivedAssistance = "Guarantee Letter";
                     $Amount = $result['Amount'];
                     $EmpID = $_POST['Emp_ID']; // Assuming you have employee ID stored in session
-  // Insert into history table
+ 
+                    // Insert into history table
+                    $sql3 = "SELECT RemainingBal FROM budget WHERE AssistanceType='$AssistanceType' && branch='$branch'";
+                    $result3 = mysqli_query($con, $sql3);
+        
+                  
+                    if ($result3) {
+                        if ($resultbal = mysqli_fetch_assoc($result3)) {
+                            if ($resultbal['RemainingBal'] != 0) {
+                                $updateQuery = "UPDATE budget SET RemainingBal = RemainingBal - $Amount WHERE branch = '$branch' AND AssistanceType = '$AssistanceType'";
+                                $result4 = mysqli_query($con, $updateQuery);
+        
   $query = "INSERT INTO history (Beneficiary_ID, ReceivedDate, ReceivedTime, TransactionType, AssistanceType, ReceivedAssistance, Emp_ID, Amount, branch)
   VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', '$TransactionType', '$AssistanceType2', '$ReceivedAssistance', '$EmpID', '$Amount', '$branch')";
 
@@ -312,18 +327,8 @@ if ($role == "Community Affairs Officer") {
             // Delete records from transaction and laboratories tables after email is sent
             $sql1 = "DELETE FROM transaction WHERE Beneficiary_Id='$beneID'";
             $sql2 = "DELETE FROM hospitalbill WHERE Beneficiary_ID='$beneID'";
-            $sql3 = "SELECT RemainingBal FROM budget WHERE AssistanceType='$AssistanceType' && branch='$branch'";
-
-           
-            $result3 = mysqli_query($con, $sql3);
-
-          
-            if ($result3) {
-                if ($resultbal = mysqli_fetch_assoc($result3)) {
-                    if ($resultbal['RemainingBal'] != 0) {
-                        $updateQuery = "UPDATE budget SET RemainingBal = RemainingBal - $Amount WHERE branch = '$branch' AND AssistanceType = '$AssistanceType'";
-                        $result4 = mysqli_query($con, $updateQuery);
-
+            $result1 = mysqli_query($con, $sql1);
+            $result2 = mysqli_query($con, $sql2);
                         if ($result4 && mysqli_query($con, $sql1) && mysqli_query($con, $sql2) ) {
                             echo '<body>
                                   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -336,52 +341,39 @@ if ($role == "Community Affairs Officer") {
                                   });
                                   </script>
                                   </body>';
-                        } else {
-                            echo "Error updating budget or deleting records.";
                         }
-                    } else {
-                        echo '<body>
-                              <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                              <script>
-                              swal("You have insufficient balance","","error")
-                              .then((value) => {
-                                  if (value) {
-                                      window.location.href = "hospital.php";
-                                  }
-                              });
-                              </script>
-                              </body>';
-                    }
+                     
                 } else {
                     echo '<body>
-                          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                          <script>
-                          swal("This branch has no budget","","error")
-                          .then((value) => {
-                              if (value) {
-                                  exit();
-                              }
-                          });
-                          </script>
-                          </body>';
+                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script>
+                    swal("You have insufficient balance","","error")
+                    .then((value) => {
+                        if (value) {
+                            window.location.href = "hospital.php";
+                        }
+                    });
+                    </script>
+                    </body>';
                 }
             } else {
                 echo '<body>
-                      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                      <script>
-                      swal("No existing balance","","error")
-                      .then((value) => {
-                          if (value) {
-                              exit();
-                          }
-                      });
-                      </script>
-                      </body>';
+                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                <script>
+                swal("This branch has no budget","","error")
+                .then((value) => {
+                    if (value) {
+                        window.location.href = "hospital.php";
+                    }
+                });
+                </script>
+                </body>';
             }
         } else {
             echo "Error inserting data into history table: " . mysqli_error($con);
         }
     }
+}
 }
 }
 /*
@@ -1404,7 +1396,27 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
                 </div>
             `;
           
-
+            var amountField = document.getElementsByName('amount')[0];
+    var branchField = document.getElementById('branch');
+    var date2 = document.getElementById('calendar2');
+    var time= document.getElementById('time');
+    var empname= document.getElementById('empname');
+    // Check if the amount field is empty or equal to 0
+    if (amountField.value.trim() === '' || amountField.value.trim() === '0') {
+        amountField.disabled = false;
+        branchField.disabled = false;
+        time.disabled = false;
+        date2.disabled = false;
+        empname.disabled = false;
+        submitbtn.style.display = 'inline';
+    } else {
+        amountField.disabled = true;
+        branchField.disabled = true;
+        time.disabled = true;
+       date2.disabled = true
+       empname.disabled = true;
+       submitbtn.style.display = 'none';
+    }
     }
 
  

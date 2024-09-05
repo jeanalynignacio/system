@@ -193,15 +193,25 @@ if ($result->num_rows > 0) {
                         <tbody>
                         <?php
 include("php/config.php");
-if ($role === 'Accounting Staff'){
+
+if ($role === 'PSWD Employee' ){
 
 $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched,t.Given_Time,t.TransactionType,  t.Status , f.FA_Type 
         FROM financialassistance f 
         INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-where t.Status != 'Done' && t.Status='For Payout' && f.branch='$branch'
+where t.Status != 'Done' && t.Status='For Payout' && f.branch='$branch' && f.PayoutType='Cash'
        ORDER BY t.Date ASC, t.transaction_time ASC";
 }
+elseif ($role === 'DSWD Employee' ){
+
+    $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched,t.Given_Time,t.TransactionType,  t.Status , f.FA_Type 
+            FROM financialassistance f 
+            INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+            INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+    where t.Status != 'Done' && t.Status='For Payout' && f.branch='$branch' && f.PayoutType='Cheque'
+           ORDER BY t.Date ASC, t.transaction_time ASC";
+    }
 else{
     $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched,t.Given_Time,t.TransactionType,  t.Status , f.FA_Type 
         FROM financialassistance f 
