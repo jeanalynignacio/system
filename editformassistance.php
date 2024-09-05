@@ -1496,7 +1496,7 @@ function getCheckedRequirements(name) {
                selectedPayoutType2.disabled=true;
                time.disabled = true;
               date2.disabled = true
-              empname.disabled = true;
+             
               submitbtn.style.display = 'none';
            }
                
@@ -1537,7 +1537,7 @@ function getCheckedRequirements(name) {
                 selectedPayoutType3.disabled=true;
                time3.disabled = true;
               date3.disabled = true
-              empname.disabled = true;
+              
               submitbtn.style.display = 'none';
            }
                  

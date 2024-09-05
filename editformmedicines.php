@@ -218,8 +218,8 @@ if ($result3) {
              t.Given_Time = '$ReceivedTime'
          WHERE b.Beneficiary_Id = '$beneID'";
 
-$result = mysqli_query($con, $query);
-if($result) {
+$result2 = mysqli_query($con, $query);
+if($result2) {
 $lastName = $result['Lastname'];  // Assuming 'Lastname' is part of the $result array
 $Email = $result['Email'];  // Assuming 'Email' is part of the $result array
 $employeeName = $_POST['EmpName'];
@@ -1409,9 +1409,10 @@ function updateEmailFormat() {
            var date2 = document.getElementById('calendar2');
            var time= document.getElementById('time');
            var empname= document.getElementById('empname');
-           // Check if the amount field is empty or equal to 0
-           if (amountField.value.trim() === '' || amountField.value.trim() === '0') {
-               amountField.disabled = false;
+           var stats = document.getElementById('stats').value; // Get the value from the 'stats' element
+
+if (amountField.value.trim() === '' || amountField.value.trim() === '0' || stats === 'Pending due to Insufficient funds') {
+         amountField.disabled = false;
              
                selectedPayoutType2.disabled=false;
                time.disabled = false;
@@ -1424,7 +1425,7 @@ function updateEmailFormat() {
                selectedPayoutType2.disabled=true;
                time.disabled = true;
               date2.disabled = true
-              empname.disabled = true;
+              
               submitbtn.style.display = 'none';
            }
                
@@ -1446,22 +1447,22 @@ function updateEmailFormat() {
                        </p>
                        </div>
                    `;
-           var amountField = document.getElementsByName('amount')[0];
+           var amountField2 = document.getElementsByName('amount')[0];
            var branchField2 = document.getElementById('branch');
            var selectedPayoutType3 = document.getElementById('payouttypeSelect');
            var date3 = document.getElementById('calendar3');
            var time3= document.getElementById('time');
-           var empname= document.getElementById('empname');
+          
            // Check if the amount field is empty or equal to 0
-           if (amountField.value.trim() === '' || amountField.value.trim() === '0'   ) {
-               amountField.disabled = false;
+           if (amountField2.value.trim() === '' || amountField2.value.trim() === '0'  || stats === 'Pending due to Insufficient funds') {
+               amountField2.disabled = false;
                branchField2.disabled = false;
                selectedPayoutType3.disabled=false;
                time3.disabled = false;
                date3.disabled = false;
                empname.disabled = false;
                submitbtn.style.display = 'inline';
-           } elseif($stats!== 'Pending due to Insufficient funds') {
+           } else  {
                amountField.disabled = true;
                branchField2.disabled = true;
                selectedPayoutType3.disabled=true;
