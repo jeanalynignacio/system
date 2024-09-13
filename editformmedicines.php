@@ -25,6 +25,7 @@ if(isset($_SESSION['Emp_ID'])) {
       $res_Lname = $result['Lastname'];
       $role = $result['role'];
       $branch1 = $result['Office'];
+      
   }
 } else {
   header("Location: employee-login.php");
@@ -211,7 +212,7 @@ if ($result3) {
         $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
         $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
         
-        $query = "UPDATE financialassistance f
+        $query = "UPDATE medicines f
          INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
          INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
          SET t.Status = 'Pending due to Insufficient funds', t.Emp_ID='$EmpID', t.Given_Sched = '$ReceivedDate',
@@ -572,7 +573,7 @@ elseif ($Status == "Pending due to Insufficient funds") {
         $Status = $_POST['Status'];
         $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Status = '$Status' AND Beneficiary_Id != '$beneID' ";
         $overlapResult = mysqli_query($con, $overlapQuery);
-
+$AssistanceType="Medicine";
         if(mysqli_num_rows($overlapResult) > 0) {
             echo '<body>
             <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -587,6 +588,12 @@ elseif ($Status == "Pending due to Insufficient funds") {
             </body>';
             
         }else{
+            $sql3="Select RemainingBal From budget WHERE AssistanceType='$AssistanceType' && branch='$branch1'";
+            $resultbal = mysqli_query($con, $sql3);
+
+            if ($resultbal && $row = mysqli_fetch_assoc($resultbal)) {
+                if ($row['RemainingBal'] > 0) {
+                  
             $amount = $_POST['amount'];
             if ( $PayoutType=="Cash"){
                 
@@ -702,7 +709,6 @@ elseif ($Status == "Pending due to Insufficient funds") {
         exit();
     }
         }
-       
     }elseif ($PayoutType == "Cheque") {
         if ($amount < 5000) {
             $error = "";
@@ -824,9 +830,110 @@ elseif ($Status == "Pending due to Insufficient funds") {
     echo "Error: Amount not set!";
 }
         
-    }
+    }else{
+        $query = mysqli_query($con, "SELECT * FROM employees WHERE Emp_ID=$EmpID");
+
+        if($result = mysqli_fetch_assoc($query)){
+            $res_Id = $result['Emp_ID'];
+            $res_Fname = $result['Firstname'];
+            $res_Lname = $result['Lastname'];
+            $role = $result['role'];
+            $branch1 = $result['Office'];
+            
+        
+        date_default_timezone_set('Asia/Manila');
+        $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
+        $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
+        $Email = $record['Email'];
+        $lastName = $record['Lastname'];
+
+        $query2 = "UPDATE medicines f
+         INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+         INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+         SET t.Status = 'Pending due to Insufficient funds', t.Emp_ID='$EmpID', t.Given_Sched = '$ReceivedDate',
+             t.Given_Time = '$ReceivedTime'
+         WHERE b.Beneficiary_Id = '$beneID'";
+
+ $result2 = mysqli_query($con, $query2);
+if($result2) {
+$lastName = $result['Lastname'];  // Assuming 'Lastname' is part of the $result array
+$Email = $result['Email'];  // Assuming 'Email' is part of the $result array
+$employeeName = $_POST['EmpName'];
+
+require 'phpmailer/src/Exception.php';
+require 'phpmailer/src/PHPMailer.php';
+require 'phpmailer/src/SMTP.php';
+
+$mail = new PHPMailer(true);
+try {
+    // Server settings
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com';
+    $mail->SMTPAuth = true;
+    $mail->Username = 'bataanpgbsap@gmail.com'; // Your Gmail address
+    $mail->Password = 'cmpp hltn mxuc tcgl'; // Your Gmail password or App Password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port = 587;
+
+    // Recipients
+    $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
+    $mail->addAddress($Email);
+
+    // Content
+    $mail->isHTML(true);
+    $mail->Subject = 'Pending Application due to Insufficient Funds';
+    $mail->Body = "
+        <html>
+        <body>
+        <p>Dear Mr./Ms./Mrs. $lastName,</p>
+        <p>I am sorry to inform you that we currently have insufficient funds available to process your application for assistance.<br></p>
+       <p>As a result, your application is pending at the moment. We will keep you updated as soon as funds become available.<br><br></p>
+        <p>Thank you for your cooperation. God Bless!<br><br></p>
+        <p>Best regards,<br>$employeeName</p>
+        <p>Provincial Government of Bataan - Special Assistance Program</p>
+        </body>
+        </html>
+    ";
+
+    $mail->send();
+    echo '<body>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+        swal("You have insufficient balance","","error")
+        .then((value) => {
+            if (value) {
+                window.location.href = "medicines.php";
+            }
+        });
+        </script>
+        </body>';
+} catch (Exception $e) {
+    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 }
+
+        
     
+
+} 
+}else{
+    echo '<body>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+    swal("This branch has no budget","","error")
+    .then((value) => {
+        if (value) {
+            window.location.href = "medicines.php";
+        }
+    });
+    </script>
+    </body>';
+        
+}
+}
+        }
+    }
+
+} 
     elseif ($Status == "Decline Request for Re-schedule") {
           $reason= $_POST['reason'];
        $query = "UPDATE medicines m
@@ -1447,28 +1554,25 @@ if (amountField.value.trim() === '' || amountField.value.trim() === '0' || stats
                        </p>
                        </div>
                    `;
-           var amountField2 = document.getElementsByName('amount')[0];
-           var branchField2 = document.getElementById('branch');
+                   var amountField2 = document.getElementsByName('amount')[0];
            var selectedPayoutType3 = document.getElementById('payouttypeSelect');
            var date3 = document.getElementById('calendar3');
            var time3= document.getElementById('time');
-          
+           var empname= document.getElementById('empname');
            // Check if the amount field is empty or equal to 0
-           if (amountField2.value.trim() === '' || amountField2.value.trim() === '0'  || stats === 'Pending due to Insufficient funds') {
+           if (amountField2.value.trim() === '' || amountField2.value.trim() === '0'  ) {
                amountField2.disabled = false;
-               branchField2.disabled = false;
-               selectedPayoutType3.disabled=false;
+              selectedPayoutType3.disabled=false;
                time3.disabled = false;
                date3.disabled = false;
                empname.disabled = false;
                submitbtn.style.display = 'inline';
-           } else  {
-               amountField.disabled = true;
-               branchField2.disabled = true;
-               selectedPayoutType3.disabled=true;
+           } else {
+               amountField2.disabled = true;
+                selectedPayoutType3.disabled=true;
                time3.disabled = true;
               date3.disabled = true
-              empname.disabled = true;
+              
               submitbtn.style.display = 'none';
            }
                  

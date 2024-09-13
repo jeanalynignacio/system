@@ -97,19 +97,46 @@ if (!$transactionResult) {
         <div class="card--container">
             <h3 class="main--title">Overall Data</h3>
         </div>
+     <h1 style="font-size: 20px">Labels</h1> 
+     <h1 style="font-size: 15px; margin-top: 2px; font-size: 15px; margin-left: 35px;"><strong>CC1: Alin sa mga sumusunod ang naglalarawan sa iyong kaalaman sa CC (Citizen's Charter)?</strong></h1><br>
+     <h1 style="font-size: 15px; margin-top: -25px; font-size: 15px; margin-left: 35px;"><strong>CC2: Kung alam ang CC (Pinili ang opsyon 1-3 sa CC1), masasabi mo ba na ang CC nang napuntahang opisina ay...</strong></h1><br>
+     <h1 style="font-size: 15px; margin-top: -25px; font-size: 15px; margin-left: 35px;"><strong>CC3: Kung alam ang CC (Pinili ang opsyon 1-3 sa CC1),  gaano nakatulong ang CC sa transaksyon mo?</strong></h1><br>
+    
+  <h1 style="font-size: 15px; margin-top: 2px; font-size: 15px; margin-left: 35px;"><strong>SQDO: Nasiyahan ako sa serbisyo na aking natanggap sa napuntahan na tanggapan.</strong></h1><br>
+  <h1 style="font-size: 15px; margin-top: -25px; font-size: 15px; margin-left: 35px;"><strong>SQD1: Makatwiran ang oras na aking ginugol para sa pagproseso ng aking transaksyon.</strong></h1><br>
+  
+<h1 style="font-size: 15px; margin-top: -25px; font-size: 15px; margin-left: 35px;"><strong>SQD2: Ang opisina ay sumusunod sa mga kinakailangang dokumento at mga hakbang batay sa impormasyong ibinigay.</strong></h1><br>
+
+<h1 style="font-size: 15px; margin-top: -25px; font-size: 15px; margin-left: 35px;"><strong>SQD3: Ang mga hakbang sa pagproseso. kasama na ang pagbayad ay madali at simple lamang.</strong></h1><br>
+ 
+<h1 style="font-size: 15px; margin-top: -25px; font-size: 15px; margin-left: 35px;"><strong>SQD4: Mabilis at madali akong nakahanap ng impormasyon tungkol sa aking transaksyon mula sa opisina o sa website nito.</strong></h1><br>
+<h1 style="font-size: 15px; margin-top: -25px; font-size: 15px; margin-left: 35px;"><strong>SQD5; Nagbayad ako ng makatwirang halaga para sa aking transaksyon. (Kung ang sebisyo ay ibinigay ng libre. Piliin ang N/A.)</strong></h1><br>
+<h1 style="font-size: 15px; margin-top:-25px; font-size: 15px; margin-left: 35px;"><strong>SQD6: Pakiramdam ko ay patas ang opisina sa lahat. o walang palakasan", sa aking transaksyon</strong></h1><br>
+<h1 style="font-size: 15px; margin-top: -25px; font-size: 15px; margin-left: 35px;"><strong>SQD7: Magalang akong trinato ng mga tauhan, at (kung sakali ako ay humingi ng tulong) alam ko na sila ay handang tumulong sa akin.</strong></h1><br>
+<h1 style="font-size: 15px; margin-top: -25px; font-size: 15px; margin-left: 35px;"><strong>SQD8: Nakuha ko ang kinakallangan ko mula sa tanggapan ng gobyemo. kung tinanggihan man. Ito ay sapat na ipinaliwanag sa akin.</strong></h1><br>
+
+  
         <div class="table--container">
              <table>
                 <thead>
                     <tr>
                         <th>Date:</th>
-                        <th>Name:</th>
+                    
                         <th>Email:</th>
                         <th>Office:</th>
                         <th>Assistance Type:</th>
-                        <th>Ease of Finding Assistance:</th>
-                        <th>Effectiveness of Website:</th>
-                        <th>Office Rate:</th>
-                        <th> Website Rate: </th>
+                        <th>CC1:</th>
+                        <th>CC2:</th>
+                        <th>CC3:</th>
+                        <th> SQD0: </th>
+                        <th> SQD1: </th>
+                        <th> SQD2: </th>
+                        <th> SQD3: </th>
+                        <th> SQD4: </th>
+                        <th> SQD5: </th>
+                        <th> SQD6: </th>
+                        <th> SQD7: </th>
+                        <th> SQD8: </th>
                         <th> Comments: </th>
                     </tr>
                 </thead>
@@ -119,15 +146,22 @@ if (!$transactionResult) {
                  
                         echo "<tr>
                         <td>{$row['Date']}</td>
-                        <td>{$row['Name']}</td>
-                        <td>{$row['Email']}</td>
+                         <td>{$row['Email']}</td>
                         <td>{$row['Office']}</td>
-                        <td>{$row['AssistanceType']}</td>
-                        <td>{$row['Ease']}</td>
-                        <td>{$row['Effectiveness']}</td>
-                         <td>" . $row['OfficeRate'] . " stars</td>
-                        <td>" . $row['WebsiteRate'] . " stars</td>
-                        <td>{$row['Comments']}</td>
+                        <td>{$row['ServiceType']}</td>
+                        <td>{$row['CC1']}</td>
+                        <td>{$row['CC2']}</td>
+                         <td>{$row['CC3']}</td>
+                        <td>{$row['SQD0']}</td>
+                         <td>{$row['SQD1']}</td>
+                          <td>{$row['SQD2']}</td>
+                            <td>{$row['SQD3']}</td>
+                         <td>{$row['SQD4']}</td>
+                          <td>{$row['SQD5']}</td>
+                            <td>{$row['SQD6']}</td>
+                         <td>{$row['SQD7']}</td>
+                          <td>{$row['SQD8']}</td>
+                         <td>{$row['Comments']}</td>
                     </tr>";
                     }
                     ?>

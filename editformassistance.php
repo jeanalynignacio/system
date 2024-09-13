@@ -558,6 +558,22 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
         }
         
         elseif ($Status == "For Payout") {
+            $SQL = "SELECT b.*, t.*, f.*
+            FROM beneficiary b
+            INNER JOIN transaction t ON b.Beneficiary_Id = t.Beneficiary_Id
+            INNER JOIN financialassistance f ON b.Beneficiary_Id = f.Beneficiary_ID
+            WHERE b.Beneficiary_Id = '$beneID'";
+    
+    $result2 = mysqli_query($con, $SQL);
+    
+    if ($result2 && mysqli_num_rows($result2) > 0) {
+        // Fetch the data as an associative array
+        $row = mysqli_fetch_assoc($result2);
+        
+        $AssistanceType2 = $row['AssistanceType'] . '-' . $row['FA_Type'];
+        $FA_Type = $row['FA_Type'];
+     
+    }
             date_default_timezone_set('Asia/Manila');
             $Date = date('Y-m-d'); // Set the current date for Given_Sched
             $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
@@ -566,8 +582,9 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
             $PayoutType = $_POST['payouttypeSelect'];
             $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Status = '$Status' AND Beneficiary_Id != '$beneID' ";
             $overlapResult = mysqli_query($con, $overlapQuery);
-            
-            if(mysqli_num_rows($overlapResult) > 0) {
+          
+ 
+         if(mysqli_num_rows($overlapResult) > 0) {
                 echo '<body>
                 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                 <script>
@@ -580,6 +597,12 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                 </script>
                 </body>';
             }else{
+                $sql3="Select RemainingBal From budget WHERE AssistanceType='$AssistanceType2' && branch='$branch1'";
+            $resultbal = mysqli_query($con, $sql3);
+
+            if ($resultbal && $row = mysqli_fetch_assoc($resultbal)) {
+                if ($row['RemainingBal'] > 0) {
+            
                 $amount = $_POST['amount'];
                 if ( $PayoutType=="Cash"){
                 if ($amount < 1 || $amount > 5001) {
@@ -699,7 +722,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
         }
             }
            
-        }else{
+        }elseif ($PayoutType == "Cheque") {
             if ($amount < 5000) {
                 $error = "";
                 echo '<body>
@@ -817,8 +840,110 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
        
     } 
             
-        }
+        }else{
+            $query = mysqli_query($con, "SELECT * FROM employees WHERE Emp_ID=$EmpID");
+    
+            if($result = mysqli_fetch_assoc($query)){
+                $res_Id = $result['Emp_ID'];
+                $res_Fname = $result['Firstname'];
+                $res_Lname = $result['Lastname'];
+                $role = $result['role'];
+                $branch1 = $result['Office'];
+                
+            
+            date_default_timezone_set('Asia/Manila');
+            $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
+            $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
+            $Email = $record['Email'];
+            $lastName = $record['Lastname'];
+    
+            $query2 = "UPDATE financialassistance f
+             INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+             INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+             SET t.Status = 'Pending due to Insufficient funds', t.Emp_ID='$EmpID', t.Given_Sched = '$ReceivedDate',
+                 t.Given_Time = '$ReceivedTime'
+             WHERE b.Beneficiary_Id = '$beneID'";
+    
+     $result2 = mysqli_query($con, $query2);
+    if($result2) {
+    $lastName = $result['Lastname'];  // Assuming 'Lastname' is part of the $result array
+    $Email = $result['Email'];  // Assuming 'Email' is part of the $result array
+    $employeeName = $_POST['EmpName'];
+    
+    require 'phpmailer/src/Exception.php';
+    require 'phpmailer/src/PHPMailer.php';
+    require 'phpmailer/src/SMTP.php';
+    
+    $mail = new PHPMailer(true);
+    try {
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'bataanpgbsap@gmail.com'; // Your Gmail address
+        $mail->Password = 'cmpp hltn mxuc tcgl'; // Your Gmail password or App Password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+    
+        // Recipients
+        $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
+        $mail->addAddress($Email);
+    
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = 'Pending Application due to Insufficient Funds';
+        $mail->Body = "
+            <html>
+            <body>
+            <p>Dear Mr./Ms./Mrs. $lastName,</p>
+            <p>I am sorry to inform you that we currently have insufficient funds available to process your application for assistance.<br></p>
+           <p>As a result, your application is pending at the moment. We will keep you updated as soon as funds become available.<br><br></p>
+            <p>Thank you for your cooperation. God Bless!<br><br></p>
+            <p>Best regards,<br>$employeeName</p>
+            <p>Provincial Government of Bataan - Special Assistance Program</p>
+            </body>
+            </html>
+        ";
+    
+        $mail->send();
+        echo '<body>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script>
+            swal("You have insufficient balance","","error")
+            .then((value) => {
+                if (value) {
+                    window.location.href = "assistance.php";
+                }
+            });
+            </script>
+            </body>';
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
+    
+            
+        
+    
+    } 
+    }else{
+        echo '<body>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+        swal("This branch has no budget","","error")
+        .then((value) => {
+            if (value) {
+                window.location.href = "assistance.php";
+            }
+        });
+        </script>
+        </body>';
+            
+    }
+    }
+            }
+        }
+    
+    } 
     
         elseif ($Status == "Decline Request for Re-schedule") {
          $reason= $_POST['reason'];

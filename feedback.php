@@ -14,39 +14,67 @@ $res_Email = $result['Email'];
 $res_City = $result['CityMunicipality'];
 }
 }
-if(isset($_SESSION['serviceType'])){
-  $serviceType = $_SESSION['serviceType'];
-  
-}else{
-  echo "Service type not set.";
-  exit;
+
+$query1 = mysqli_query($con, "SELECT * FROM beneficiary WHERE Representative_ID=$res_Id");
+
+if($result2 = mysqli_fetch_assoc($query1)){
+$Ben_Id = $result2['Beneficiary_Id'];
 }
+$query3 = mysqli_query($con, "SELECT * FROM history WHERE Beneficiary_ID=$Ben_Id");
+if($result3 = mysqli_fetch_assoc($query3)){
+    $Ben_Id = $result3['Beneficiary_ID'];
+    $AssistanceType=$result3['AssistanceType'];
+    $branch=$result3['branch'];
+
+    }
+
 
 if (isset($_POST['submit'])) {
-    // Escape user inputs for security
- //   $name = mysqli_real_escape_string($con, $_POST['name2']);
-    $date = mysqli_real_escape_string($con, $_POST['date']);
-    $email = mysqli_real_escape_string($con, $_POST['email2']);
-    $office = mysqli_real_escape_string($con, $_POST['office']);
-    $assistance = mysqli_real_escape_string($con, $_POST['service']);
-    $CC1 = mysqli_real_escape_string($con, $_POST['CC1']);
-    $CC2 = mysqli_real_escape_string($con, $_POST['CC2']);
-    $CC3 = mysqli_real_escape_string($con, $_POST['CC3']);
-    $SQD0 = mysqli_real_escape_string($con, $_POST['SQD0']);
-    $SQD1 = mysqli_real_escape_string($con, $_POST['SQD1']);
-    $SQD2 = mysqli_real_escape_string($con, $_POST['SQD2']);
-    $SQD3 = mysqli_real_escape_string($con, $_POST['SQD3']);
-    $SQD4 = mysqli_real_escape_string($con, $_POST['SQD4']);
-    $SQD5 = mysqli_real_escape_string($con, $_POST['SQD5']);
-    $SQD6 = mysqli_real_escape_string($con, $_POST['SQD6']);
-    $SQD7 = mysqli_real_escape_string($con, $_POST['SQD7']);
-    $SQD8 = mysqli_real_escape_string($con, $_POST['SQD8']);
+    
+    //   $name = mysqli_real_escape_string($con, $_POST['name2']);
+        $date = mysqli_real_escape_string($con, $_POST['date']);
+        $email = mysqli_real_escape_string($con, $_POST['email2']);
+    // $office = mysqli_real_escape_string($con, $_POST['office']);
+        $assistance = mysqli_real_escape_string($con, $_POST['service']);
+        $CC1 = mysqli_real_escape_string($con, $_POST['CC1']);
+        $CC2 = mysqli_real_escape_string($con, $_POST['CC2']);
+        $CC3 = mysqli_real_escape_string($con, $_POST['CC3']);
+        $SQD0 = mysqli_real_escape_string($con, $_POST['SQD0']);
+        $SQD1 = mysqli_real_escape_string($con, $_POST['SQD1']);
+        $SQD2 = mysqli_real_escape_string($con, $_POST['SQD2']);
+        $SQD3 = mysqli_real_escape_string($con, $_POST['SQD3']);
+        $SQD4 = mysqli_real_escape_string($con, $_POST['SQD4']);
+        $SQD5 = mysqli_real_escape_string($con, $_POST['SQD5']);
+        $SQD6 = mysqli_real_escape_string($con, $_POST['SQD6']);
+        $SQD7 = mysqli_real_escape_string($con, $_POST['SQD7']);
+        $SQD8 = mysqli_real_escape_string($con, $_POST['SQD8']);
 
-    $comments = mysqli_real_escape_string($con, $_POST['comments']);
+        $comments = mysqli_real_escape_string($con, $_POST['comments']);
+       
 
+        // Check if there's an existing record with the same beneficiary ID, assistance, and within the last 2 months
+        $two_months_ago = date('Y-m-d', strtotime('-2 months', strtotime($date)));
+    
+        $query = "SELECT * FROM feedback WHERE Beneficiary_ID = '$Ben_Id' AND ServiceType = '$assistance' AND Date > '$two_months_ago'";
+        $result = mysqli_query($con, $query);
+    
+        if (mysqli_num_rows($result) > 0) {
+         
+            echo '<body>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script>
+            swal("You have already submitted feedback. Thank you for your input!", "", "info");
+            </script>';
+            echo '<script>
+            setTimeout(function(){
+                window.location.href="usershomepage.php";
+            }, 3000);
+            </script>
+            </body>';
+        } else {
   
-        $query = "INSERT INTO feedback ( Date, Email, Office, ServiceType, CC1, CC2, CC3,SQD0,SQD1,SQD2,SQD3,SQD4,SQD5,SQD6,SQD7,SQD8, Comments) 
-                  VALUES ( '$date', '$email', '$office', '$assistance', '$CC1', '$CC2', '$CC3', '$SQD0','$SQD1','$SQD2','$SQD3','$SQD4','$SQD5','$SQD6','$SQD7','$SQD8', '$comments')";
+        $query = "INSERT INTO feedback (Beneficiary_ID, Date, Email, Office, ServiceType, CC1, CC2, CC3,SQD0,SQD1,SQD2,SQD3,SQD4,SQD5,SQD6,SQD7,SQD8, Comments) 
+                  VALUES ( '$Ben_Id','$date', '$email', '$branch', '$assistance', '$CC1', '$CC2', '$CC3', '$SQD0','$SQD1','$SQD2','$SQD3','$SQD4','$SQD5','$SQD6','$SQD7','$SQD8', '$comments')";
 
         if (mysqli_query($con, $query)) {
             echo '<body>
@@ -64,7 +92,7 @@ if (isset($_POST['submit'])) {
             echo "ERROR: Could not execute $query. " . mysqli_error($con);
         }
     }
-
+}
 ?>
 
 <!DOCTYPE html>
@@ -81,6 +109,31 @@ if (isset($_POST['submit'])) {
    
 </head>
 <body>
+    <style>   
+    
+
+    /* Apply styles only to elements with class .smiley-radio */
+  .smiley-radio + label {
+    border: 0 solid transparent;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+
+  /* When the radio button with class .smiley-radio is checked, style the associated label */
+  .smiley-radio:checked + label {
+    border: 3px solid #00f; /* Blue border for selected face */
+    box-shadow: 0 0 3px #00f; /* Blue glow effect */
+    border-radius: 50%; /* Rounded border */
+  }
+
+  /* Optional: add hover effect */
+   .smiley-radio + label:hover {
+    border: 0px solid #999; /* Gray border on hover */
+  }
+  
+  
+
+        </style>
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             var today = new Date().toISOString().split('T')[0];
@@ -202,56 +255,30 @@ if(isset($_SESSION['valid'])): ?>
                       <input type="hidden"  name="id" id="id" autocomplete="off" value="<?php echo isset($res_Id) ? $res_Id:''; ?>">                  
                    
                   
-                     <input type="hidden"   name="usercity" id="usercity" autocomplete="off" value="<?php echo isset($res_City) ? $res_City:''; ?>">                  
-                     <input type="hidden"   name="service" id="service" autocomplete="off" value="<?php echo isset($serviceType) ? $serviceType:''; ?>">                  
+                    <!-- <input type="hidden"   name="usercity" id="usercity" autocomplete="off" value="<?php echo isset($res_City) ? $res_City:''; ?>">-->                  
+                     <input type="hidden"   name="service" id="service" autocomplete="off" value="<?php echo isset($AssistanceType) ? $AssistanceType:''; ?>">                  
+                     <input type="hidden"   name="office" id="office" autocomplete="off" value="<?php echo isset($branch) ? $branch:''; ?>">                  
                    
-                
-       
-
-  
-   <!--
-                     <div class="dropdown" style="margin-top: 10px;">
-                       <label style="margin-bottom: 5px; margin-left: 35px; font-size: 15px;"><strong>Office Visited/Assistance Acquired (Opisinang Pinuntahan/Pinagkuhanan ng Tulong)</strong></label><br>
-    <select name="office" style="margin-left:40px; height:40px; width:400px" required>
-      <option value="">Select Here</option>
-      <option value="1BM - Balanga">1BM - Balanga</option>
-      <option value="1BM - Dinalupihan">1BM - Dinalupihan</option>
-      <option value="1BM - Hermosa">1BM - Hermosa</option>
-      <option value="1BM - Mariveles">1BM - Mariveles</option>
-    </select>
-      <label style="margin-bottom: 5px; margin-left: 35px; font-size: 15px;">
-        <strong>Office Visited/Assistance Acquired (Opisinang Pinuntahan/Pinagkuhanan ng Tulong)</strong>
-    </label><br>
-     </div><br>
-       <div class="dropdown">
-    <label style="margin-bottom: 5px; margin-left: 35px; font-size: 15px;"><strong>Type of Assistance. Choose one. (Uri ng Tulong. Pumili ng isa.)</strong></label><br>
-    <select name="assistance" style="margin-left:40px; height:40px; width:400px" required>
-      <option value="">Select Here</option>
-      <option value="Financial Assistance/Burial Assistance">Financial Assistance/Burial Assistance</option>
-      <option value="Medicines Assistance">Medicines Assistance</option>
-      <option value="Hospital Bills Assistance">Hospital Bills Assistance</option>
-      <option value="Radiation and Chemotherapy">Radiation and Chemotherapy</option>
-      <option value="Dialysis Patients">Dialysis Patients</option>
-    </select>
-  </div><br>-->
+                  
+     
     <div class="office-info" style="margin-top: 10px;">
   
     <input type="hidden" id="office" name="office" style="margin-left:40px; font-size: 15px; font-weight: bold;">
 
 </div><br>
-<label style="margin-bottom: 5px;  margin-left: 35px; font-size: 20px; margin-top: 20px;">
+<label style="margin-bottom: 5px;  margin-left: 35px; font-size: 20px; margin-top: -12px;">
         <strong>INSTRUCTIONS: Choose your answer to the following questions about the Citizen's Charter (CC), It is an official document that contains the services of a government agency/office, the required documents can be found here , corresponding fees, and total processing time</strong>
     </label> <br><br>
 
 
     <div class="radio-group">
-    <label style="margin-bottom: 5px; margin-left: 65px; font-size: 16px; margin-top: 20px;">
+    <label style="margin-bottom: 5px; margin-left: 65px; font-size: 16px; margin-top: -10px;">
     (<em>CC1</em>)  <span style="text-decoration: underline;">Alin sa mga sumusunod ang naglalarawan sa iyong kaalaman sa CC (Citizen's Charter)?</span>
     </label> <br>
 
-    <div style="margin-left: 90px;">
-        <input type="radio" id="alam" name="CC1" value="Alam ko ang CC at nakita ko ito sa napuntahang opisina">
-        <label for="alam">1. Alam ko ang CC at nakita ko ito sa napuntahang opisina</label><br>
+    <div style="margin-left: 90px; border:none;box-shadow:none; ">
+        <input type="radio" id="alam" name="CC1" style="border:none;box-shadow:none;" value="Alam ko ang CC at nakita ko ito sa napuntahang opisina">
+        <label for="alam" style="border:none; ">1. Alam ko ang CC at nakita ko ito sa napuntahang opisina</label><br>
 
         <input type="radio" id="wala" name="CC1" value="Alam ko ang CC pero hindi ko ito nakita sa napuntahang opisina">
         <label for="wala">2. Alam ko ang CC pero hindi ko ito nakita sa napuntahang opisina</label><br>
@@ -265,34 +292,34 @@ if(isset($_SESSION['valid'])): ?>
     </div>
 </div>
 <div class="radio-group">
-    <label style="margin-bottom: 5px;  margin-left: 65px; font-size: 16px; margin-top: 20px;">
+    <label style="margin-bottom: 5px;  margin-left: 65px; font-size: 16px; margin-top: -10px;">
     (<em>CC2</em>) <span style="text-decoration: underline;">Kung alam ang CC</span> (<em>Pinili ang opsyon 1-3 sa CC1</em>)<span style="text-decoration: underline;">, masasabi mo ba na ang CC nang napuntahang opisina ay...</span>
     
     </label> <br>
 
     <div style="margin-left: 90px;">
-        <input type="radio" id="alam" name="CC2" value="Madaling makita">
-        <label for="alam">1. Madaling makita</label><br>
+        <input type="radio" id="alam1" name="CC2" value="Madaling makita">
+        <label for="alam1">1. Madaling makita</label><br>
 
-        <input type="radio" id="wala" name="CC2" value="Medyo madaling makita">
-        <label for="wala">2. Medyo madaling makita</label><br>
+        <input type="radio" id="wala1" name="CC2" value="Medyo madaling makita">
+        <label for="wala1">2. Medyo madaling makita</label><br>
 
-        <input type="radio" id="nalaman" name="CC2" value="Mahirap makita">
-        <label for="nalaman">3. Mahirap makita</label><br>
+        <input type="radio" id="nalaman1" name="CC2" value="Mahirap makita">
+        <label for="nalaman1">3. Mahirap makita</label><br>
 
-        <input type="radio" id="hindialam" name="CC2" value="Hindi makita">
-        <label for="hindialam">4. Hindi makita</label><br>
+        <input type="radio" id="hindialam1" name="CC2" value="Hindi makita">
+        <label for="hindialam1">4. Hindi makita</label><br>
 
-        <input type="radio" id="na" name="CC2" value="N/A">
-        <label for="na">5. N/A</label><br><br>
+        <input type="radio" id="na1" name="CC2" value="N/A">
+        <label for="na1">5. N/A</label><br><br>
     </div>
 </div>
-<div class="radio-group">
-    <label style="margin-bottom: 5px;  margin-left: 65px; font-size: 16px; margin-top: 20px;">
+<div class="radio-group1">
+    <label style="margin-bottom: 5px;  margin-left: 65px; font-size: 16px; margin-top: -10px;">
     (<em>CC3</em>) <span style="text-decoration: underline;">Kung alam ang CC</span> (<em>Pinili ang opsyon 1-3 sa CC1</em>)<span style="text-decoration: underline;">,  gaano nakatulong ang CC sa transaksyon mo?    </span>
     </label> <br>
 
-    <div style="margin-left: 90px;">
+    <div class="help" style="margin-left: 90px;">
         <input type="radio" id="c1" name="CC3" value="Sobrang nakatulong">
         <label for="c1">1. Sobrang nakatulong</label><br>
 
@@ -311,27 +338,170 @@ if(isset($_SESSION['valid'])): ?>
     (<em>PANUTO:</em>) <span style="text-decoration: underline;">Para sa SQD 0-8, piliin ang pinakaangkop sa iyong sagot  </span>
     </label> <br>
 
-  <h1 style="font-size: 15px; margin-top: 35px; font-size: 15px; margin-left: 35px;"><strong>Please rate the performance of the office. (Mangyaring magbigay ng marka sa tanggapan.)</strong></h1><br>
-  <div class="star-rating" style="margin-left: 35px;">
-    <input type="radio" name="CC3" id="office_star1" value="5"><label for="office_star1"></label>
-    <input type="radio" name="CC3" id="office_star2" value="4"><label for="office_star2"></label>
-    <input type="radio" name="CC3" id="office_star3" value="3"><label for="office_star3"></label>
-    <input type="radio" name="CC3" id="office_star4" value="2"><label for="office_star4"></label>
-    <input type="radio" name="CC3" id="office_star5" value="1"><label for="office_star5"></label>
+  <h1 style="font-size: 15px; margin-top: 5px; font-size: 15px; margin-left: 35px;"><strong>SQDO. Nasiyahan ako sa serbisyo na aking natanggap sa napuntahan na tanggapan.</strong></h1><br>
+  <div class="emotion" style="margin-left: 55px;margin-top: -15px;margin-bottom: -15px;">
+  <input type="radio" name="SQD0" id="SAD11" class="smiley-radio" style="display: none;" value="Dismayado" />
+  <label for="SAD11" style="background-image: url('images/1.png'); width: 55px; height: 55px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD0" id="SAD22" class="smiley-radio" style="display: none;" value="Malungkot"/>
+  <label for="SAD22" style="background-image: url('images/2.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD0" id="NEUTRAL1" class="smiley-radio" style="display: none;" value="Neutral"/>
+  <label for="NEUTRAL1" style="background-image: url('images/3.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD0" id="HAPPY11" class="smiley-radio" style="display: none;" value="Masaya" />
+  <label for="HAPPY11" style="background-image: url('images/4.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD0" id="HAPPY22" class="smiley-radio" style="display: none;" value="Sobrang saya"/>
+  <label for="HAPPY22" style="background-image: url('images/5.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
   </div>
 
 
-  <h1 style="font-size: 15px; margin-top: 35px; font-size: 15px; margin-left: 35px;"><strong>Please rate the performance of the office. (Mangyaring magbigay ng marka sa tanggapan.)</strong></h1><br>
-  <div class="emotion" style="margin-left: 35px;">
-  <input type="radio" name="emotion" id="happy" />
-<label for="happy" style="background-image: url('images/1.png'); width: 40px; height: 40px; display: inline-block; background-size: cover; cursor: pointer;"></label>
+  <h1 style="font-size: 15px; margin-top: 25px; font-size: 15px; margin-left: 35px;"><strong>SQD1. Makatwiran ang oras na aking ginugol para sa pagproseso ng aking transaksyon.</strong></h1><br>
+  <div class="emotion" style="margin-left: 55px;margin-top: -15px;margin-bottom: -15px;">
+  <input type="radio" name="SQD1" id="SAD12" class="smiley-radio" style="display: none;" value="Dismayado" />
+  <label for="SAD12" style="background-image: url('images/1.png'); width: 55px; height: 55px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
 
-        <label for="happy"><img src="images/3.png" style="width: 40px; height: 40px;" /></label>
-        <br>
-        
+  <input type="radio" name="SQD1" id="SAD23" class="smiley-radio" style="display: none;" value="Malungkot"/>
+  <label for="SAD23" style="background-image: url('images/2.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD1" id="NEUTRAL12" class="smiley-radio" style="display: none;" value="Neutral"/>
+  <label for="NEUTRAL12" style="background-image: url('images/3.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD1" id="HAPPY12" class="smiley-radio" style="display: none;"  value="Masaya" />
+  <label for="HAPPY12" style="background-image: url('images/4.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD1" id="HAPPY23" class="smiley-radio" style="display: none;" value="Sobrang saya"/>
+  <label for="HAPPY23" style="background-image: url('images/5.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
 </div>
 
+<h1 style="font-size: 15px; margin-top: 25px; font-size: 15px; margin-left: 35px;"><strong>SQD2. Ang opisina ay sumusunod sa mga kinakailangang dokumento at mga hakbang batay sa impormasyong ibinigay.</strong></h1><br>
+  <div class="emotion" style="margin-left: 55px;margin-top: -15px;margin-bottom: -15px;">
+  <input type="radio" name="SQD2" id="SAD123" class="smiley-radio" style="display: none;" value="Dismayado"/>
+  <label for="SAD123" style="background-image: url('images/1.png'); width: 55px; height: 55px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD2" id="SAD234" class="smiley-radio" style="display: none;" value="Malungkot" />
+  <label for="SAD234" style="background-image: url('images/2.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD2" id="NEUTRAL123" class="smiley-radio" style="display: none;" value="Neutral"/>
+  <label for="NEUTRAL123" style="background-image: url('images/3.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD2" id="HAPPY123" class="smiley-radio" style="display: none;"  value="Masaya" />
+  <label for="HAPPY123" style="background-image: url('images/4.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD2" id="HAPPY234" class="smiley-radio" style="display: none;" value="Sobrang saya" />
+  <label for="HAPPY234" style="background-image: url('images/5.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+</div>
+
+<h1 style="font-size: 15px; margin-top: 25px; font-size: 15px; margin-left: 35px;"><strong>SQD3. Ang mga hakbang sa pagproseso. kasama na ang pagbayad ay madali at simple lamang.</strong></h1><br>
+  <div class="emotion" style="margin-left: 55px;margin-top: -15px;margin-bottom: -15px;">
+  <input type="radio" name="SQD3" id="SAD1234" class="smiley-radio" style="display: none;"  value="Dismayado" />
+  <label for="SAD1234" style="background-image: url('images/1.png'); width: 55px; height: 55px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD3" id="SAD2345" class="smiley-radio" style="display: none;"  value="Malungkot"/>
+  <label for="SAD2345" style="background-image: url('images/2.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD3" id="NEUTRAL1234" class="smiley-radio" style="display: none;" value="Neutral"/>
+  <label for="NEUTRAL1234" style="background-image: url('images/3.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD3" id="HAPPY1234" class="smiley-radio" style="display: none;"  value="Masaya" />
+  <label for="HAPPY1234" style="background-image: url('images/4.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD3" id="HAPPY2345" class="smiley-radio" style="display: none;" value="Sobrang saya"/>
+  <label for="HAPPY2345" style="background-image: url('images/5.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+</div>
+
+<h1 style="font-size: 15px; margin-top: 25px; font-size: 15px; margin-left: 35px;"><strong>SQD4. Mabilis at madali akong nakahanap ng impormasyon tungkol sa aking transaksyon mula sa opisina o sa website nito.</strong></h1><br>
+  <div class="emotion" style="margin-left: 55px;margin-top: -15px;margin-bottom: -15px;">
+  <input type="radio" name="SQD4" id="SAD12345" class="smiley-radio" style="display: none;" value="Dismayado" />
+  <label for="SAD12345" style="background-image: url('images/1.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD4" id="SAD23456" class="smiley-radio" style="display: none;"value="Malungkot" />
+  <label for="SAD23456" style="background-image: url('images/2.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD4" id="NEUTRAL12345" class="smiley-radio" style="display: none;" value="Neutral"/>
+  <label for="NEUTRAL12345" style="background-image: url('images/3.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD4" id="HAPPY12345" class="smiley-radio" style="display: none;"  value="Masaya"/>
+  <label for="HAPPY12345" style="background-image: url('images/4.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD4" id="HAPPY23456" class="smiley-radio" style="display: none;" value="Sobrang saya"/>
+  <label for="HAPPY23456" style="background-image: url('images/5.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+</div>
+
+<h1 style="font-size: 15px; margin-top: 25px; font-size: 15px; margin-left: 35px;"><strong>SQD5. Nagbayad ako ng makatwirang halaga para sa aking transaksyon. (Kung ang sebisyo ay ibinigay ng libre. Piliin ang N/A.)</strong></h1><br>
+  <div class="emotion" style="margin-left: 55px;margin-top: -15px;margin-bottom: -15px;">
+  <input type="radio" name="SQD5" id="SAD123456" class="smiley-radio" style="display: none;" value="Dismayado"/>
+  <label for="SAD123456" style="background-image: url('images/1.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD5" id="SAD234567" class="smiley-radio" style="display: none;" value="Malungkot"/>
+  <label for="SAD234567" style="background-image: url('images/2.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD5" id="NEUTRAL123456" class="smiley-radio" style="display: none;" value="Neutral" />
+  <label for="NEUTRAL123456" style="background-image: url('images/3.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD5" id="HAPPY123456" class="smiley-radio" style="display: none;"  value="Masaya"/>
+  <label for="HAPPY123456" style="background-image: url('images/4.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD5" id="HAPPY234567" class="smiley-radio" style="display: none;" value="Sobrang saya" />
+  <label for="HAPPY234567" style="background-image: url('images/5.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+</div>
+
+<h1 style="font-size: 15px; margin-top: 25px; font-size: 15px; margin-left: 35px;"><strong>SQD6. Pakiramdam ko ay patas ang opisina sa lahat. o walang palakasan", sa aking transaksyon</strong></h1><br>
+  <div class="emotion" style="margin-left: 55px;margin-top: -15px;margin-bottom: -15px;">
+  <input type="radio" name="SQD6" id="SAD1234567" class="smiley-radio" style="display: none;" value="Dismayado"/>
+  <label for="SAD1234567" style="background-image: url('images/1.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD6" id="SAD2345678" class="smiley-radio" style="display: none;" value="Malungkot" />
+  <label for="SAD2345678" style="background-image: url('images/2.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD6" id="NEUTRAL1234567" class="smiley-radio" style="display: none;" value="Neutral" />
+  <label for="NEUTRAL1234567" style="background-image: url('images/3.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD6" id="HAPPY1234567" class="smiley-radio" style="display: none;"   value="Masaya"/>
+  <label for="HAPPY1234567" style="background-image: url('images/4.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD6" id="HAPPY2345678" class="smiley-radio" style="display: none;" value="Sobrang saya" />
+  <label for="HAPPY2345678" style="background-image: url('images/5.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+</div>
+
+<h1 style="font-size: 15px; margin-top: 25px; font-size: 15px; margin-left: 35px;"><strong>SQD7. Magalang akong trinato ng mga tauhan, at (kung sakali ako ay humingi ng tulong) alam ko na sila ay handang tumulong sa akin.</strong></h1><br>
+  <div class="emotion" style="margin-left: 55px;margin-top: -15px;margin-bottom: -15px;">
+  <input type="radio" name="SQD7" id="SAD12345678" class="smiley-radio" style="display: none;" value="Dismayado"/>
+  <label for="SAD12345678" style="background-image: url('images/1.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD7" id="SAD234567890" class="smiley-radio" style="display: none;"  value="Malungkot"/>
+  <label for="SAD234567890" style="background-image: url('images/2.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD7" id="NEUTRAL12345678"class="smiley-radio"  style="display: none;" value="Neutral" />
+  <label for="NEUTRAL12345678" style="background-image: url('images/3.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD7" id="HAPPY12345678" class="smiley-radio"  style="display: none;"  value="Masaya" />
+  <label for="HAPPY12345678" style="background-image: url('images/4.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD7" id="HAPPY23456789" class="smiley-radio" style="display: none;"  value="Sobrang saya"/>
+  <label for="HAPPY23456789" style="background-image: url('images/5.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+</div>
+
+<h1 style="font-size: 15px; margin-top: 25px; font-size: 15px; margin-left: 35px;"><strong>SQD8. Nakuha ko ang kinakallangan ko mula sa tanggapan ng gobyemo. kung tinanggihan man. Ito ay sapat na ipinaliwanag sa akin.</strong></h1><br>
+  <div class="emotion" style="margin-left: 55px;margin-top: -15px;margin-bottom: -15px;">
+  <input type="radio" name="SQD8" id="SAD123456789" class="smiley-radio" style="display: none;"value="Dismayado" />
+  <label for="SAD123456789" style="background-image: url('images/1.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD8" id="SAD2345678901" class="smiley-radio" style="display: none;" value="Malungkot"/>
+  <label for="SAD2345678901" style="background-image: url('images/2.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD8" id="NEUTRAL123456789" class="smiley-radio" style="display: none;" value="Neutral"/>
+  <label for="NEUTRAL123456789" style="background-image: url('images/3.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD8" id="HAPPY123456789" class="smiley-radio" style="display: none;"  value="Masaya"/>
+  <label for="HAPPY123456789" style="background-image: url('images/4.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD8" id="HAPPY234567890" class="smiley-radio" style="display: none;" value="Sobrang saya" />
+  <label for="HAPPY234567890" style="background-image: url('images/5.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+</div>
 <br>
+
 
     
   <div class="input-box">
@@ -350,7 +520,7 @@ let subMenu= document.getElementById("subMenu");
         function toggleMenu(){
             subMenu.classList.toggle("open-menu");
    }
-   
+   /*
    const userCityMunicipality =document.getElementById('usercity').value;
 
 const officeText = document.getElementById('office');
@@ -433,7 +603,7 @@ switch(service) {
 
 // Display the office in the paragraph
 serviceText.value =serviceValue;
-/*function toggleAnonymous() {
+function toggleAnonymous() {
         const nameInput = document.getElementById('name');
         const nameInput2 = document.getElementById('name2');
         const anonymousCheck = document.getElementById('anonymousCheck');

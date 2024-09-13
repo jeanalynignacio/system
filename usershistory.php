@@ -51,7 +51,7 @@ if ($result = mysqli_fetch_assoc($Sql2)) {
 
 }
 // Query to check if the beneficiary exists
-$checkBeneficiaryQuery = "SELECT COUNT(*) as count FROM transaction WHERE Beneficiary_Id = '$BeneID'";
+$checkBeneficiaryQuery = "SELECT COUNT(*) as count FROM history WHERE Beneficiary_Id = '$BeneID'";
 $beneficiaryResult = $con->query($checkBeneficiaryQuery);
 $beneficiaryCount = $beneficiaryResult->fetch_assoc()['count'];
 
@@ -59,11 +59,9 @@ $transactionResult = [];
 if ($beneficiaryCount > 0) {
     // Fetch paginated beneficiaries
     $sql = "
-        SELECT b.*, t.transaction_time, t.Status, t.Given_Sched, t.Given_Time
-        FROM beneficiary b
-        INNER JOIN transaction t ON b.Beneficiary_Id = t.Beneficiary_Id
-        WHERE b.Representative_ID = '$id'
-        ORDER BY t.Date ASC, t.transaction_time ASC
+        SELECT * FROM history
+        WHERE Beneficiary_ID = '$BeneID'
+        ORDER BY ReceivedDate ASC, ReceivedTime ASC
         LIMIT $records_per_page OFFSET $offset
     ";
     $transactionResult = $con->query($sql);
@@ -77,8 +75,8 @@ if ($beneficiaryCount > 0) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Status</title>
-<link rel="stylesheet" href="status.css"/>
+<title>History</title>
+<link rel="stylesheet" href="usershistory.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
@@ -165,28 +163,26 @@ if ($beneficiaryCount > 0) {
   </nav>
 
     
- 
-        
-        <div class="table--container" style="width:1500px; margin-top:50px;">
-         
-<form action="usershistory.php" method="POST" >
-    <input type="hidden" name="userId" value="<?php echo $res_Id; ?>">
-    <button type="submit" value="History" style="background-color: transparent; border: none;">
-    
-    <span style="color: blue; font-size: 23px; margin-left:1700%;  border: none;">History</span>
+              
 
         
-    </button>
-    
+        <div class="table--container" style="width:1500px; margin-top:-10px;">
+        <form action="feedback.php" method="POST" >
+    <input type="hidden" name="userId" value="<?php echo $res_Id; ?>">
+    <button type="submit" style="width: 250px; height: 50px; margin-top:20px;margin-bottom: -30px; background-color: transparent; border: none;" value="Feedback">
+    <span style="color: rgb(42, 121, 35); font-size: 20px; border: none;">Give us Feedback</span>
+</button>
+
 </form>
+
             <table>
                 <thead>
                     <tr>
-                        <th>Application Date:</th>
-                        <th>Application Time:</th>
-                        <th>Status:</th>
-                        <th>Given Date :</th>
-                        <th>Given Time:</th>
+                    <th>Assistance Type:</th>
+                    <th>Received Assistance:</th>
+                        <th>Received Date:</th>
+                        <th>Received Time:</th>
+                        
                         
                 
                     </tr>
@@ -194,14 +190,14 @@ if ($beneficiaryCount > 0) {
                 <tbody>
                 <?php if ($transactionResult): ?>
             <?php while ($row = $transactionResult->fetch_assoc()): ?>
-                <?php $time = date("h:i A", strtotime($row["transaction_time"])); ?>
-                <?php $time2 = date("h:i A", strtotime($row["Given_Time"])); ?>
+                <?php $time = date("h:i A", strtotime($row["ReceivedTime"])); ?>
+              
                 <tr>
-                    <td><?= htmlspecialchars($row['Date']); ?></td>
+                <td><?= htmlspecialchars($row['AssistanceType']); ?></td>
+                <td><?= htmlspecialchars($row['ReceivedAssistance']) . ' - ' . htmlspecialchars($row['Amount']); ?></td>
+                   <td><?= htmlspecialchars($row['ReceivedDate']); ?></td>
                     <td><?= htmlspecialchars($time); ?></td>
-                    <td><?= htmlspecialchars($row['Status']); ?></td>
-                    <td><?= htmlspecialchars($row['Given_Sched']); ?></td>
-                    <td><?= htmlspecialchars($time2); ?></td>
+                  
                     
                 </tr>
                 <?php if ($row['Status'] === 'For Validation'): ?>

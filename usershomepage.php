@@ -122,6 +122,7 @@ if($result = mysqli_fetch_assoc($query)){
         
     </button>
 </form>
+
    
         <a href="logout.php" class="sub-menu-link">
                 <img src="images/logout.png">
