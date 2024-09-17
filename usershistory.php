@@ -69,6 +69,8 @@ if ($beneficiaryCount > 0) {
         die("Invalid query: " . $con->error);
     }
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -165,17 +167,32 @@ if ($beneficiaryCount > 0) {
     
               
 
-        
-        <div class="table--container" style="width:1500px; margin-top:-10px;">
-        <form action="feedback.php" method="POST" >
-    <input type="hidden" name="userId" value="<?php echo $res_Id; ?>">
-    <button type="submit" style="width: 250px; height: 50px; margin-top:20px;margin-bottom: -30px; background-color: transparent; border: none;" value="Feedback">
-    <span style="color: rgb(42, 121, 35); font-size: 20px; border: none;">Give us Feedback</span>
-</button>
+  <?php
+  $date = date('Y-m-d');
 
-</form>
+  // Calculate the date from two months ago
+  $two_months_ago = date('Y-m-d', strtotime('-2 months', strtotime($date)));
+  
+  // OR simply use:
+  $two_months_ago = date('Y-m-d', strtotime('-2 months'));
+$query = "SELECT * FROM history WHERE Beneficiary_ID = '$BeneID'  AND ReceivedDate > '$two_months_ago'";
 
-            <table>
+// Execute the query
+$feedbackResult = $con->query($query);
+
+// Check if the query returned any rows
+if ($feedbackResult && $feedbackResult->num_rows > 0): ?>
+    <div class="table--container" style="width:1500px; margin-top:-20px;"> 
+        <form action="feedback.php" method="POST">
+            <input type="hidden" name="userId" value="<?php echo $res_Id; ?>">
+            <button type="submit" style="width: 250px; height: 40px; margin-top:20px; margin-bottom: -60px; background-color: transparent; border: none;" value="Feedback">
+                <span style="color: rgb(42, 121, 35); font-size: 20px; border: none;">Give us Feedback</span>
+            </button>
+        </form>
+    </div>
+<?php endif; ?>
+
+            <table style="margin-top:10px; width:1500px;">
                 <thead>
                     <tr>
                     <th>Assistance Type:</th>
@@ -183,8 +200,6 @@ if ($beneficiaryCount > 0) {
                         <th>Received Date:</th>
                         <th>Received Time:</th>
                         
-                        
-                
                     </tr>
                 </thead>
                 <tbody>
@@ -194,30 +209,27 @@ if ($beneficiaryCount > 0) {
               
                 <tr>
                 <td><?= htmlspecialchars($row['AssistanceType']); ?></td>
-                <td><?= htmlspecialchars($row['ReceivedAssistance']) . ' - ' . htmlspecialchars($row['Amount']); ?></td>
-                   <td><?= htmlspecialchars($row['ReceivedDate']); ?></td>
-                    <td><?= htmlspecialchars($time); ?></td>
+                <td>  <?= htmlspecialchars($row['ReceivedAssistance']); ?>
+                  <?php if (!is_null($row['Amount'])): ?>
+               - ₱<?= htmlspecialchars($row['Amount']); ?>
+               <?php endif; ?></td>
+                  <td> <?php 
+               $receivedDate = new DateTime($row['ReceivedDate']);
+               echo $receivedDate->format('m/d/Y'); ?>
+               </td>
+                   <td><?= htmlspecialchars($time); ?></td>
                   
                     
                 </tr>
-                <?php if ($row['Status'] === 'For Validation'): ?>
-                  <form action="requestresched.php" method="POST" style="margin-left:40px;" >
-    <input type="hidden" name="userId" value="<?php echo $res_Id; ?>">
-    <button type="submit" style=" margin-bottom:20px; margin-left:1100px;" class="btn-edit-profile" value="Request for Re-Schedule" >
-    Request for Re-Schedule
-        
-    </button>
-</form>
-                <?php endif; ?>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <tr>
-                <td colspan="5">No transactions found</td>
-            </tr>
-        <?php endif; ?>
-                </tbody>
-            </table>
-      
+             
+                <?php endwhile; ?>
+    <?php else: ?>
+        <tr>
+            <td colspan="5">No transaction history found</td>
+        </tr>
+    <?php endif; ?>
+    </tbody>
+</table>
     
         
 <div>
