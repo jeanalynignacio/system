@@ -1205,7 +1205,7 @@ t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
                     <span id="calendar" style="color:white; margin-top:10px;"><?php echo $record['Date']; ?></span>
                 </div>
                 <div class="input-box">
-                <input disabled name="f" id="dt"  style="color:#f5ca3b;background-color: transparent;border: none;outline: none; font-size:15px;margin-top:15px;" type = "hidden" required value = "Date Validated" > 
+                <input disabled name="f" id="dt3"  style="color:#f5ca3b;background-color: transparent;border: none;outline: none; font-size:15px;margin-top:15px;" type = "hidden" required value = "Date Validated" > 
               
                 <input disabled name="f" id="dt2" type="hidden" style="background-color: transparent;border: none;outline: none; color:white;font-size:15px;margin-top:-9px;" required value="<?php echo $record['Given_Sched']; ?>">
                 </div>
@@ -1373,8 +1373,7 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
 
     if (status === 'For Schedule') {
         submitbtn.style.display = 'inline';
-        document.getElementById('dt').type = 'text';
-        document.getElementById('dt2').type = 'text';
+       
 if(stats === 'Pending due to Insufficient funds') {
         emailFormat.innerHTML = `
          <div style = "color: black; padding:15px; background:white; margin-top:20px;"> 
@@ -1394,6 +1393,8 @@ if(stats === 'Pending due to Insufficient funds') {
 
 
     }else{
+        document.getElementById('dt3').type = 'text';
+        document.getElementById('dt2').type = 'text';
         emailFormat.innerHTML = `
          <div style = "color: black; padding:15px; background:white; margin-top:20px;"> 
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>

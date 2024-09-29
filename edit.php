@@ -138,39 +138,39 @@
                     <input type="hidden" name="userId" value="<?php echo "{$res_ID['Id']}"; ?>">                  
                 <div class="field input">
                     <label for = "Lastname">Last Name</label>
-                    <input type="text" name="Lastname" id="Lastname"  autocomplete="off" value="<?php echo "{$res_ID['Lastname']}"; ?>"  required>                      
+                    <input type="text" name="Lastname" disabled id="Lastname"  autocomplete="off" value="<?php echo "{$res_ID['Lastname']}"; ?>"  required>                      
                 </div>
                 <div class="field input">
                     <label for = "Firstname">First Name</label>
-                    <input type="text" name="Firstname" id="Firstname" autocomplete="off"value="<?php echo "{$res_ID['Firstname']}"; ?>" required>                   
+                    <input type="text" name="Firstname" disabled id="Firstname" autocomplete="off"value="<?php echo "{$res_ID['Firstname']}"; ?>" required>                   
                 </div>
                 <div class="field input">
                     <label for = "Middlename">Middle Name</label>
-                    <input type="text" name="Middlename" id="Middlename" autocomplete="off" value="<?php echo "{$res_ID['Middlename']}"; ?>" required>                 
+                    <input type="text" name="Middlename" disabled id="Middlename" autocomplete="off" value="<?php echo "{$res_ID['Middlename']}"; ?>" required>                 
                 </div>
                 </div>
                 <div class = "column">
                 <div class="field input">
                     <label for = "Birthday">Birthday</label>
-                    <input type="date" name="Birthday" id="Birthday"value="<?php echo "{$res_ID['Birthday']}"; ?>" required> 
+                    <input type="date" name="Birthday" disabled id="Birthday"value="<?php echo "{$res_ID['Birthday']}"; ?>" required> 
                 </div>
                 <div class="field input">
                     <label for = "Contactnumber">Contact Number</label>
-                    <input type="text" name="Contactnumber" id="Contactnumber" autocomplete="off"value="<?php echo "{$res_ID['Contactnumber']}"; ?>" required>
+                    <input type="text" name="Contactnumber" disabled id="Contactnumber" autocomplete="off"value="<?php echo "{$res_ID['Contactnumber']}"; ?>" required>
                 </div>
                 <div class="field input">
                     <label for = "Province">Province</label>
-                    <input type="text" disabled name="Province" id="Province" value="Bataan"value="<?php echo "{$res_ID['Middlename']}"; ?>" required>
+                    <input type="text" disabled name="Province" disabled id="Province" value="Bataan"value="<?php echo "{$res_ID['Middlename']}"; ?>" required>
                 </div>
                 </div>
                 <div class = "column">
                 <div class="field input">
                     <label for = "HousenoStreet">House No /Street</label>
-                    <input type="text" name="HousenoStreet" id="HousenoStreet" autocomplete="off"value="<?php echo "{$res_ID['HousenoStreet']}"; ?>" required>  
+                    <input type="text" name="HousenoStreet" disabled id="HousenoStreet" autocomplete="off"value="<?php echo "{$res_ID['HousenoStreet']}"; ?>" required>  
                 </div>
                 <div class="field input">
                     <label for = "CityMunicipality">City/Municipality</label>
-                    <select id="cityDropdown"  name="CityMunicipality" onchange="populateBarangays()" required>
+                    <select id="cityDropdown" disabled name="CityMunicipality" class="transparent-dropdown" onchange="populateBarangays()" required>
                     
                     <?php
         
@@ -187,14 +187,12 @@
                 
                  ?>
                       </select>  
-                      
-                  
-            
+                     
                              
                 </div>
                 <div class="field input">
                     <label for="Barangay">Barangay</label>
-                    <select id="barangayDropdown" required>
+                    <select id="barangayDropdown" class="transparent-dropdown" disabled required>
                         
                     <?php
 
@@ -284,7 +282,7 @@
                 <div class = "column">
                 <div class="field input">
                     <label for = "Email">Email</label>
-                    <input type="text" name="Email" id="Email" autocomplete="off"value="<?php echo "{$res_ID['Email']}"; ?>" disabled>       
+                    <input type="text" name="Email" disabled id="Email" autocomplete="off"value="<?php echo "{$res_ID['Email']}"; ?>" disabled>       
                 </div>
                 <div class="field input">
                     <label for = "Username">Username</label>
@@ -292,7 +290,7 @@
                 </div>
                 <div class="field input">
                     <label for = "Password">Password</label>
-                    <input type="password" name="Password" id="Password" autocomplete="off"value="<?php echo "{$res_ID['Password']}"; ?>" required>
+                    <input type="password" disabled name="Password" id="Password" autocomplete="off"value="<?php echo "{$res_ID['Password']}"; ?>" required>
               <span class="fas fa-eye toggle-password" onclick="togglePasswordVisibility(this)"></span>
                     <p style="color:  rgb(146, 16, 16); font-size: 18px;"><?php echo $passError ?></p>                    
               
@@ -300,9 +298,11 @@
                 </div>
                 <input type="hidden" name="confirmed" id="confirmed" value="no">
                 <div class="button-row">
-                <input type="button" class="cancelbtn"  name="update" value="Cancel" id="cancel" onclick="cancelEdit()">
-          
-                <input type="submit" class="btn"  name="update" value="Update" onclick="showConfirmation()" required>
+                <input type="button" class="cancelbtn"  name="cancel" value="Back" id="cancel" onclick="cancelEdit()">
+               
+                <input type="button" id="enableFieldsButton" name="btn2" value="EDIT" onclick="enableFields()" style=" background-color:rgb(172, 158, 32);"/>
+        
+                <input type="submit" style="display:none;" name="update" value="Update" id="update" onclick="showConfirmation()" required class="hidden" >
                
             </form>
         </div>
@@ -311,9 +311,31 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
    
     <script>
+         function enableFields() {
+        document.getElementById("Lastname").disabled = false;
+        document.getElementById("Firstname").disabled = false;
+        document.getElementById("Middlename").disabled = false;
+        document.getElementById("Email").disabled = true;
+        document.getElementById("Birthday").disabled = false;
+        document.getElementById("Contactnumber").disabled = false;
+      
+        document.getElementById("HousenoStreet").disabled = false;
+        document.getElementById("cityDropdown").disabled = false;
+        document.getElementById("barangayDropdown").disabled = false;
+        document.getElementById("Password").disabled = false;
+    
+        document.getElementById("update").style.display = "inline"; // Correct way to set display
+        document.getElementById("enableFieldsButton").style.display = "none"; // Correct way to set display
+ 
+        
+    document.getElementById("update").classList.remove("hidden");
+        document.getElementById("cancel").classList.remove("hidden");
+    
+    
+    }
   function cancelEdit() {
-            // Redirect to the previous page <script type="text/javascript">
-            window.history.back();
+            window.location.href = "usershomepage.php";
+   
         }
 
     function validateForm() {

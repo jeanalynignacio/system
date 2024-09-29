@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<beneficiaries>
+  <beneficiary>
+    <Beneficiary_Id>66e9c293e895c</Beneficiary_Id>
+    <Lastname>Ignacio</Lastname>
+    <Firstname>Jeanalyn</Firstname>
+    <Middlename>fg</Middlename>
+    <Birthday>2000-10-29</Birthday>
+    <Contactnumber>09303456896</Contactnumber>
+    <Province>Bataan</Province>
+    <CityMunicipality>Balanga</CityMunicipality>
+    <Barangay>Cataning</Barangay>
+    <HousenoStreet>hfg</HousenoStreet>
+    <Email>jbignacio@bpsu.edu.ph</Email>
+    <time>01:49 PM</time>
+    <Date>2024-09-18</Date>
+  </beneficiary>
+  
+  <beneficiary>
+    <Beneficiary_Id>66ea6a5e062ec</Beneficiary_Id>
+    <Lastname>De Leon</Lastname>
+    <Firstname>Arlene</Firstname>
+    <Middlename>Beroy</Middlename>
+    <Birthday>2002-07-18</Birthday>
+    <Contactnumber>09633652895</Contactnumber>
+    <Province>Bataan</Province>
+    <CityMunicipality>Balanga</CityMunicipality>
+    <Barangay>Cupang Proper</Barangay>
+    <HousenoStreet>12 Rose</HousenoStreet>
+    <Email>abdeleon@bpsu.edu.ph</Email>
+    <time>03:46 PM</time>
+    <Date>2024-09-18</Date>
+  </beneficiary>
+  <beneficiary>
+    <Beneficiary_Id>66ea6d350c1cd</Beneficiary_Id>
+    <Lastname>Robles</Lastname>
+    <Firstname>Mariel</Firstname>
+    <Middlename>Rivera</Middlename>
+    <Birthday>2003-03-04</Birthday>
+    <Contactnumber>09303652869</Contactnumber>
+    <Province>Bataan</Province>
+    <CityMunicipality>Morong</CityMunicipality>
+    <Barangay>Nagbalayong</Barangay>
+    <HousenoStreet>11 Sampaguita</HousenoStreet>
+    <Email>mrrobles@bpsu.edu.ph</Email>
+    <time>02:03 PM</time>
+    <Date>2024-09-18</Date>
+  </beneficiary>
+  <beneficiary>
+    <Beneficiary_Id>66ea6e12aa906</Beneficiary_Id>
+    <Lastname>Gajesan</Lastname>
+    <Firstname>George Jensen</Firstname>
+    <Middlename>San Mateo</Middlename>
+    <Birthday>2002-04-08</Birthday>
+    <Contactnumber>09303568623</Contactnumber>
+    <Province>Bataan</Province>
+    <CityMunicipality>Orion</CityMunicipality>
+    <Barangay>San Vicente</Barangay>
+    <HousenoStreet>15 Manahan St.</HousenoStreet>
+    <Email>gjsmgajesan@bpsu.edu.ph</Email>
+    <time>02:07 PM</time>
+    <Date>2024-09-18</Date>
+  </beneficiary>
+</beneficiaries>

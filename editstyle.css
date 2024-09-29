@@ -22,6 +22,9 @@ body {
   border-radius: 8px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
+#cancel.hidden, #update.hidden {
+  display: none;
+}
 
 .container header {
   font-size: 3rem;
@@ -160,7 +163,7 @@ height: 35px;
 
 }
 .button-row input[type="submit"]:hover {
-  background: rgb(83, 202, 83);}
+  background: rgb(35, 121, 35);}
 
 .button-row input[type="button"]:hover {
   background-color: #b9b9b9; /* Change background color on hover */
@@ -235,7 +238,28 @@ height: 35px;
   width: 350px;
   font-size: 1rem;
   border: 1.5px solid black;
+
   border-radius: 8px;
+}
+.transparent-dropdown {
+  background-color: gray; /* Transparent background by default */
+  border: none; /* Remove the border if you want */
+  color: #000; /* Set text color for better visibility */
+}
+
+/* When dropdown is enabled */
+.transparent-dropdown:enabled {
+  background-color: white; /* White background when enabled */
+}
+
+/* Optional: Add styling for when the dropdown is focused */
+.transparent-dropdown:focus {
+  outline: none; /* Remove default outline */
+}
+
+/* When the dropdown is disabled */
+.transparent-dropdown:disabled {
+  background-color: rgba(224, 224, 224, 0.438); /* Ensure transparent background when disabled */
 }
 
 @media only screen and (max-width: 840px) {

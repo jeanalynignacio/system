@@ -1,162 +1,141 @@
 <?php
- session_start();
+session_start();
+include("php/config.php");
 
- include("php/config.php");
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\PHPMailer;
-
- if(!isset($_SESSION['valid'])){
-     header("Location: index.php");
-
- }
- if(isset($_POST['Back'])){
-     header("Location: usershomepage.php");
+if (!isset($_SESSION['valid'])) {
+    header("Location: index.php");
     exit;
 }
- if(isset($_SESSION['valid'])){
-  $id = $_SESSION['id'];
-            $query = mysqli_query($con, "SELECT * FROM users WHERE Id=$id");
 
-            while($result = mysqli_fetch_assoc($query)){
-                $res_Lname = $result['Lastname'];
-                $res_Fname = $result['Firstname'];
-                 $res_Id = $result['Id'];
-            }
+$id = $_SESSION['id'];
+$query = mysqli_query($con, "SELECT * FROM users WHERE Id='$id'");
+$user = mysqli_fetch_assoc($query);
 
-    }
+$SQL = "SELECT * FROM beneficiary WHERE Representative_ID='$id'";
+$result = mysqli_query($con, $SQL);
+$res_ID = mysqli_fetch_assoc($result);
+$lastError = "";
 
+// Handle the form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['beneficiaryId'])) {
+    $beneID = mysqli_real_escape_string($con, $_POST['beneficiaryId']);
+    $reason = mysqli_real_escape_string($con, $_POST['reason']);
     
-    
-  $SQL="SELECT * FROM beneficiary WHERE Representative_ID='$id'";
+    // Update transaction status
+    $query = "UPDATE transaction SET Status = 'Request for Re-schedule' WHERE Beneficiary_Id = '$beneID'";
 
-  $result=mysqli_query($con,$SQL);
-   $res_ID= $result->fetch_assoc();
-   $Errors = "";
-   $lastError = "";
-   if(isset($_POST['submit'])){
-   
-   $reason =$_POST['reason'];
-   $beneID =$_POST['ID'];
-$Email=$_POST['email'];
-
-
-$errors = array();
-if (empty($reason)) {
-  array_push($errors, "Reason should not be empty. Please provide a reason to proceed");
-} 
-else {
-    
-    
-   $query = "UPDATE transaction 
-   SET Status = 'Request for Re-schedule'
-   WHERE Beneficiary_Id = '$beneID'";
-   $result2 = mysqli_query($con, $query);
-   if ($result2) {
-    require 'phpmailer/src/Exception.php';
-    require 'phpmailer/src/PHPMailer.php';
-    require 'phpmailer/src/SMTP.php';
-   
-    $mail = new PHPMailer(true);
-
-    try {
-        //Server settings
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'bataanpgbsap@gmail.com'; // Your Gmail address
-        $mail->Password = 'cmpp hltn mxuc tcgl'; // Your Gmail password or App Password
-        $mail->SMTPSecure = 'PHPMailer::ENCRYPTION_STARTTLS';
-        $mail->Port = 587;
-    
-        //Recipients
-        $mail->setFrom($Email); 
-        $mail->addAddress ('bataanpgbsap@gmail.com', 'PGB-SAP');      
-        //Content
-        $mail->isHTML(true); // Set email format to HTML
-        $mail->Subject = 'Request for Re-Schedule';
-        $mail->Body =  "<html><body><p>$reason</p></body></html>";
-    
-       $mail->send();
-      echo '<body>
-      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-      <script>
-      swal("Email sent successfully!", "Please wait for an email notification to know if your request is accepted or not.", "success")
-      </script>';
-        echo '<script>
-       setTimeout(function(){
-          window.location.href="usershomepage.php";
-      } , 3000);
-    </script>
-    </body>';
-    
-  }catch (Exception $e) {
-    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-      
-    }
+    if (mysqli_query($con, $query)) {
+      echo json_encode(['success' => true]);
+      exit; // End the script after successful AJAX response
+  } else {
+      $lastError = "Failed to update status: " . mysqli_error($con);
+      echo json_encode(['success' => false, 'error' => $lastError]);
+      exit; // End the script after error response
   }
 }
-
-}   
-   
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <!---Custom CSS File--->
     <link rel="stylesheet" href="requestedresched.css" />
-  </head>
-  <body>
+    <style>
+        a.button-link {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff; /* Button background color */
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        a.button-link:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+        }
+
+        a.button-link:active {
+            background-color: #004080; /* Even darker on click */
+        }
+    </style>
+</head>
+<body>
     <section class="container">
-      <header>Request Re-schedule</header>
-      <form action="#" class="form" method= "POST">
-        <div class="column">
-          <div class="input-box">
-            <label>Last Name</label>
-            <input name="Lastname"
-            disabled 
-            type="text"
-              placeholder="Enter last name"
-              required value="<?php echo "{$res_ID['Lastname']}"; ?>"
-              style="color: black; background: white; border-color: gray"
-            />
-          </div>
+        <header>Request Re-schedule</header>
+        <form action="#" class="form">
+            <div class="column">
+                <div class="input-box">
+                    <label>Last Name</label>
+                    <input name="Lastname" disabled type="text" required value="<?php echo htmlspecialchars($res_ID['Lastname']); ?>" style="color: black; background: white; border-color: gray" />
+                </div>
+                <div class="input-box">
+                    <label>First Name</label>
+                    <input name="Firstname" disabled type="text" required value="<?php echo htmlspecialchars($res_ID['Firstname']); ?>" style="color: black; background: white; border-color: gray" />
+                    <input name="Lastname" type="hidden" id="lname" value="<?php echo htmlspecialchars($res_ID['Lastname']); ?>" />
+                    <input name="Firstname" type="hidden" id="fname" value="<?php echo htmlspecialchars($res_ID['Firstname']); ?>" />
+                    <input name="email" type="hidden" value="<?php echo htmlspecialchars($res_ID['Email']); ?>" />
+                    <input name="ID" type="hidden" id="beneficiaryId" value="<?php echo htmlspecialchars($res_ID['Beneficiary_Id']); ?>" />
+                </div>
+            </div>
 
-          <div class="input-box">
-            <label>First Name</label>
-            <input  name="Firstname"
-              type="text"
-             disabled
-              required value="<?php echo "{$res_ID['Firstname']}"; ?>"
-              style="color: black; background: white; border-color: gray"
-            />
-            <input  name="email"
-              type="hidden"
-            
-              value="<?php echo "{$res_ID['Email']}"; ?>"
-                 />
-                 <input  name="ID"
-              type="hidden"
-              value="<?php echo "{$res_ID['Beneficiary_Id']}"; ?>"
-                 />
-          </div>
-        </div>
+            <div class="input-box">
+                <label>Reason for Re-schedule</label>
+                <textarea name="reason" id="reason" required></textarea>
+                <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo htmlspecialchars($lastError); ?></p>
+            </div>
 
-        <div class="input-box">
-          <label>Reason for re-scheduling</label>
-          <textarea name="reason" required value=""></textarea>
-          <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $lastError ?></p> 
-
-        </div>
-
-        <div class="column">
-          <button  class="btn" name="submit" >Send Request</button>
-         
-        </div>
-      </form>
+            <div class="column">
+                <a href="#" class="button-link" onclick="openGmailAndUpdate(); return false;">Send Request for Re-schedule</a>
+            </div>
+        </form>
     </section>
-  </body>
+  <script>
+    function openGmailAndUpdate() {
+        const firstName = document.getElementById('fname').value;
+        const lastName = document.getElementById('lname').value;
+        const beneficiaryId = document.getElementById('beneficiaryId').value;
+        const reason = document.getElementById('reason').value;
+
+        // Validate reason before proceeding
+        if (!reason) {
+            alert('Please provide a reason to proceed.');
+            return;
+        }
+
+        // Create email body with salutation
+        const email = 'bataanpgbsap@gmail.com';
+        const subject = 'Request for Re-Schedule';
+        const body = `Good day, My name is ${firstName} ${lastName}, and I would like to kindly request a reschedule for my appointment.\n\nReason for rescheduling: ${reason}\n\n`;
+
+        // Open Gmail link in a new tab
+        const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.open(gmailLink, '_blank');
+
+        // Send AJAX request to update transaction status
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '', true); // Send to the same file
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        xhr.onload = function () {
+            const response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                // Redirect to users homepage after successful update
+                window.location.href = 'usershomepage.php';
+            } else {
+                // Handle errors here
+                console.error('Error updating status:', response.error);
+                alert('Failed to update status: ' + response.error);
+            }
+        };
+
+        xhr.send(`beneficiaryId=${encodeURIComponent(beneficiaryId)}&reason=${encodeURIComponent(reason)}`);
+    }
+</script>
+
+</body>
 </html>

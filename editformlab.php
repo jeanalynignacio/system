@@ -23,7 +23,6 @@ if(isset($_SESSION['Emp_ID'])) {
       $res_Fname = $result['Firstname'];
       $res_Lname = $result['Lastname'];
       $role = $result['role'];
-      
       $branch1 = $result['Office'];
   }
 } else {
@@ -82,6 +81,7 @@ $query = "UPDATE laboratories l
       SET t.Given_Sched  = '$Date',
           t.Given_Time = '$transaction_time',
           t.Emp_ID='$EmpID',
+           l.branch='$branch1',
         t.Status = '$newStatus'
       
       WHERE b.Beneficiary_Id = '$beneID'";
@@ -114,7 +114,27 @@ elseif ($Status == "Release Guarantee Letter") {
     $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
     
     $beneID = $_POST['Beneficiary_Id'];
+    $maxFileSize = 5000000; // 5MB in bytes
 
+    if ($role == "Community Affairs Officer") {
+        if ($_FILES["image"]["error"] === 4) {
+            array_push($errors, $profileError = "Image does not exist");
+        } elseif ($_FILES["image"]["size"] > $maxFileSize) {
+            array_push($errors, $profileError = "Image size is too large. Please upload an image smaller than 5MB.");
+        } else {
+            $filename = $_FILES["image"]["name"];
+            $tmpName = $_FILES["image"]["tmp_name"];
+            $validImageExtension = ['jpg', 'jpeg', 'png'];
+            $imageExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+    
+            if (!in_array($imageExtension, $validImageExtension)) {
+                array_push($errors, $profileError = "Invalid image extension");
+            } else {
+                $newImageName = uniqid() . '.' . $imageExtension;
+    
+                if (empty($errors)) {
+                    move_uploaded_file($tmpName, 'proofGL/' . $newImageName);
+    
     $SQL = mysqli_query($con, "SELECT b.*, t.*, l.*
                                FROM beneficiary b
                                INNER JOIN transaction t ON b.Beneficiary_Id = t.Beneficiary_Id
@@ -127,76 +147,220 @@ elseif ($Status == "Release Guarantee Letter") {
         $AssistanceType = $result['AssistanceType'];
         $LabType = $result['LabType'];
         $EmpID = $_POST['Emp_ID'];  // Assuming Emp_ID is passed via POST
-
+$Amount=$result['Amount'];
+$EmpID = $_SESSION['EmpID'];
         // Insert into history table
-        $query = "INSERT INTO history (Beneficiary_ID, ReceivedDate, ReceivedTime, TransactionType, AssistanceType, ReceivedAssistance, Emp_ID, branch)
-                  VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', '$TransactionType', '$AssistanceType', '$LabType', '$EmpID', '$branch')";
+        $query = "INSERT INTO history (Beneficiary_ID, ReceivedDate, ReceivedTime, TransactionType, AssistanceType, ReceivedAssistance, Emp_ID, branch,Amount)
+                  VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', '$TransactionType', '$AssistanceType', 'Guarantee Letter', '$EmpID', '$branch','$Amount')";
 
         if(mysqli_query($con, $query)){
-            // Send the email
-            $lastName = $result['Lastname'];  // Assuming 'Lastname' is part of the $result array
-            $Email = $result['Email'];  // Assuming 'Email' is part of the $result array
-            $employeeName = $_POST['EmpName'];
-
-            require 'phpmailer/src/Exception.php';
-            require 'phpmailer/src/PHPMailer.php';
-            require 'phpmailer/src/SMTP.php';
-
-            $mail = new PHPMailer(true);
-            try {
-                // Server settings
-                $mail->isSMTP();
-                $mail->Host = 'smtp.gmail.com';
-                $mail->SMTPAuth = true;
-                $mail->Username = 'bataanpgbsap@gmail.com'; // Your Gmail address
-                $mail->Password = 'cmpp hltn mxuc tcgl'; // Your Gmail password or App Password
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port = 587;
-
-                // Recipients
-                $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
-                $mail->addAddress($Email);
-
-                // Content
-                $mail->isHTML(true);
-                $mail->Subject = 'Released Guarantee Letter';
-                $mail->Body = "
-                    <html>
-                    <body>
-                    <p>Dear Mr./Ms./Mrs. $lastName,</p>
-                    <p>We have successfully provided your Guarantee Letter. Please note that you may request another assistance after a period of 3 months.</p>
-                    <p>Thank you for your cooperation. God Bless!<br><br></p>
-                    <p>Best regards,<br>$employeeName</p>
-                    <p>Provincial Government of Bataan - Special Assistance Program</p>
-                    </body>
-                    </html>
-                ";
-
-                $mail->send();
-            } catch (Exception $e) {
-                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-            }
-
-            // Delete records from transaction and laboratories tables after email is sent
             $sql1 = "DELETE FROM transaction WHERE Beneficiary_Id='$beneID'";
             $sql2 = "DELETE FROM laboratories WHERE Beneficiary_ID='$beneID'";
+            $sql5 = "DELETE FROM beneficiary WHERE Beneficiary_ID='$beneID'";
+            $sql3 = "SELECT RemainingBal FROM budget WHERE AssistanceType='$AssistanceType' AND branch='$branch'";
 
-            $result1 = mysqli_query($con, $sql1);
-            $result2 = mysqli_query($con, $sql2);
+            $result3 = mysqli_query($con, $sql3);
 
-            if($result1 && $result2) {
+            if ($result3) {
+                if ($resultbal = mysqli_fetch_assoc($result3)) {
+                    if ($resultbal['RemainingBal'] != 0) {
+                        $updateQuery = "UPDATE budget SET RemainingBal = RemainingBal - $Amount WHERE branch = '$branch' AND AssistanceType = '$AssistanceType'";
+                        $result4 = mysqli_query($con, $updateQuery);
+
+                        if ($result4 && mysqli_query($con, $sql1) && mysqli_query($con, $sql2) && mysqli_query($con, $sql5)) {
+                            echo '<body>
+                                  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                                  <script>
+                                  swal("This beneficiary already received his/her assistance","","success")
+                                  .then((value) => {
+                                      if (value) {
+                                          window.location.href = "laboratories.php";
+                                      }
+                                  });
+                                  </script>
+                                  </body>';
+                        } else {
+                            echo "Error updating budget or deleting records.";
+                        }
+                    } else {
+                        echo '<body>
+                              <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                              <script>
+                              swal("You have insufficient balance","","error")
+                              .then((value) => {
+                                  if (value) {
+                                      window.location.href = "laboratories.php";
+                                  }
+                              });
+                              </script>
+                              </body>';
+                    }
+                } else {
+                    echo '<body>
+                          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                          <script>
+                          swal("This branch has no budget","","error")
+                          .then((value) => {
+                              if (value) {
+                                  exit();
+                              }
+                          });
+                          </script>
+                          </body>';
+                }
+            } else {
                 echo '<body>
-                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                <script>
-                swal("This beneficiary already received his/her assistance","","success");
-                setTimeout(function(){
-                    window.location.href="laboratories.php";
-                } , 2000);
-                </script>
-                </body>';
+                      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                      <script>
+                      swal("No existing balance","","error")
+                      .then((value) => {
+                          if (value) {
+                              exit();
+                          }
+                      });
+                      </script>
+                      </body>';
             }
+        } else {
+            echo "Error inserting data into history table: " . mysqli_error($con);
         }
     }
+}
+}
+}
+} else{
+date_default_timezone_set('Asia/Manila');
+$ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
+$ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
+
+$beneID = $_POST['Beneficiary_Id'];
+
+$SQL = mysqli_query($con, "SELECT b.*, t.*, h.*
+FROM beneficiary b
+INNER JOIN transaction t ON b.Beneficiary_Id = t.Beneficiary_Id
+INNER JOIN laboratories h ON b.Beneficiary_Id = h.Beneficiary_ID
+WHERE b.Beneficiary_Id = '$beneID'");
+
+if($result = mysqli_fetch_assoc($SQL)){
+$branch = $result['branch'];
+        $TransactionType = $result['TransactionType'];
+        $AssistanceType = $result['AssistanceType'];
+        $ReceivedAssistance = "Guarantee Letter";
+        $Amount = $result['Amount'];
+        $EmpID = $_POST['Emp_ID']; // Assuming you have employee ID stored in session
+
+        // Insert into history table
+        $sql3 = "SELECT RemainingBal FROM budget WHERE AssistanceType='$AssistanceType' && branch='$branch'";
+        $result3 = mysqli_query($con, $sql3);
+
+      
+        if ($result3) {
+            if ($resultbal = mysqli_fetch_assoc($result3)) {
+                if ($resultbal['RemainingBal'] != 0) {
+                    $updateQuery = "UPDATE budget SET RemainingBal = RemainingBal - $Amount WHERE branch = '$branch' AND AssistanceType = '$AssistanceType'";
+                    $result4 = mysqli_query($con, $updateQuery);
+
+$query = "INSERT INTO history (Beneficiary_ID, ReceivedDate, ReceivedTime, TransactionType, AssistanceType, ReceivedAssistance, Emp_ID, Amount, branch)
+VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', '$TransactionType', '$AssistanceType', 'Guarantee Letter', '$EmpID', '$Amount', '$branch')";
+
+if(mysqli_query($con, $query)){
+// Send the email
+$lastName = $result['Lastname'];  // Assuming 'Lastname' is part of the $result array
+$Email = $result['Email'];  // Assuming 'Email' is part of the $result array
+$employeeName = $_POST['EmpName'];
+$link= "http://localhost/public_html/feedback.php";
+require 'phpmailer/src/Exception.php';
+require 'phpmailer/src/PHPMailer.php';
+require 'phpmailer/src/SMTP.php';
+
+$mail = new PHPMailer(true);
+try {
+    // Server settings
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com';
+    $mail->SMTPAuth = true;
+    $mail->Username = 'bataanpgbsap@gmail.com'; // Your Gmail address
+    $mail->Password = 'cmpp hltn mxuc tcgl'; // Your Gmail password or App Password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port = 587;
+
+    // Recipients
+    $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
+    $mail->addAddress($Email);
+
+    // Content
+    $mail->isHTML(true);
+    $mail->Subject = 'Released Guarantee Letter';
+    $mail->Body = "
+        <html>
+        <body>
+        <p>Dear Mr./Ms./Mrs. $lastName,</p>
+        <p>We have successfully provided your Guarantee Letter. Please note that you may request another assistance after a period of 3 months.</p>
+<p>If you have some extra time, kindly answer our feedback form through this <a href='$link'>link</a>. Your input is greatly appreciated and will help us improve our service.<br></p>
+<p>Thank you for your cooperation. God Bless!<br><br></p>
+<p>Best regards,<br>$employeeName</p>
+<p>Provincial Government of Bataan - Special Assistance Program</p>
+</body>
+</html>
+
+    ";
+
+    $mail->send();
+} catch (Exception $e) {
+    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+}
+
+// Delete records from transaction and laboratories tables after email is sent
+$sql1 = "DELETE FROM transaction WHERE Beneficiary_Id='$beneID'";
+$sql2 = "DELETE FROM laboratories WHERE Beneficiary_ID='$beneID'";
+$result1 = mysqli_query($con, $sql1);
+$result2 = mysqli_query($con, $sql2);
+            if ($result4 && mysqli_query($con, $sql1) && mysqli_query($con, $sql2) ) {
+                echo '<body>
+                      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                      <script>
+                      swal("This beneficiary already received his/her assistance","","success")
+                      .then((value) => {
+                          if (value) {
+                              window.location.href = "laboratories.php";
+                          }
+                      });
+                      </script>
+                      </body>';
+            }
+         
+    } else {
+        echo '<body>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+        swal("You have insufficient balance","","error")
+        .then((value) => {
+            if (value) {
+                window.location.href = "laboratories.php";
+            }
+        });
+        </script>
+        </body>';
+    }
+} else {
+    echo '<body>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+    swal("This branch has no budget","","error")
+    .then((value) => {
+        if (value) {
+            window.location.href = "laboratories.php";
+        }
+    });
+    </script>
+    </body>';
+}
+} else {
+echo "Error inserting data into history table: " . mysqli_error($con);
+}
+}
+}
+}
 }
 
 
@@ -225,13 +389,14 @@ swal("The selected date and time are already taken. Please choose a different ti
 </script>
 </body>';
     } else{
-        $result2 = null;
+       
         $query = "UPDATE laboratories l
         INNER JOIN beneficiary b ON b.Beneficiary_Id = l.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = l.Beneficiary_ID
         SET t.Given_Sched  = '$Date',
             t.Given_Time = '$transaction_time',
             t.Emp_ID='$EmpID',
+              l.branch='$branch1',
             t.Status = '$Status'
         
         WHERE b.Beneficiary_Id = '$beneID'";
@@ -327,7 +492,7 @@ elseif ($Status == "Pending for Releasing Guarantee Letter") {
     date_default_timezone_set('Asia/Manila');
     $Date = date('Y-m-d'); // Set the current date for Given_Sched
     $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
-    $Status = "For Validation";
+    //$Status = "For Validation";
 
     $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
     $overlapResult = mysqli_query($con, $overlapQuery);
@@ -345,7 +510,7 @@ elseif ($Status == "Pending for Releasing Guarantee Letter") {
         </script>
         </body>';
     }else{
-        $result2 = null;
+       // $result2 = null;
         $query = "UPDATE laboratories l
         INNER JOIN beneficiary b ON b.Beneficiary_Id = l.Beneficiary_ID
         INNER JOIN transaction t ON t.Beneficiary_Id = l.Beneficiary_ID
@@ -450,6 +615,7 @@ elseif ($Status == "Releasing Guarantee Letter") {
     $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
     $branch = $_POST['branch'];
     $PayoutType = "laboratories";
+    $Amount = $_POST['Amount'];
     $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID' ";
     $overlapResult = mysqli_query($con, $overlapQuery);
 
@@ -473,7 +639,9 @@ elseif ($Status == "Releasing Guarantee Letter") {
             t.Given_Time = '$transaction_time',
             t.Emp_ID='$EmpID',
             t.Status = '$Status',
-            l.branch='$branch'
+            l.branch='$branch',
+            l.Amount='$Amount',
+            l.receivedassistance='Guarantee Letter'
         
         WHERE b.Beneficiary_Id = '$beneID'";
      $result2 = mysqli_query($con, $query);
@@ -491,7 +659,7 @@ elseif ($Status == "Releasing Guarantee Letter") {
 
     $Email = $record['Email'];
     $status= $_POST['Status'];
-
+    $Amount= $_POST['Amount'];
     try {
         // Server settings
         $mail->isSMTP();
@@ -517,11 +685,11 @@ elseif ($Status == "Releasing Guarantee Letter") {
                 <body>
                 <p>Dear Mr./Ms./Mrs. $lastName,</p>
                 <p>You are currently set to receive your requested assistance. You may go on $Date at $transaction_time_12hr.</p>
-                <p> You will receive an assistance in laboratory.<br></p>
+                <p> You will receive a guarantee letter with the approved amount of $Amount>.<br><br>
+                   <br></p>
                <p> Kindly proceed to $branch to claim your guarantee letter.<br></p>
                 <p> Please bring a valid ID and show this email upon arrival.<br></p>
-               
-                <p>Thank you for your patience and cooperation.</p>
+               <p>Thank you for your patience and cooperation.</p>
                 <p>Best regards,<br>
                 $employeeName<br>
                 Provincial Government of Bataan - Special Assistance Program</p>
@@ -673,7 +841,7 @@ elseif ($Status == "Decline Request for Re-schedule") {
 } 
 
 }
-}
+
 
 elseif ($Status == "For Re-schedule") {
     $transaction_time = $_POST['time'];
@@ -773,51 +941,41 @@ swal("The selected date and time are already taken. Please choose a different ti
     } catch (Exception $e) {
         echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
- } else{ 
+ } 
+} 
+}
+}
+
+elseif ($Status == "Pending for Requirements"  ) {
+    date_default_timezone_set('Asia/Manila');
+    $Date = date('Y-m-d'); // Set the current date for Given_Sched
+    $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
+
+  
+    $query = "UPDATE laboratories f
+              INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+              INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+              SET  t.Given_Sched = '$Date',
+t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
+              WHERE b.Beneficiary_Id = '$beneID'";
+  $result2 = mysqli_query($con, $query);
+  if ($result2) {
     echo '<body>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
-    swal("Updated successfully","","success")
+    swal("Update and email send successful","","success")
     .then((value) => {
         if (value) {
             window.location.href = "laboratories.php";
         }
     });
     </script>
-    </body>';}
+    </body>';
+  }
 
-} else {
-    echo "Error updating records: " . mysqli_error($con);
-    header("Location: laboratories.php");
-    exit();
-} 
-}
 }
 
-
-else{
-    date_default_timezone_set('Asia/Manila');
-    $Date = date('Y-m-d'); // Set the current date for Given_Sched
-    $transaction_time = date('H:i:s'); // Set the current date and time for transaction_time
-
-    $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time' AND Beneficiary_Id != '$beneID'";
-    $overlapResult = mysqli_query($con, $overlapQuery);
-
-    if(mysqli_num_rows($overlapResult) > 0) {
-        echo "The selected date and time are already booked. Please choose a different time.";
-        exit();
-    }
-    $query = "UPDATE laboratories l
-    INNER JOIN beneficiary b ON b.Beneficiary_Id = l.Beneficiary_ID
-    INNER JOIN transaction t ON t.Beneficiary_Id = l.Beneficiary_ID
-    SET t.Given_Sched  = '$Date',
-        t.Given_Time = '$transaction_time',
-        t.Emp_ID='$EmpID',
-        t.Status = '$Status'
-    
-    WHERE b.Beneficiary_Id = '$beneID'";
 }
-// Construct the update query
 }
 
 ?>
@@ -842,6 +1000,8 @@ else{
       <input type="hidden" name="Emp_ID" value="<?php echo $EmpID; ?>">
 
    
+      <input type="hidden" name="role" id="role" value="<?php echo $role; ?>">
+        
       
             <div class="user-details">
                 <div class="input-box">
@@ -952,7 +1112,7 @@ else{
             var emailFormat = document.getElementById('emailFormat');
             var requirements = document.getElementById('requirements');
             var submitbtn = document.getElementById('submitbtn');
-
+            var role = document.getElementById('role').value;
     var beneID = document.querySelector('input[name="Beneficiary_Id"]').value;
 var empID = document.querySelector('input[name="Emp_ID"]').value;
 
@@ -1017,16 +1177,17 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
                     <h3 style="color: white; margin-top:15px;" >Click this <a href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox" target="_blank" style="color:  #3cd82e;">link</a> to check the email of beneficiary.</h3>
                 `;
                 submitbtn.style.display = 'none';
-            } else if (status === 'Releasing Guarantee Letter') {
+            } 
+            else if (status === 'Releasing Guarantee Letter' && role==='Admin') { 
                 submitbtn.style.display = 'inline';
               
                 emailFormat.innerHTML = `
                     <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-                        <p>You are currently set to receive your requested assistance. You may go on <input type="date" id="calendar" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
+                        <p>You are currently set to receive your requested assistance. You may go on <input type="date" id="calendar2" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
                         at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
-                        You will receive an assistance in laboratory<br>
-                 Kindly proceed to <select name="branch" id="branch" style="margin-top:5px;">
+                       You will receive a guarantee letter with the approved amount of <input type="text" autocomplete="off" name="Amount" style="margin-top:10px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">.<br><br>
+                                    Kindly proceed to <select name="branch" id="branch" style="margin-top:5px;">
     <option value="PGB-Balanga Branch" <?php if ($record['branch'] == "PGB-Balanga Branch") echo 'selected="selected"'; ?>>PGB-Balanga Branch</option>
     <option value="PGB-Dinalupihan Branch" <?php if ($record['branch'] == "PGB-Dinalupihan Branch") echo 'selected="selected"'; ?>>PGB-Dinalupihan Branch</option>
     <option value="PGB-Hermosa Branch" <?php if ($record['branch'] == "PGB-Hermosa Branch") echo 'selected="selected"'; ?>>PGB-Hermosa Branch</option>
@@ -1036,12 +1197,34 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
                     Please bring a valid ID and show this email upon arrival.<br><br>
                     Thank you for your patience and cooperation.<br><br>    
                     Best regards,<br>
-                    <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+                    <input type="text" id="empname" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
                     Provincial Government of Bataan - Special Assistance Program
                 </p>
                 </div>
                 `;
-            } else if (status === 'For Re-schedule') {
+            var amountField = document.getElementsByName('Amount')[0];
+    var branchField = document.getElementById('branch');
+    var date2 = document.getElementById('calendar2');
+    var time= document.getElementById('time');
+    var empname= document.getElementById('empname');
+    // Check if the amount field is empty or equal to 0
+    if (amountField.value.trim() === '' || amountField.value.trim() === '0') {
+        amountField.disabled = false;
+        branchField.disabled = false;
+        time.disabled = false;
+        date2.disabled = false;
+        empname.disabled = false;
+        submitbtn.style.display = 'inline';
+    } else {
+        amountField.disabled = true;
+        branchField.disabled = true;
+        time.disabled = true;
+       date2.disabled = true
+       empname.disabled = true;
+       submitbtn.style.display = 'none';
+    }
+    }
+     else if (status === 'For Re-schedule') {
                 submitbtn.style.display = 'inline';
                 emailFormat.innerHTML = `
                 <div style = "color: black; padding:15px; background:white; margin-top:20px;">
@@ -1080,18 +1263,20 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
        
     }
     else if (status === 'Release Guarantee Letter') {
-        submitbtn.style.display = 'inline';
+      
         emailFormat.innerHTML = `
-                <div style = "color: black; padding:15px; background:white; margin-top:20px;">
+                 <div style = "color: black; padding:15px; background:white; margin-top:20px;">
                 Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                 <p>We have successfully provided your Guarantee Letter. Please note that you may request another assistance after a period of 3 months. <br>
-                Thank you for your cooperation. God Bless!<br> 
-                
+                 If you have an extra time kindly answer our feedback form through this link.  Your input is greatly appreciated and will help us improve our service.<br> 
+                Thank you for your cooperation. God Bless!<br>
                 Best regards,<br>
                 <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
                 Provincial Government of Bataan - Special Assistance Program</p>
             </div> 
                 `;
+                submitbtn.style.display = 'inline';
+                pdf.style.display = 'none';     
     }
         }
 

@@ -142,7 +142,7 @@ if ($result3) {
         if ($resultbal['RemainingBal'] != 0 || $resultbal['RemainingBal'] > 0) {
             $updateQuery = "UPDATE budget SET RemainingBal = RemainingBal - $Amount WHERE branch = '$branch1' && AssistanceType = '$AssistanceType'";
             $result4=mysqli_query($con, $updateQuery);
-            $query ="INSERT INTO history( Beneficiary_ID, ReceivedDate, ReceivedTime,TransactionType,AssistanceType,ReceivedAssistance,Emp_ID,Amount,branch) VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', ' $TransactionType', '$AssistanceType','$MedicineType','$EmpID','$Amount','$branch' )";
+            $query ="INSERT INTO history( Beneficiary_ID, ReceivedDate, ReceivedTime,TransactionType,AssistanceType,ReceivedAssistance,Emp_ID,Amount,branch) VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', ' $TransactionType', '$AssistanceType','$ReceivedAssistance','$EmpID','$Amount','$branch' )";
             if(mysqli_query($con, $query)){
                 $lastName = $result['Lastname'];  // Assuming 'Lastname' is part of the $result array
                 $Email = $result['Email'];  // Assuming 'Email' is part of the $result array
@@ -1239,7 +1239,7 @@ try {
                     <span id="calendar" style="color:white; margin-top:10px;"><?php echo $record['Date']; ?></span>
                 </div>
                 <div class="input-box">
-                <input disabled name="f" id="dt"  style="color:#f5ca3b;background-color: transparent;border: none;outline: none; font-size:15px;margin-top:15px;" type = "hidden" required value = "Date Validated" > 
+                <input disabled name="f" id="dt3"  style="color:#f5ca3b;background-color: transparent;border: none;outline: none; font-size:15px;margin-top:15px;" type = "hidden" required value = "Date Validated" > 
               
                 <input disabled name="f" id="dt2" type="hidden" style="background-color: transparent;border: none;outline: none; color:white;font-size:15px;margin-top:-9px;" required value="<?php echo $record['Given_Sched']; ?>">
                 </div>
@@ -1401,7 +1401,7 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
          
     if (status === 'For Schedule') {
         submitbtn.style.display = 'inline';
-        document.getElementById('dt').type = 'text';
+        document.getElementById('dt3').type = 'text';
         document.getElementById('dt2').type = 'text';
 if(stats === 'Pending due to Insufficient funds') {
         emailFormat.innerHTML = `

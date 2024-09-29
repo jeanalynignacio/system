@@ -170,7 +170,7 @@ while ($row = $result->fetch_assoc()) {
             <td>" . $row["Amount"] . " </td>
             <td>" . $row["Status"] . " </td>
             <td>".
-            "<form method='post' action='editformfassistance.php'>" .
+            "<form method='post' action='editformassistance.php'>" .
             "<input type='hidden' name='Beneficiary_Id' value='" . $row['Beneficiary_Id'] . "'>" .
             "<button type='submit'>Edit</button>" .
             "</form>" .

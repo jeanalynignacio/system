@@ -122,9 +122,7 @@ elseif ($Status == "Release Guarantee Letter") {
     $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
     $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
     
-date_default_timezone_set('Asia/Manila');
-$ReceivedDate = date('Y-m-d');
-$ReceivedTime = date('H:i:s');
+
 $maxFileSize = 5000000; // 5MB in bytes
 
 if ($role == "Community Affairs Officer") {
@@ -284,7 +282,7 @@ if ($role == "Community Affairs Officer") {
             $lastName = $result['Lastname'];  // Assuming 'Lastname' is part of the $result array
             $Email = $result['Email'];  // Assuming 'Email' is part of the $result array
             $employeeName = $_POST['EmpName'];
-
+            $link= "http://localhost/public_html/feedback.php";
             require 'phpmailer/src/Exception.php';
             require 'phpmailer/src/PHPMailer.php';
             require 'phpmailer/src/SMTP.php';
@@ -312,11 +310,13 @@ if ($role == "Community Affairs Officer") {
                     <body>
                     <p>Dear Mr./Ms./Mrs. $lastName,</p>
                     <p>We have successfully provided your Guarantee Letter. Please note that you may request another assistance after a period of 3 months.</p>
-                    <p>Thank you for your cooperation. God Bless!<br><br></p>
-                    <p>Best regards,<br>$employeeName</p>
-                    <p>Provincial Government of Bataan - Special Assistance Program</p>
-                    </body>
-                    </html>
+<p>If you have some extra time, kindly answer our feedback form through this <a href='$link'>link</a>. Your input is greatly appreciated and will help us improve our service.<br></p>
+<p>Thank you for your cooperation. God Bless!<br><br></p>
+<p>Best regards,<br>$employeeName</p>
+<p>Provincial Government of Bataan - Special Assistance Program</p>
+</body>
+</html>
+
                 ";
 
                 $mail->send();
@@ -376,128 +376,6 @@ if ($role == "Community Affairs Officer") {
 }
 }
 }
-/*
-date_default_timezone_set('Asia/Manila');
-$ReceivedDate = date('Y-m-d');
-$ReceivedTime = date('H:i:s');
-$maxFileSize = 5000000; // 5MB in bytes
-
-if ($role == "Community Affairs Officer") {
-    if ($_FILES["image"]["error"] === 4) {
-        array_push($errors, $profileError = "Image does not exist");
-    } elseif ($_FILES["image"]["size"] > $maxFileSize) {
-        array_push($errors, $profileError = "Image size is too large. Please upload an image smaller than 5MB.");
-    } else {
-        $filename = $_FILES["image"]["name"];
-        $tmpName = $_FILES["image"]["tmp_name"];
-        $validImageExtension = ['jpg', 'jpeg', 'png'];
-        $imageExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-
-        if (!in_array($imageExtension, $validImageExtension)) {
-            array_push($errors, $profileError = "Invalid image extension");
-        } else {
-            $newImageName = uniqid() . '.' . $imageExtension;
-
-            if (empty($errors)) {
-                move_uploaded_file($tmpName, 'proofGL/' . $newImageName);
-
-                $SQL = mysqli_query($con, "SELECT b.*, t.*, h.*
-                                           FROM beneficiary b
-                                           INNER JOIN transaction t ON b.Beneficiary_Id = t.Beneficiary_Id
-                                           INNER JOIN hospitalbill h ON b.Beneficiary_Id = h.Beneficiary_ID
-                                           WHERE b.Beneficiary_Id = '$beneID'");
-
-                if ($result = mysqli_fetch_assoc($SQL)) {
-                    $branch = $result['branch'];
-                    $TransactionType = $result['TransactionType'];
-                    $AssistanceType = $result['AssistanceType'];
-                    $hospitals = $result['PartneredHospital'];
-                    $escaped_hospitals = addslashes($hospitals);
-                    $AssistanceType2 = $AssistanceType . '-' . $escaped_hospitals;
-                    $ReceivedAssistance = "Guarantee Letter";
-                    $Amount = $result['Amount'];
-                    $EmpID = $_SESSION['EmpID']; // Assuming you have employee ID stored in session
-
-                    $query = "INSERT INTO history (Beneficiary_ID, ReceivedDate, ReceivedTime, TransactionType, AssistanceType, ReceivedAssistance, Emp_ID, Amount, branch, proofGL)
-                              VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', '$TransactionType', '$AssistanceType2', '$ReceivedAssistance', '$EmpID', '$Amount', '$branch', '$newImageName')";
-
-                    if (mysqli_query($con, $query)) {
-                        $sql1 = "DELETE FROM transaction WHERE Beneficiary_Id='$beneID'";
-                        $sql2 = "DELETE FROM hospitalbill WHERE Beneficiary_ID='$beneID'";
-                        $sql5 = "DELETE FROM beneficiary WHERE Beneficiary_ID='$beneID'";
-                        $sql3 = "SELECT RemainingBal FROM budget WHERE AssistanceType='$AssistanceType' AND branch='$branch'";
-
-                        $result3 = mysqli_query($con, $sql3);
-
-                        if ($result3) {
-                            if ($resultbal = mysqli_fetch_assoc($result3)) {
-                                if ($resultbal['RemainingBal'] != 0) {
-                                    $updateQuery = "UPDATE budget SET RemainingBal = RemainingBal - $Amount WHERE branch = '$branch' AND AssistanceType = '$AssistanceType'";
-                                    $result4 = mysqli_query($con, $updateQuery);
-
-                                    if ($result4 && mysqli_query($con, $sql1) && mysqli_query($con, $sql2) && mysqli_query($con, $sql5)) {
-                                        echo '<body>
-                                              <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                                              <script>
-                                              swal("This beneficiary already received his/her assistance","","success")
-                                              .then((value) => {
-                                                  if (value) {
-                                                      window.location.href = "hospital.php";
-                                                  }
-                                              });
-                                              </script>
-                                              </body>';
-                                    } else {
-                                        echo "Error updating budget or deleting records.";
-                                    }
-                                } else {
-                                    echo '<body>
-                                          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                                          <script>
-                                          swal("You have insufficient balance","","error")
-                                          .then((value) => {
-                                              if (value) {
-                                                  window.location.href = "hospital.php";
-                                              }
-                                          });
-                                          </script>
-                                          </body>';
-                                }
-                            } else {
-                                echo '<body>
-                                      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                                      <script>
-                                      swal("This branch has no budget","","error")
-                                      .then((value) => {
-                                          if (value) {
-                                              exit();
-                                          }
-                                      });
-                                      </script>
-                                      </body>';
-                            }
-                        } else {
-                            echo '<body>
-                                  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                                  <script>
-                                  swal("No existing balance","","error")
-                                  .then((value) => {
-                                      if (value) {
-                                          exit();
-                                      }
-                                  });
-                                  </script>
-                                  </body>';
-                        }
-                    } else {
-                        echo "Error inserting data into history table: " . mysqli_error($con);
-                    }
-                }
-            }
-        }
-    }
-}
-*/
 elseif ($Status == "For Schedule") {
 
             $transaction_time = $_POST['time'];
@@ -1460,8 +1338,8 @@ else if (status === 'Decline Request for Re-schedule') {
                 <div style = "color: black; padding:15px; background:white; margin-top:20px;">
                 Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                 <p>We have successfully provided your Guarantee Letter. Please note that you may request another assistance after a period of 3 months. <br>
-                Thank you for your cooperation. God Bless!<br> 
-                
+                 If you have an extra time kindly answer our feedback form through this link.  Your input is greatly appreciated and will help us improve our service.<br> 
+                Thank you for your cooperation. God Bless!<br>
                 Best regards,<br>
                 <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
                 Provincial Government of Bataan - Special Assistance Program</p>

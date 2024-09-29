@@ -163,6 +163,7 @@ if(isset($_POST['Beneficiary_Id'])) {
                             <th> Received Amount:  </th>
                             <th> Assisted By:  </th>
                             <th> Office:  </th>
+                           
                         </tr>
                         <tbody>
                         <?php
@@ -206,7 +207,7 @@ if ($row["ReceivedDate"] !== NULL) {
 <td>" . $row["Amount"] . " </td>
   <td>" . $row2["Firstname"]. " " . $row2["Lastname"] . " </td>
      <td>" . $row2["Office"]." </td>      
-            
+   
               </tr>";
 }
 }

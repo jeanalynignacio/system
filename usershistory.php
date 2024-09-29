@@ -20,7 +20,7 @@ if ($result = mysqli_fetch_assoc($query)) {
 // Fetch user details
 $query = mysqli_query($con, "SELECT * FROM users WHERE Id = '$id'");
 if ($result = mysqli_fetch_assoc($query)) {
-    $res_Id = $result['Id'];
+    $res_ID = $result['Id'];
     $res_Fname = $result['Firstname'];
     $res_Lname = $result['Lastname'];
 }
@@ -33,7 +33,7 @@ $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Get current pa
 $offset = ($current_page - 1) * $records_per_page;
 
 // Get the total number of entries
-$sql = "SELECT COUNT(*) AS totalEntries FROM beneficiary";
+$sql = "SELECT COUNT(*) AS totalEntries FROM history where Beneficiary_ID ='$res_Id'";
 $result = $con->query($sql);
 
 if (!$result) {
@@ -45,13 +45,13 @@ $totalEntries = $row['totalEntries'];
 
 // Calculate total pages
 $totalPages = ceil($totalEntries / $records_per_page);
-$Sql2=mysqli_query($con,"Select * FROM beneficiary WHERE Representative_ID='$id'");
+$Sql2=mysqli_query($con,"Select * FROM history WHERE Beneficiary_ID='$res_Id'");
 if ($result = mysqli_fetch_assoc($Sql2)) {
-  $BeneID = $result['Beneficiary_Id'];
+  $BeneID = $result['Beneficiary_ID'];
 
 }
 // Query to check if the beneficiary exists
-$checkBeneficiaryQuery = "SELECT COUNT(*) as count FROM history WHERE Beneficiary_Id = '$BeneID'";
+$checkBeneficiaryQuery = "SELECT COUNT(*) as count FROM history WHERE Beneficiary_ID = '$BeneID'";
 $beneficiaryResult = $con->query($checkBeneficiaryQuery);
 $beneficiaryCount = $beneficiaryResult->fetch_assoc()['count'];
 
@@ -231,7 +231,7 @@ if ($feedbackResult && $feedbackResult->num_rows > 0): ?>
     </tbody>
 </table>
     
-        
+
 <div>
 <script type="text/javascript">
     let subMenu= document.getElementById("subMenu");

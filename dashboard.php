@@ -206,6 +206,11 @@ $totalEntriesSTAT = $row['totalEntriesSTAT'];
     <input type="submit" style="background:none; margin-right:30px; color:#003399;" value="Feedbacks" name="submit" />
 </form>
         <?php endif; ?>
+        <?php if ($role === 'Community Affairs Officer'|| $role === 'Admin'): ?>
+                <form action="historyproof.php" method="post">
+    <input type="submit" style="background:none; margin-right:30px; color:#003399;" value="History" name="submit" />
+</form>
+        <?php endif; ?>
                 <img src="images/background.png" alt=""/>
             </div>
         </div>

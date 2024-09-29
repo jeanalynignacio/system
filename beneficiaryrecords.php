@@ -2,6 +2,7 @@
 session_start();
 include("php/config.php");
 
+// Check if the user is logged in
 if (isset($_SESSION['Emp_ID'])) {
     $id = $_SESSION['Emp_ID'];
     $query = mysqli_query($con, "SELECT * FROM employees WHERE Emp_ID=$id");
@@ -17,45 +18,45 @@ if (isset($_SESSION['Emp_ID'])) {
     exit();
 }
 
-// Get the current date in the format YYYY-MM-DD
-$currentDate = date("Y-m-d");
-
 // Define pagination variables
 $records_per_page = 10; // Number of records to display per page
-$current_page = isset($_GET['page']) ? $_GET['page'] : 1; // Get current page number, default to 1 if not set
+$current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Get current page number, default to 1 if not set
 
-// Calculate LIMIT and OFFSET
-$offset = ($current_page - 1) * $records_per_page;
-
-// Get the total number of entries
-$sql = "SELECT COUNT(*) AS totalEntries FROM beneficiary";
-$result = $con->query($sql);
-
-if (!$result) {
-    die("Invalid query: " . $con->error);
+// Load XML file
+$file = 'beneficiary_records.xml';
+if (!file_exists($file)) {
+    echo "XML file not found.";
+    exit();
 }
 
-$row = $result->fetch_assoc();
-$totalEntries = $row['totalEntries'];
+$xml = simplexml_load_file($file);
+
+
+// Count total number of entries
+$totalEntries = count($xml->beneficiary);
 
 // Calculate total pages
 $totalPages = ceil($totalEntries / $records_per_page);
 
-// Fetch paginated beneficiaries
-$sql = "SELECT * FROM beneficiary ORDER BY time ASC LIMIT $records_per_page OFFSET $offset";
-$transactionResult = $con->query($sql);
+// Calculate LIMIT and OFFSET
+$offset = ($current_page - 1) * $records_per_page;
 
-if (!$transactionResult) {
-    die("Invalid query: " . $con->error);
-}
+// Convert SimpleXMLElement to array
+$beneficiariesArray = json_decode(json_encode($xml->beneficiary), true);
+
+// Extract the relevant records for the current page
+$beneficiaries = array_slice($beneficiariesArray, $offset, $records_per_page);
+
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Patient's Records</title>
-<link rel="stylesheet" href="patients-records.css"/>
+<link rel="stylesheet" href="beneficiaryrecords.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
@@ -96,56 +97,78 @@ if (!$transactionResult) {
             <h3 class="main--title">Overall Data</h3>
         </div>
         <div class="table--container">
-          <!-- <button class="btn1" onclick="window.location.href ='addbeneficiary.php';">Add Beneficiary</button>-->
+            <button class="btn1" onclick="window.location.href ='addingbeneficiary.php';">Add Beneficiary</button>
             <table>
-                <thead>
-                    <tr>
-                        <th>Date:</th>
-                        <th>Time:</th>
-                        <th>Name:</th>
-                        <th>Birthday:</th>
-                        <th>Contact Number:</th>
-                        <th>Municipality:</th>
-                        <th>Barangay:</th>
-                        <th>Email:</th>
-                        <th>Action:</th>
-                        <th> History: </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    while ($row = $transactionResult->fetch_assoc()) {
-                        $time = date("h:i A", strtotime($row["time"]));
-                        echo "<tr>
-                            <td>{$row['Date']}</td>
-                             <td>" . $time . " </td>
-                            <td>{$row['Lastname']}, {$row['Firstname']}</td>
-                            <td>{$row['Birthday']}</td>
-                            <td>{$row['Contactnumber']}</td>
-                            <td>{$row['CityMunicipality']}</td>
-                            <td>{$row['Barangay']}</td>
-                            <td>{$row['Email']}</td>
-                            <td>
-                                <form method='post' action='editbeneficiary.php'>
-                                    <input type='hidden' name='Beneficiary_Id' value='{$row['Beneficiary_Id']}'>
-                                    <button type='submit' style='color:green'>View</button>
-                                </form>
-                            </td>
+            <thead>
+    <tr>
+        <th>Date:</th>
+        <th>Time:</th>
+        <th>Name:</th>
+        <th>Birthday:</th>
+        <th>Contact Number:</th>
+        <th>Municipality:</th>
+        <th>Barangay:</th>
+        <th>Email:</th>
+        <th>Action:</th>
+        <th>Action:</th>
+    
+    </tr>
+</thead><tbody>     <?php
+$xml = simplexml_load_file('beneficiary_records.xml') or die('Error loading XML');
 
-            <td>".
-            "<form method='post' action='history.php'>" .
-            "<input type='hidden' name='Beneficiary_Id' value='" . $row['Beneficiary_Id'] . "'>" .
+foreach ($xml->beneficiary as $beneficiary) {  // Use correct XML element name
+    // Validate and format data
+    $date = isset($beneficiary->Date) ? htmlspecialchars($beneficiary->Date) : 'N/A';
+    $time = isset($beneficiary->time) ? htmlspecialchars($beneficiary->time) : 'N/A';
+    $formattedTime = $time;
+    
+    if ($time !== 'N/A' && strtotime($time) !== false) {
+        $formattedTime = date("h:i A", strtotime($time));  // Format time
+    }
+
+    // Escape output to prevent XSS
+    $lastname = htmlspecialchars($beneficiary->Lastname);
+    $firstname = htmlspecialchars($beneficiary->Firstname);
+    $birthday = htmlspecialchars($beneficiary->Birthday);
+    $contactnumber = htmlspecialchars($beneficiary->Contactnumber);
+    $cityMunicipality = htmlspecialchars($beneficiary->CityMunicipality);
+    $barangay = htmlspecialchars($beneficiary->Barangay);
+    $email = htmlspecialchars($beneficiary->Email);
+    $beneficiaryId = htmlspecialchars($beneficiary->Beneficiary_Id);
+
+    // Output the beneficiary data in table rows
+    echo "<tr>
+        <td>{$date}</td>
+        <td>{$formattedTime}</td>
+        <td>{$lastname}, {$firstname}</td>
+        <td>{$birthday}</td>
+        <td>{$contactnumber}</td>
+        <td>{$cityMunicipality}</td>
+        <td>{$barangay}</td>
+        <td>{$email}</td>
+         <td>
+           <form method='post' action='editbenerecord.php'>
+        <input type='hidden' name='Beneficiary_Id' value='$beneficiary->Beneficiary_Id'>
+        <button type='submit' style='color:green'>Edit</button>
+    </form>
+
+</td>
+        <td>
+           <form method='post' action='deletebeneficiary.php' onsubmit='return confirmDelete()'>
+        <input type='hidden' name='Beneficiary_Id' value='$beneficiary->Beneficiary_Id'>
+        <button type='submit' style='color:red'>Delete</button>
+    </form>
            
-            "<button type='submit'>View</button>" .
-           
+   
+</td>
+
+        </td>
        
-            "</form>" .
-            "</td>
+    </tr>";
+}
+?>
 
-                        </tr>";
-                    }
-                    ?>
-                </tbody>
+</tbody>
             </table>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-end">
@@ -264,6 +287,9 @@ function employees(){
 function profile() {
     window.location = "http://localhost/public_html/profileadmin.php";
 }
+  function confirmDelete() {
+        return confirm("Are you sure you want to delete this beneficiary?");
+    }
 </script>
 </body>
 </html>

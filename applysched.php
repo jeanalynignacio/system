@@ -96,7 +96,7 @@
                         swal("Thank you for submitting your request. Please wait for an email with your scheduled appointment","","success")
                         .then((value) => {
                             if (value) {
-                                window.location.href = "feedback.php";
+                                window.location.href = "usershomepage.php";
                             }
                         });
                         </script>

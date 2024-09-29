@@ -118,7 +118,7 @@ if(isset($_POST['submit'])) {
  <input type="button" id="enableFieldsButton" name="btn2" value="EDIT" onclick="enableFields()" />
         
                 <!-- Submit button -->
-                <input type="submit" value="Done Edit" name="submit" id="submit"  class="hidden" />
+    <input type="submit" value="Done Edit" name="submit" id="submit"  class="hidden" />
 <input type="button" value="Back" name="cancel" id="cancel" onclick="cancelEdit()"/>
 
 

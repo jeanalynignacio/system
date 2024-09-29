@@ -67,7 +67,7 @@ if (!$transactionResult) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title> Patient's Records </title>
-<link rel="stylesheet" href="employeeRecords.css"/>
+<link rel="stylesheet" href="historyproof.css"/>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-
 awesome/6.4.0/css/all.min.css"/>
@@ -116,7 +116,7 @@ awesome/6.4.0/css/all.min.css"/>
 </a>
     </li>
 <?php if ($role === 'Admin'): ?>
-            <li class="active">
+            <li >
                 <a href="#" onclick="employees()">
                     <i class="fas fa-users"></i>
                     <span>Employees</span>
@@ -124,6 +124,7 @@ awesome/6.4.0/css/all.min.css"/>
             </li>
             
         <?php endif; ?>
+   
         <li class="user" >
             <a href="#" onclick="profile()">
                     <i class="fas fa-user"></i>
@@ -145,7 +146,7 @@ awesome/6.4.0/css/all.min.css"/>
 <div class="header--wrapper">
 <div class="header--title">
 <span> 1Bataan Malasakit - Special Assistance Program </span>
-<h2> Employee's Records </h2>
+<h2> History Records </h2>
 </div>
 <div id="currentDate"></div>
 <div class="user--info">
@@ -170,51 +171,94 @@ awesome/6.4.0/css/all.min.css"/>
 <div class="table--container">
 
 
-<!--<button class="btn1" onclick="window.location.href ='addbeneficiary.php';">Add Beneficiary</button>-->
-<button class="btn1" onclick="window.location.href ='employeeregistration.php';">Add Employee Account</button>
 
 <table>
 <thead>
-<tr>
-<th>Last Name:</th>
-<th>First Name:</th>
-<th>Email:</th>
-<th>Role:</th>
-<th>Office:</th>
-<th>Action:</th>
-</tr>
-</thead>
-<tbody>
-<?php
+<tr>   <th>  Beneficiary Name: </th>
+                        <th>  Assistance Type: </th>
+                      
+                            <th> Received Assistance: </th>
+                             <th> Received Date:  </th>
+                            <th> Received Time:  </th>
+                            <th> Received Amount:  </th>
+                            <th> Assisted By:  </th>
+                            <th> Office:  </th>
+                            <th> Proof:  </th>
+                            <th> Action:  </th>
+                        </tr>
+                        <tbody>
+                        <?php
 include("php/config.php");
-$sql = "SELECT * FROM employees where role='Community Affairs Officer'";
+
+$sql = "SELECT h.* , b.*
+        FROM history h 
+       INNER JOIN beneficiary b ON b.Beneficiary_Id = h.Beneficiary_ID
+ where receivedassistance='Guarantee Letter'
+       ORDER BY h.ReceivedDate DESC";
+
 $result = $con->query($sql);
+
 if (!$result) {
-die("Invalid query: " . $con->error);
+    die("Invalid query: " . $con->error);
 }
+
 while ($row = $result->fetch_assoc()) {
-echo "<tr>
+    $Emp_Id = $row["Emp_ID"]; 
 
-<td>" . $row["Lastname"]." </td>
-<td>" . $row["Firstname"] . "</td>
-<td>" . $row["Email"] . "</td>
-<td>" . $row["role"] . "</td>
-<td>" . $row["Office"] . "</td>
-<td>
-<form method='post'
+    $sql2 = "SELECT *  FROM employees
+    
+where Emp_ID=$Emp_Id";
 
-action='editemployee.php'>
+$result2 = $con->query($sql2);
+while ($row2 = $result2->fetch_assoc()) {
 
-<input type='hidden'
-name='Emp_ID' value='" . $row['Emp_ID'] . "'>
+     $givenTime = "";
+if ($row["ReceivedDate"] !== NULL) {
+    $givenTime = date("h:i A", strtotime($row["ReceivedDate"]));
+}
+      $transaction_time = date("h:i A", strtotime($row["ReceivedTime"]));
+    echo "<tr>
+    <td>" . $row["Lastname"] . ", " . $row["Firstname"] . " </td>
+     <td>" . $row["AssistanceType"] . " </td>
 
-<button type='submit' style='color:green'>View</button>
 
-</form>
+ <td>" . $row["ReceivedAssistance"] . " </td>
+ <td>" . $row["ReceivedDate"] . " </td>
+<td>" . $transaction_time . " </td>
+<td>" . $row["Amount"] . " </td>
+  <td>" . $row2["Firstname"]. " " . $row2["Lastname"] . " </td>
+     <td>" . $row2["Office"]." </td>      
+    <td>
+" . ( !empty($row['proofGL']) ? "
+    <form method='post' action='proof.php'>
+        <input type='hidden' name='beneid' value='" . $row['Beneficiary_ID'] . "'>
+            <input type='hidden' name='rdate' value='" . $row['ReceivedDate'] . "'>
+        <input type='hidden' name='rtime' value='" . $row['ReceivedTime'] . "'>
+        <input type='hidden' name='assist' value='" . $row['AssistanceType'] . "'>
+        <button type='submit' style='color:#2b22a5'>View Proof</button>
+    </form>
+" : "No proof available") . "
 </td>
-</tr>";
+<td>
+" . ( !empty($row['proofGL']) ? "
+    Proof available
+" : "
+    <form method='post' action='edithistory.php'>
+        <input type='hidden' name='beneid' value='" . $row['Beneficiary_ID'] . "'>
+        <input type='hidden' name='rdate' value='" . $row['ReceivedDate'] . "'>
+        <input type='hidden' name='rtime' value='" . $row['ReceivedTime'] . "'>
+        <input type='hidden' name='assist' value='" . $row['AssistanceType'] . "'>
+        <button type='submit' style='color:green'>Upload Proof</button>
+    </form>
+") . "
+</td>      
+              </tr>";
+}
 }
 ?>
+<input type="hidden" id="confirmed" name="confirmed" value="">
+
+
 </tbody>
 </table>
 

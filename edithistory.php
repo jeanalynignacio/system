@@ -17,6 +17,26 @@ $res_Fname = $result['Firstname'];
     
     header("Location: employee-login.php");
 }
+if(isset($_POST['beneid'])) {
+    $beneid = $_POST['beneid'];
+    $res_date= $_POST['rdate'];
+    $res_time= $_POST['rtime'];
+    $res_Assist= $_POST['assist'];
+ 
+}
+ else {
+    echo "User ID is not set.";
+}
+
+$query = mysqli_query($con, "SELECT * FROM history WHERE Beneficiary_ID=$beneid");
+
+if($result = mysqli_fetch_assoc($query)){
+$res_ID = $result['Beneficiary_ID'];
+$res_date2 = $result['ReceivedDate'];
+$res_time2 = $result['ReceivedTime'];
+$res_Assist2= $result['AssistanceType'];
+
+}
 
 $query="SELECT * FROM employees where role='Community Affairs Officer'";
         $result = mysqli_query($con, $query);
@@ -60,6 +80,48 @@ if (!$transactionResult) {
     die("Invalid query: " . $con->error);
 }
 
+if(isset($_POST['submit'])) {
+$upload_folder='proofGL/';
+$uploaded_file=$upload_folder . basename($_FILES['myfile']['name']);
+if(file_exists($uploaded_file)){
+    echo '<body>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+    swal("File already exist","","error")
+    .then((value) => {
+    if (value) {
+    window.location.href = "historyproof.php";
+    }
+    });
+    </script>
+    </body>';
+    }
+    else{
+    if(move_uploaded_file($_FILES['myfile']['tmp_name'], $uploaded_file)){
+        $filename = basename($_FILES['myfile']['name']);
+        $res_ID = $_POST['beneid'];
+$res_date2 = $_POST['rdate'];
+$res_time2 = $_POST['rtime'];
+$res_Assist2= $_POST['assist'];
+        $query = "UPDATE history SET proofGL = '$filename' WHERE Beneficiary_ID = '$res_ID' AND ReceivedDate='$res_date2' AND ReceivedTime ='$res_time2' AND AssistanceType= '$res_Assist2'";
+        if (mysqli_query($con, $query)) {
+    echo '<body>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+    swal("File has been uploaded","","success")
+    .then((value) => {
+    if (value) {
+    window.location.href = "historyproof.php";
+    }
+    });
+    </script>
+    </body>';
+    }
+}else{
+    echo'Error';
+    }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -145,112 +207,42 @@ awesome/6.4.0/css/all.min.css"/>
 <div class="header--wrapper">
 <div class="header--title">
 <span> 1Bataan Malasakit - Special Assistance Program </span>
-<h2> Employee's Records </h2>
+<h2> Uploading Files</h2>
 </div>
 <div id="currentDate"></div>
 <div class="user--info">
 <div class="search--box">
 <i class="fa-solid fa-search"> </i>
-<input type="text" id="Search" oninput="search()" placeholder="Search " autocomplete="off"/>
-
+<input type="text" id="Search" oninput="search()" placeholder="Search "
+autocomplete="off"/>
 </div>
 <img src="images/background.png" alt=""/>
 </div>
-
 </div>
-
-        <div class="tabular--wrapper">  
-        <div class="card--container">
-            <h3 class="main--title"> Overall Data
-           
-             
-            </h3>
-
-        </div>
+<div class="tabular--wrapper">
+<div class="card--container">
+<h3 class="main--title"> Upload File
+</h3>
+</div>
 <div class="table--container">
+<!--<button class="btn1" onclick="window.location.href
+='addbeneficiary.php';">Add Beneficiary</button>-->
+<form action="" method="post" enctype="multipart/form-data">
+<input type="hidden" name="beneid" value="<?php echo $res_ID; ?>">
+<input type="hidden" name="assist" value="<?php echo $res_Assist; ?>">
+<input type="hidden" name="rdate" value="<?php echo $res_date; ?>">
+<input type="hidden" name="rtime" value="<?php echo $res_time; ?>">
+<input type="file" style="color: blue; padding: 10px; border-radius:
+5px;margin-bottom:10px;" name="myfile"/><br>
 
-
-<!--<button class="btn1" onclick="window.location.href ='addbeneficiary.php';">Add Beneficiary</button>-->
-<button class="btn1" onclick="window.location.href ='employeeregistration.php';">Add Employee Account</button>
-
-<table>
-<thead>
-<tr>
-<th>Last Name:</th>
-<th>First Name:</th>
-<th>Email:</th>
-<th>Role:</th>
-<th>Office:</th>
-<th>Action:</th>
-</tr>
-</thead>
-<tbody>
-<?php
-include("php/config.php");
-$sql = "SELECT * FROM employees where role='Community Affairs Officer'";
-$result = $con->query($sql);
-if (!$result) {
-die("Invalid query: " . $con->error);
-}
-while ($row = $result->fetch_assoc()) {
-echo "<tr>
-
-<td>" . $row["Lastname"]." </td>
-<td>" . $row["Firstname"] . "</td>
-<td>" . $row["Email"] . "</td>
-<td>" . $row["role"] . "</td>
-<td>" . $row["Office"] . "</td>
-<td>
-<form method='post'
-
-action='editemployee.php'>
-
-<input type='hidden'
-name='Emp_ID' value='" . $row['Emp_ID'] . "'>
-
-<button type='submit' style='color:green'>View</button>
-
-</form>
-</td>
-</tr>";
-}
-?>
-</tbody>
-</table>
-
-<nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-end">
-                <?php if ($currentPage > 1): ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>" tabindex="-1">Previous</a>
-                    </li>
-                <?php else: ?>
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1">Previous</a>
-                    </li>
-                <?php endif; ?>
-
-                <?php for ($page = 1; $page <= $totalPages; $page++): ?>
-                    <li class="page-item <?php if ($page == $currentPage) echo 'active'; ?>">
-                        <a class="page-link" href="?page=<?php echo $page; ?>"><?php echo $page; ?></a>
-                    </li>
-                <?php endfor; ?>
-
-                <?php if ($currentPage < $totalPages): ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>">Next</a>
-                    </li>
-                <?php else: ?>
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
-                <?php endif; ?>
-            </ul>
-        </nav>
+<input type="submit"  id="submitbtn" style="color: blue; background-color: lightgray; padding:
+10px; border-radius: 5px; margin-right:10px;" value="Submit" name="submit" onclick="showConfirmation()" />
+                  
+<input type="reset" style="color: white; background-color: red; padding: 10px;
+border-radius: 5px;"/>
 </div>
-</div> 
-</div> 
-    
+</div>
+</div>
 <input type="hidden" id="confirmed" name="confirmed" value="">
 
                     
@@ -294,6 +286,16 @@ function profile() {
         document.getElementById("confirmed").value = "no";
     }
 }
+function showConfirmation() {
+            var confirmation = confirm("Are you sure you want to update?");
+            if (confirmation) {
+                // If user clicks OK, submit the form
+                document.getElementById("confirmed").value = "yes";
+            } else {
+                document.getElementById("confirmed").value = "no";
+            }
+        }
+
 function toggleForm() {
 var form = document.getElementById("addForm");
 if (form.style.display === "none") {
