@@ -41,7 +41,7 @@ if(isset($_SESSION['Emp_ID'])){
         $role = $result['role'];
     }
 } else {
-    header("Location: employee-login.php");
+    header("Location: login.php");
     exit();
 }
 

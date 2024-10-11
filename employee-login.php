@@ -107,40 +107,7 @@
                             $_SESSION['Emp_ID'] = $row['Emp_ID'];
                             $_SESSION['valid'] = $row['Lastname'];
                           
-                          /* if ($row["role"] == "Admin") {
-                                echo '<body>
-                                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                                <script>
-                                swal("Log in successful!", "", "success")
-                                </script>';
-                                  echo '<script>
-                                 setTimeout(function(){
-                                    window.location.href="dashboard.php";
-                                } , 5000);
-                              </script>
-                              </body>';
-                              
-                            } else {
-
-                              echo '<body>
-                              <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                              <script>
-                              swal("Log in successful!", "", "success")
-                              </script>';
-                                echo '<script>
-                               setTimeout(function(){
-                                  window.location.href="dashboard.php";
-                              } , 5000);
-                            </script>
-                            </body>'; 
-                            }
-                          }
-                        else {
-
-                           
-                            $errorMessage = "Wrong Username or Password";
-                          
-                        }*/
+                        
                        
                 }
               }
@@ -187,9 +154,13 @@
 
             <a href="forgotpassemp.php" style="color:#ffeacb; margin-left:20px;">Forgot password?</a><br><br>
        
-            <div class="button">
-                <input type="submit" class="btn" name="submit" value="Login" required>  
+            <div class="button" style="margin-bottom:10px;margin-top:-2px; margin-bottom:15px; ">
+                <input type="submit" style="width:210px; margin-left:32px;" class="btn" name="submit" value="Login" required>  
             </div>
+            <center>  <a href="index.php" style="color: white;font-size:14px;text-decoration: none; display: inline-flex; align-items: center;margin-top:7px;">
+        <img src="images/back2.png" style="height: 15px; width: 20px; margin-right: 6px; margin-bottom:1px;"  />
+        Back to Home
+    </a>  <center>
            
         </form>
     </div>

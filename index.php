@@ -27,7 +27,7 @@
       >
         <div class="container-fluid">
           <a class="navbar-brand" href="#" id="logo" style = "font-size: 13px; color: #1477d2;">
-            <img src="images/background.png" /> Provincial Government of Bataan - Special Assistance Program </a>
+            <img src="images/background.png" /> Provincial Government of Bataan - Damayan Center </a>
           <button
             class="navbar-toggler"
             type="button"
@@ -73,7 +73,7 @@
 
       <!-- home section -->
     <div id="home">
-          <h3> PGB - Special Assistance Program</h3>
+          <h3> PGB - Damayan Center</h3>
           <p>
             With the help of this project, social assistance programs in the province should be more effective in their distribution and recipients will be better targeted. With this law, the Provincial Government of Bataan underlines its dedication to meeting the needs of its citizens, especially those who need the most financial support for medical care.  Our assistance program offers a range of crucial support services, including financial assistance through AICS, Eposino and Dialyser for Dialysis patients, medical assistance, guarantee letters for
                  hospital bills and laboratories
@@ -141,7 +141,7 @@
     </div>
 
     <div class="header" id = "header">
-       <h3> Services Offered by PGB-SAP </h3>
+       <h3> Services Offered by PGB-Damayan Center </h3>
     </div>
 
     <div class="services">
@@ -217,7 +217,7 @@
       
     </div>
     
-     <h1 id = "partnered"> Partnered Hospitals inside Bataan </h1>
+     <h1 id = "partnered"> Partnered Private Hospitals inside Bataan </h1>
 
       <div class="insideHospital">
           <div class="hospitals">
@@ -312,7 +312,7 @@
               
           
            <p>All content is in the public unless otherwise stated</p> <br>
-           <a href = "employee-login.php" style = "margin-top: 30px;"> Admin/Employee Login </a>
+        <!--  <a href = "login.php" style = "margin-top: 30px;"> Admin/Employee Login </a>-->
        </div>
     </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

@@ -22,9 +22,16 @@
                      $profileError = "";
                     $Errors = "";
                     
-                      $otp_str = str_shuffle("0123456789");
-                    $verification_code= substr($otp_str, 0, 10);
                     
+                   // $verification_code= substr($otp_str, 0, 6);//
+                    $otp_str = "123456789"; // String na hindi naglalaman ng 0 sa unang character
+$otp_str_with_zero = "0123456789"; // Buong range ng digits
+
+do {
+    $verification_code = substr(str_shuffle($otp_str_with_zero), 0, 6);
+} while ($verification_code[0] == '0'); // Siguraduhin na hindi magsisimula sa 0
+
+                     
                     if(isset($_POST['submit'])){
                     // receive all input values from the form
 
@@ -41,7 +48,7 @@
                     $Email = $_POST['Email'];
                     $Username = $_POST['Username'];
                     $Password = $_POST['password'];
-           
+                    $hashed_password = password_hash($Password, PASSWORD_BCRYPT);
                   
                 $users1 = "SELECT * FROM users WHERE Username='$Username' LIMIT 1";
                 $results = mysqli_query($con, $users1);
@@ -172,7 +179,7 @@ $currentDateTime = date('Y-m-d H:i:s');
 
 // Construct the SQL query to insert data into the database
 $query = "INSERT INTO users (Lastname, Firstname, Middlename, Birthday, Contactnumber, Province, CityMunicipality, Barangay, HousenoStreet, Email, Username, Password,  signup_time,status, verification_code) 
-          VALUES ('$Lastname', '$Firstname', '$Middlename', '$Birthday', '$Contactnumber', '$Province', '$CityMunicipality', '$Barangay', '$HousenoStreet', '$Email', '$Username', '$Password', '$currentDateTime','0', '$verification_code')";
+          VALUES ('$Lastname', '$Firstname', '$Middlename', '$Birthday', '$Contactnumber', '$Province', '$CityMunicipality', '$Barangay', '$HousenoStreet', '$Email', '$Username', '$hashed_password', '$currentDateTime','0', '$verification_code')";
 
 if(mysqli_query($con, $query)){
   if ($result) {
@@ -197,12 +204,16 @@ if(mysqli_query($con, $query)){
         //Recipients
         $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
         $mail->addAddress($Email);     //Add a recipient
-    
+    $link="http://localhost/public_html/verification.php";
+
         //Content
         $mail->isHTML(true); // Set email format to HTML
         $mail->Subject = 'Email Verification';
-        $mail->Body = "Good Day! This is your verification code: $verification_code 
-             <p> If you did not request for this code. Please ignore this email.</p>";
+        $mail->Body = "Good Day! This is your verification code: $verification_code. You may access the verification field in our website or through this <a href='$link'>link</a>.<br>
+             <p> If you did not request for this code. Please ignore this email.<br>
+             Thank you and God Bless<br>
+             PGB Damayan Center
+             </p>";
           
     
        if($mail->send()){
@@ -434,8 +445,12 @@ barangayDropdown.setAttribute("name", "Barangay");
 
        
                 <div class="links">
-            <center>    Already have an account? <a href="login.php">Log In here</a></center>
-                </div>
+            <center>    Already have an account? <a href="login.php">Log In here</a></center> <br>
+            <center>   
+            <a href="index.php" style="color:rgb(99, 95, 95); text-decoration: none; display: inline-flex; align-items: center;">
+        <img src="images/back.png" style="height: 15px; width: 20px; margin-right: 6px;" />
+        Back to Home
+    </a>  </div>
             </form>
             
         </div>

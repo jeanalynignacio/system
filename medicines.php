@@ -142,17 +142,18 @@ while ($row = $result->fetch_assoc()) {
 $totalRemainingBal += $row['RemainingBal'];
 }
 
-?>
+?><!--
 <h3 style="margin-left:70%; margin-top:-2%; color:#003399; cursor:default;">Budget:
   <input type="text" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
-</h3>
+</h3>-->
 <?php
 
 } else {
 ?>
+<!--
 <h3 style="margin-left:70%; margin-top:-2%; color:#003399; cursor:default;">Budget:
 <input type="text" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
-</h3>
+</h3>-->
 <?php
 }
 ?>
@@ -180,7 +181,7 @@ $totalRemainingBal += $row['RemainingBal'];
                         <tbody>
                         <?php
 include("php/config.php");
-if ($role === 'PSWD Employee' ){
+if ($role === 'PSWDO Employee' ){
 
     $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched, t.TransactionType, m.MedicineType, t.Status, t.Given_Time
         FROM medicines m

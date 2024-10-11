@@ -288,13 +288,13 @@
                     <label for = "Username">Username</label>
                     <input type="text" disabled name="Username" id="Username" autocomplete="off"value="<?php echo "{$res_ID['Username']}"; ?>" required>  
                 </div>
-                <div class="field input">
+             <!--   <div class="field input">
                     <label for = "Password">Password</label>
                     <input type="password" disabled name="Password" id="Password" autocomplete="off"value="<?php echo "{$res_ID['Password']}"; ?>" required>
               <span class="fas fa-eye toggle-password" onclick="togglePasswordVisibility(this)"></span>
                     <p style="color:  rgb(146, 16, 16); font-size: 18px;"><?php echo $passError ?></p>                    
               
-                </div>
+                </div>-->
                 </div>
                 <input type="hidden" name="confirmed" id="confirmed" value="no">
                 <div class="button-row">
@@ -322,7 +322,7 @@
         document.getElementById("HousenoStreet").disabled = false;
         document.getElementById("cityDropdown").disabled = false;
         document.getElementById("barangayDropdown").disabled = false;
-        document.getElementById("Password").disabled = false;
+       // document.getElementById("Password").disabled = false;
     
         document.getElementById("update").style.display = "inline"; // Correct way to set display
         document.getElementById("enableFieldsButton").style.display = "none"; // Correct way to set display

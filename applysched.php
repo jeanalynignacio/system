@@ -1,6 +1,9 @@
 <?php
     session_start();
-
+    use PHPMailer\PHPMailer\SMTP;
+    use PHPMailer\PHPMailer\Exception;
+    use PHPMailer\PHPMailer\PHPMailer;
+    
     include("php/config.php");
     if(!isset($_SESSION['valid'])){
         header("Location: index.php");
@@ -13,6 +16,8 @@
         if($result = mysqli_fetch_assoc($query)){
             $res_Id = $result['Beneficiary_Id'];
             $res_REPID = $result['Representative_ID'];
+            $Email= $result['Email'];
+            $lastName = $result['Lastname'];
         }
     }
     if(isset($_SESSION['valid'])){
@@ -36,6 +41,11 @@
         echo "Service type not set.";
         exit;
     }
+
+//$serviceType = $_POST['serviceType'];
+//$hospital = $_POST['hospitals'];
+
+
 
     if(isset($_POST['submit'])) {
         $serviceType = $_SESSION['serviceType'];
@@ -74,13 +84,15 @@
 
                 $serviceType = "Hospital Bills";
                 $query = "INSERT INTO hospitalbill (Beneficiary_ID, PartneredHospital, billamount) VALUES ('$BENEID', '$escaped_hospitals','0')";
-                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Schedule', CURDATE(),'$TIME')";
+                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Validation', CURDATE(),'$TIME')";
                 break;
+
+
                 case 'laboratories':
                     $labtype=$_POST['labType'];
                     $serviceType = "Laboratories";
                     $query = "INSERT INTO laboratories (Beneficiary_ID, LabType) VALUES ('$BENEID', '$labtype')";
-                    $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Schedule', CURDATE(),'$TIME')";
+                    $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Validatio', CURDATE(),'$TIME')";
                     break;
             default:
                 die("Invalid category selected");
@@ -101,6 +113,56 @@
                         });
                         </script>
                         </body>';
+
+    }
+    if ($serviceType == "Hospital Bills" || $serviceType == "Laboratories") {
+        require 'PHPMailer/src/Exception.php';
+        require 'PHPMailer/src/PHPMailer.php';
+        require 'PHPMailer/src/SMTP.php';
+
+        $mail = new PHPMailer(true);
+        
+        try {
+            // Server settings
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'bataanpgbsap@gmail.com'; // Your Gmail address
+            $mail->Password = 'cmpp hltn mxuc tcgl'; // Your Gmail password or App Password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            // Recipients
+            $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
+            $mail->addAddress($Email); // Add a recipient
+
+            // Content
+            $mail->isHTML(true);
+
+         
+                $employeeName ="Mr.Chalor Howell S. Icban";
+                $mail->Subject = 'Immediate Action Required: Validation of Your Request';
+                $mail->Body = "
+                <html>
+                <body>
+                <p>Dear Mr./Ms./Mrs. $lastName,</p>
+                <p>Your request for assistance has been submitted and is currently pending validation.</p>
+                <p>To ensure a smooth process, please visit our office as soon as possible to get validated and to receive your guarantee letter.</p>
+                <p>Thank you for your cooperation. We appreciate your prompt attention to this matter.</p>
+                
+                <p>Best regards,<br>$employeeName<br>
+                Special Assistance Program Coordinator<br>
+                Provincial Government of Bataan - Damayan Center</p>
+                </body>
+                </html>
+                ";
+            
+
+            // Sending the email
+            $mail->send();
+        } catch (Exception $e) {
+            // Handle the error (optional)
+        }
     }
 }  
 ?>

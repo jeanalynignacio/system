@@ -39,7 +39,25 @@ if (isset($_POST['myself']) || isset($_POST['relative'])) {
 }
 
    
+// Query to count the transactions
+$sql = "SELECT COUNT(*) as transaction_count FROM transaction WHERE  Date = CURDATE() AND AssistanceType NOT IN ('Hospital Bills', 'Laboratories')";
+$result = mysqli_query($con, $sql);
+$row = mysqli_fetch_assoc($result);
 
+if ($row['transaction_count'] > 100) {
+  
+    echo '<body>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+          swal("Daily Application Limit Reached", "We regret to inform you that we have reached our daily quota for applications. Please try again tomorrow.", "error")
+          .then((value) => {
+        if (value) {
+            window.location.href = "usershomepage.php";
+        }
+    });
+    </script>
+    </body>';
+} 
 if (isset($_POST['myself'])) {
     $userId = $_SESSION['id'];
     $threeMonthsAgo = date('Y-m-d', strtotime('-3 months'));
@@ -177,18 +195,45 @@ if (isset($_POST['myself'])) {
                     }
 
                 } else {
-                    echo '<body>
-                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                    <script>
-                    swal("Notification", "You already applied for your relative. Please wait for further instructions. Always check your email for further updates. Thank you.","info")
-                    .then((value) => {
-                        if (value) {
-                            window.location.href = "applyingoptions.php";
-                        }
-                    });
-                    </script>
-                    </body>';
-                    exit();
+                    $threeMonthsAgo = date('Y-m-d', strtotime('-3 months'));
+                    $query3 = "SELECT * FROM history WHERE Beneficiary_ID = '$beneficiaryId' AND ReceivedDate >= '$threeMonthsAgo'";
+                    $result3 = mysqli_query($con, $query3);
+                    
+                    if (mysqli_num_rows($result3) > 0) {
+                        $row = mysqli_fetch_assoc($result3);
+                        $lastTransactionDate = $row['ReceivedDate'];
+                        $date = new DateTime($lastTransactionDate);
+                        $formattedDate = $date->format('m/d/Y');
+                    
+                    
+                        echo '<body>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                        <script>
+                           swal("Notification", "You cannot apply at this time. You need at least three months before applying again. Your last transaction was on ' . $formattedDate . '", "info")
+                            .then((value) => {
+                            if (value) {
+                                window.location.href = "applyingoptions.php";
+                            }
+                        });
+                        </script>
+                        </body>';
+                        exit();
+                    } else {
+                       
+                echo '<body>
+                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                <script>
+                swal("Notification", "You already applied for your relative. Please wait for further instructions. Always check your email for further updates. Thank you.","info")
+                .then((value) => {
+                    if (value) {
+                        window.location.href = "applyingoptions.php";
+                    }
+                });
+                </script>
+                </body>';
+                exit();
+                    }
+                
                 }
             }
            
@@ -309,6 +354,45 @@ elseif (isset($_POST['relative'])) {
                         }
                         
                     }
+    }else{
+        $threeMonthsAgo = date('Y-m-d', strtotime('-3 months'));
+        $query3 = "SELECT * FROM history WHERE Beneficiary_ID = '$beneficiaryId' AND ReceivedDate >= '$threeMonthsAgo'";
+        $result3 = mysqli_query($con, $query3);
+        
+        if (mysqli_num_rows($result3) > 0) {
+            $row = mysqli_fetch_assoc($result3);
+            $lastTransactionDate = $row['ReceivedDate'];
+            $date = new DateTime($lastTransactionDate);
+            $formattedDate = $date->format('m/d/Y');
+        
+        
+            echo '<body>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script>
+               swal("Notification", "You cannot apply at this time. You need at least three months before applying again. Your last transaction was on ' . $formattedDate . '", "info")
+                .then((value) => {
+                if (value) {
+                    window.location.href = "applyingoptions.php";
+                }
+            });
+            </script>
+            </body>';
+            exit();
+        } else {
+           
+    echo '<body>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+    swal("Notification", "You already applied for yourself. Please wait for further instructions. Always check your email for further updates. Thank you.","info")
+    .then((value) => {
+        if (value) {
+            window.location.href = "applyingoptions.php";
+        }
+    });
+    </script>
+    </body>';
+    exit();
+        }
     }
 }
         }

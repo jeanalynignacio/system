@@ -48,13 +48,14 @@ $totalPages = ceil($totalEntries / $records_per_page);
 $Sql2=mysqli_query($con,"Select * FROM beneficiary WHERE Representative_ID='$id'");
 if ($result = mysqli_fetch_assoc($Sql2)) {
   $BeneID = $result['Beneficiary_Id'];
-
+}else{
+  $BeneID = $res_Id;
 }
 // Query to check if the beneficiary exists
 $checkBeneficiaryQuery = "SELECT COUNT(*) as count FROM transaction WHERE Beneficiary_Id = '$BeneID'";
+
 $beneficiaryResult = $con->query($checkBeneficiaryQuery);
 $beneficiaryCount = $beneficiaryResult->fetch_assoc()['count'];
-
 $transactionResult = [];
 if ($beneficiaryCount > 0) {
     // Fetch paginated beneficiaries
@@ -71,6 +72,8 @@ if ($beneficiaryCount > 0) {
         die("Invalid query: " . $con->error);
     }
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -125,7 +128,7 @@ if ($beneficiaryCount > 0) {
             <a style = " color: #1477d2; padding-left:10px;" class="nav-link"  onclick="toggleMenu()" style="color: white" >Profile </a>
           </li>
 
-<div class="sub-menu-wrap" id="subMenu">
+<div class="sub-menu-wrap" id="subMenu"  style="margin-right:250px;">
 <div class="sub-menu">
     <div class="user-info">
     <img src="images/profile.png">

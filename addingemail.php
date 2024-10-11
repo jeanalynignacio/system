@@ -3,7 +3,7 @@ session_start();
 
 include("php/config.php");
 if(!isset($_SESSION['Emp_ID'])){
-    header("Location: employee-login.php");
+    header("Location: login.php");
     exit();
 }
 
@@ -64,7 +64,7 @@ if(isset($_SESSION['Emp_ID'])){
             if (empty($errors)) {
                 // Use the complete user ID in the INSERT query
                 $otp_str = str_shuffle("0123456789");
-                $verification_code = substr($otp_str, 0, 10);
+                $verification_code = substr($otp_str, 0, 6);
               //  echo "Verification Code: $verification_code<br>"; // For debugging, to ensure verification code is generated
 
                 $query1 = "UPDATE employees SET Email ='$Email', verification_code='$verification_code', status='0' WHERE Emp_ID='$res_Id'";

@@ -17,7 +17,7 @@ $res_Fname = $result['Firstname'];
   }
   else{
     
-    header("Location: employee-login.php");
+    header("Location: login.php");
 }
 
 

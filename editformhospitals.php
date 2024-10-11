@@ -34,7 +34,7 @@ if(isset($_SESSION['Emp_ID'])) {
         $branch1 = $result['Office'];
   }
 } else {
-  header("Location: employee-login.php");
+  header("Location: login.php");
   exit();
 }
     $SQL = "SELECT b.*, t.*, h.*
@@ -117,7 +117,7 @@ if ($result) {
 }
 }
         
-elseif ($Status == "Release Guarantee Letter") {
+elseif ($Status == "Receive Guarantee Letter") {
     date_default_timezone_set('Asia/Manila');
     $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
     $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
@@ -281,11 +281,11 @@ if ($role == "Community Affairs Officer") {
             // Send the email
             $lastName = $result['Lastname'];  // Assuming 'Lastname' is part of the $result array
             $Email = $result['Email'];  // Assuming 'Email' is part of the $result array
-            $employeeName = $_POST['EmpName'];
+            $employeeName ="Mr.Chalor Howell S. Icban";
             $link= "http://localhost/public_html/feedback.php";
-            require 'phpmailer/src/Exception.php';
-            require 'phpmailer/src/PHPMailer.php';
-            require 'phpmailer/src/SMTP.php';
+            require 'PHPMailer/src/Exception.php';
+            require 'PHPMailer/src/PHPMailer.php';
+            require 'PHPMailer/src/SMTP.php';
 
             $mail = new PHPMailer(true);
             try {
@@ -304,7 +304,7 @@ if ($role == "Community Affairs Officer") {
 
                 // Content
                 $mail->isHTML(true);
-                $mail->Subject = 'Released Guarantee Letter';
+                $mail->Subject = 'Received Guarantee Letter';
                 $mail->Body = "
                     <html>
                     <body>
@@ -312,9 +312,10 @@ if ($role == "Community Affairs Officer") {
                     <p>We have successfully provided your Guarantee Letter. Please note that you may request another assistance after a period of 3 months.</p>
 <p>If you have some extra time, kindly answer our feedback form through this <a href='$link'>link</a>. Your input is greatly appreciated and will help us improve our service.<br></p>
 <p>Thank you for your cooperation. God Bless!<br><br></p>
-<p>Best regards,<br>$employeeName</p>
-<p>Provincial Government of Bataan - Special Assistance Program</p>
-</body>
+<p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
+ </body>
 </html>
 
                 ";
@@ -415,10 +416,10 @@ elseif ($Status == "For Schedule") {
         
         if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Guarantee Letter") {    
-            require 'phpmailer/src/Exception.php';
-            require 'phpmailer/src/PHPMailer.php';
-            require 'phpmailer/src/SMTP.php';
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Receive Guarantee Letter") {    
+                require 'PHPMailer/src/Exception.php';
+                require 'PHPMailer/src/PHPMailer.php';
+                require 'PHPMailer/src/SMTP.php';
 
             $mail = new PHPMailer(true);
             $lastName = $record['Lastname'];
@@ -445,7 +446,7 @@ elseif ($Status == "For Schedule") {
                 // Content
                 $mail->isHTML(true); // Set email format to HTML
                 if($status == 'For Schedule') {
-                    $employeeName = $_POST['EmpName'];
+                    $employeeName ="Mr.Chalor Howell S. Icban";
                     $mail->Subject = 'Schedule for requirements checking';
                     $mail->Body = "
                     <html>
@@ -456,9 +457,9 @@ elseif ($Status == "For Schedule") {
                     <p> We kindly expect your presence on the said date.<br><br></p>
                     <p>   If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='http://localhost/public_html/requestresched.php'> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.<br> 
                    Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.</p>
-                    <p>Best regards,<br>$employeeName</p>
-                   
-                    <p>Provincial Government of Bataan - Special Assistance Program</p>
+                    <p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
                     </body>
                     </html>
                     ";
@@ -537,7 +538,7 @@ elseif ($Status == "For Schedule") {
         $result2 = mysqli_query($con, $query);
              if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Guarantee Letter") {    
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Receive Guarantee Letter") {    
                 require 'PHPMailer/src/Exception.php';
                 require 'PHPMailer/src/PHPMailer.php';
                 require 'PHPMailer/src/SMTP.php';
@@ -565,7 +566,7 @@ elseif ($Status == "For Schedule") {
                 // Content
                 $mail->isHTML(true); // Set email format to HTML
                 if($status == 'Pending for Release of Guarantee Letter') {
-                    $employeeName = $_POST['EmpName'];
+                    $employeeName ="Mr.Chalor Howell S. Icban";
                     $mail->Subject = 'Pending for Release of Guarantee Letter';
                     $mail->Body = "
                         <html>
@@ -574,9 +575,9 @@ elseif ($Status == "For Schedule") {
                         <p>Your assistance request is currently pending for payout.</p>
                         <p>We are processing your application, and you will receive your financial assistance soon.</p>
                         <p>Thank you for your patience and cooperation.</p>
-                        <p>Best regards,</p>
-                        <p>$employeeName</p>
-                        <p>Provincial Government of Bataan - Special Assistance Program</p>
+                      <p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
                         </body>
                         </html>
                     ";
@@ -653,10 +654,10 @@ elseif ($Status == "For Schedule") {
             $result2 = mysqli_query($con, $query); 
              if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Guarantee Letter") {    
-            require 'phpmailer/src/Exception.php';
-            require 'phpmailer/src/PHPMailer.php';
-            require 'phpmailer/src/SMTP.php';
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Receive Guarantee Letter") {    
+                require 'PHPMailer/src/Exception.php';
+                require 'PHPMailer/src/PHPMailer.php';
+                require 'PHPMailer/src/SMTP.php';
 
             $mail = new PHPMailer(true);
             $lastName = $record['Lastname'];
@@ -683,7 +684,7 @@ elseif ($Status == "For Schedule") {
                 // Content
                 $mail->isHTML(true); // Set email format to HTML
                 if($status == 'Releasing Of Guarantee Letter') {
-                    $employeeName = $_POST['EmpName'];
+                    $employeeName ="Mr.Chalor Howell S. Icban";
                     $mail->Subject = 'Releasing Of Guarantee Letter';
                     $amount = $_POST['amount'];
                     $mail->Body = "
@@ -695,9 +696,9 @@ elseif ($Status == "For Schedule") {
                         Kindly proceed to $branch to claim your guarantee letter.<br>
                         Please bring a valid ID and show this email upon arrival.<br>
                         Thank you for your patience and cooperation.</p>
-                        <p>Best regards,<br>
-                        $employeeName<br>
-                        Provincial Government of Bataan - Special Assistance Program</p>
+                       <p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
                         </body>
                         </html>
                     ";
@@ -754,10 +755,10 @@ elseif ($Status == "For Schedule") {
          $result2 = mysqli_query($con, $query);
             if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Guarantee Letter") {    
-            require 'phpmailer/src/Exception.php';
-            require 'phpmailer/src/PHPMailer.php';
-            require 'phpmailer/src/SMTP.php';
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Receive Guarantee Letter") {    
+                require 'PHPMailer/src/Exception.php';
+                require 'PHPMailer/src/PHPMailer.php';
+                require 'PHPMailer/src/SMTP.php';
 
             $mail = new PHPMailer(true);
             $lastName = $record['Lastname'];
@@ -782,7 +783,7 @@ elseif ($Status == "For Schedule") {
                 // Content
                 $mail->isHTML(true); // Set email format to HTML
                if($status == 'Decline Request for Re-schedule') {
-                    $employeeName = $_POST['EmpName'];
+                $employeeName ="Mr.Chalor Howell S. Icban";
                     $mail->Subject = 'Request For Re-scheduled Declined';
                     $mail->Body = "
                         <html>
@@ -792,9 +793,9 @@ elseif ($Status == "For Schedule") {
                         <p>  Please be assured that we are doing our best to process all applications and requests efficiently. However, due to the following reason, we are unable to grant your rescheduling request.<br><br></p>
                     <p>  Reason:$reason<br><br></p>
                     <p>   We appreciate your understanding and patience in this matter. If you have any further questions or need additional assistance, please do not hesitate to contact us.<br><br></p>
-                        <p>Best regards,<br>$employeeName</p>
-                   
-                    <p>Provincial Government of Bataan - Special Assistance Program</p>
+                        <p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
                     </body>
                     </html>
                     ";
@@ -877,10 +878,10 @@ elseif ($Status == "For Schedule") {
          $result2 = mysqli_query($con, $query);
             if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Guarantee Letter") {    
-            require 'phpmailer/src/Exception.php';
-            require 'phpmailer/src/PHPMailer.php';
-            require 'phpmailer/src/SMTP.php';
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Receive Guarantee Letter") {    
+                require 'PHPMailer/src/Exception.php';
+                require 'PHPMailer/src/PHPMailer.php';
+                require 'PHPMailer/src/SMTP.php';
 
             $mail = new PHPMailer(true);
             $lastName = $record['Lastname'];
@@ -907,7 +908,7 @@ elseif ($Status == "For Schedule") {
                 // Content
                 $mail->isHTML(true); // Set email format to HTML
                if($status == 'For Re-schedule') {
-                    $employeeName = $_POST['EmpName'];
+                $employeeName ="Mr.Chalor Howell S. Icban";
                     $mail->Subject = 'Re-schedule';
                     $mail->Body = "
                        <html>
@@ -915,9 +916,9 @@ elseif ($Status == "For Schedule") {
                         <p>Dear Mr./Ms./Mrs. $lastName,</p>
                         <p>Your request for re-schedule has been accepted. Your new schedule is on $Date at  $transaction_time_12hr.</p>
                         <p> We kindly expect your presence on the said date.<br><br></p>
-<p>Best regards,<br>$employeeName</p>
-                   
-                    <p>Provincial Government of Bataan - Special Assistance Program</p>
+<p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
                     </body>
                     </html>
                     ";
@@ -1019,7 +1020,7 @@ t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
                     <span class="details">Status</span>
     <?php
     
-    $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Release of Guarantee Letter' ,'Releasing Of Guarantee Letter','Request for Re-schedule','For Re-schedule', 'Decline Request for Re-schedule','Release Guarantee Letter');
+    $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Release of Guarantee Letter' ,'Releasing Of Guarantee Letter','Request for Re-schedule','For Re-schedule', 'Decline Request for Re-schedule','Receive Guarantee Letter');
 
     if ($record['Status'] == 'For Schedule') {
         // If the current status is "For Schedule", display an input field instead of a dropdown
@@ -1060,7 +1061,7 @@ t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
             // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
             echo "<select id='status' name='Status' onchange='handleStatusChange()'>";
             echo "<option value='Releasing Of Guarantee Letter'>Releasing Of Guarantee Letter</option>";
-            echo "<option value='Release Guarantee Letter'>Release Guarantee Letter</option>";
+            echo "<option value='Receive Guarantee Letter'>Receive Guarantee Letter</option>";
             echo "</select>";
          
        }else{
@@ -1183,9 +1184,10 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
             at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br>
           <br>
              Best regards,<br>
-            <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-            Provincial Government of Bataan - Special Assistance Program</p>
-         </div> 
+             Mr.Chalor Howell S. Icban<br>
+          Special Assistance Program Coordinator<br>
+        Provincial Government of Bataan - Damayan Center</p>
+            </div> 
         `;
     } else if (status === 'For Validation') {
         pdf.style.display = 'none'; 
@@ -1195,7 +1197,7 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
             <div style="color: black; padding:10px; background:white; margin-top:10px;margin-bottom:-5px;">
                 <div class="input-box">
                     <span class="details" style="color: blue;">Hospital Bill Amount</span>
-                    <input type="text" style="padding:10px; height:30px;" required value="<?php echo $record['billamount']; ?>" name="billamount" />
+                    ₱<input type="text" style="padding:10px; height:30px;" required value="<?php echo $record['billamount']; ?>" name="billamount" />
                 </div>
                 <h3 style="color: blue;">REQUIREMENTS FOR HOSPITAL BILL ASSISTANCE VALIDATION</h3>
                 <ul style="text-align: left; margin-left:40px;">
@@ -1229,8 +1231,10 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
             We are processing your application, and you will receive your financial assistance soon.<br><br>
             Thank you for your patience and cooperation.<br><br>
             Best regards,<br>
-            <input type="text" name="EmpName" style="margin-top:15px;" style="margin-top:15px;"  value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-            Provincial Government of Bataan - Special Assistance Program</p>
+           Mr.Chalor Howell S. Icban<br>
+          Special Assistance Program Coordinator<br>
+        Provincial Government of Bataan - Damayan Center</p>
+            
          </div>
         `;
     } else if (status === 'Request for Re-schedule') {
@@ -1257,23 +1261,24 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
                     Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                     <p>Your request for hospital bills assistance has been approved. You may go on <input type="date" id="calendar" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
                     at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
-                    You will receive a guarantee letter with the approved amount of <input type="text" autocomplete="off" name="amount" style="margin-top:10px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">.<br><br>
-                    Kindly proceed to <select name="branch" id="branch" style="margin-top:5px;">
-    <option value="PGB-Balanga Branch" <?php if ($record['branch'] == "PGB-Balanga Branch") echo 'selected="selected"'; ?>>PGB-Balanga Branch</option>
-    <option value="PGB-Dinalupihan Branch" <?php if ($record['branch'] == "PGB-Dinalupihan Branch") echo 'selected="selected"'; ?>>PGB-Dinalupihan Branch</option>
-    <option value="PGB-Hermosa Branch" <?php if ($record['branch'] == "PGB-Hermosa Branch") echo 'selected="selected"'; ?>>PGB-Hermosa Branch</option>
-    <option value="PGB-Mariveles Branch" <?php if ($record['branch'] == "PGB-Mariveles Branch") echo 'selected="selected"'; ?>>PGB-Mariveles Branch</option>
-</select>to claim your guarantee letter. <br>
+                    You will receive a guarantee letter with the approved amount of ₱<input type="text" autocomplete="off" name="amount" style="margin-top:10px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">.<br><br>
+                    Kindly proceed to <?php echo $branch1; ?> to claim your guarantee letter. <br>
 
                     Please bring a valid ID and show this email upon arrival.<br><br>
                     Thank you for your patience and cooperation.<br><br>    
                     Best regards,<br>
-                    <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-                    Provincial Government of Bataan - Special Assistance Program
-                </p>
+                     Mr.Chalor Howell S. Icban<br>
+          Special Assistance Program Coordinator<br>
+        Provincial Government of Bataan - Damayan Center</p>
+             </p>
                 </div>
             `;
-          
+           /* <select name="branch" id="branch" style="margin-top:5px;">
+    <option value="PGB-Balanga Branch" <?php if ($record['branch'] == "PGB-Balanga Branch") echo 'selected="selected"'; ?>>PGB-Balanga Branch</option>
+    <option value="PGB-Dinalupihan Branch" <?php if ($record['branch'] == "PGB-Dinalupihan Branch") echo 'selected="selected"'; ?>>PGB-Dinalupihan Branch</option>
+    <option value="PGB-Hermosa Branch" <?php if ($record['branch'] == "PGB-Hermosa Branch") echo 'selected="selected"'; ?>>PGB-Hermosa Branch</option>
+    <option value="PGB-Mariveles Branch" <?php if ($record['branch'] == "PGB-Mariveles Branch") echo 'selected="selected"'; ?>>PGB-Mariveles Branch</option>
+</select>*/
             var amountField = document.getElementsByName('amount')[0];
     var branchField = document.getElementById('branch');
     var date2 = document.getElementById('calendar2');
@@ -1308,9 +1313,10 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
             at <input type="time" id="time" name="time"  />.<br>
             We kindly expect your presence on the said date.<br><br>
             Best regards,<br>
-            <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-            Provincial Government of Bataan - Special Assistance Program</p>
-         </div> 
+            Mr.Chalor Howell S. Icban<br>
+          Special Assistance Program Coordinator<br>
+        Provincial Government of Bataan - Damayan Center</p>
+             </div> 
         `;
 }
 else if (status === 'Decline Request for Re-schedule') {
@@ -1326,34 +1332,32 @@ else if (status === 'Decline Request for Re-schedule') {
 
             We appreciate your understanding and patience in this matter. If you have any further questions or need additional assistance, please do not hesitate to contact us.<br><br>
             Best regards,<br>
-            <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-            Provincial Government of Bataan - Special Assistance Program</p>
-         </div>
+            Mr.Chalor Howell S. Icban<br>
+          Special Assistance Program Coordinator<br>
+        Provincial Government of Bataan - Damayan Center</p>
+             </div>
         `;
     }
 
-    else if (status === 'Release Guarantee Letter') { 
+    else if (status === 'Receive Guarantee Letter') { 
    
         emailFormat.innerHTML = `
                 <div style = "color: black; padding:15px; background:white; margin-top:20px;">
                 Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                 <p>We have successfully provided your Guarantee Letter. Please note that you may request another assistance after a period of 3 months. <br>
                  If you have an extra time kindly answer our feedback form through this link.  Your input is greatly appreciated and will help us improve our service.<br> 
-                Thank you for your cooperation. God Bless!<br>
+                Thank you for your cooperation. God Bless!<br><br>
                 Best regards,<br>
-                <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-                Provincial Government of Bataan - Special Assistance Program</p>
-            </div> 
+             Mr.Chalor Howell S. Icban<br>
+          Special Assistance Program Coordinator<br>
+        Provincial Government of Bataan - Damayan Center</p>
+             </div> 
                 `;  
                 submitbtn.style.display = 'inline';
                 pdf.style.display = 'none';     }
 
 }
 
-  
-      
-     
-    
   </script>
   </body>
 </html>

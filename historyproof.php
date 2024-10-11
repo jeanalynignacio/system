@@ -11,11 +11,11 @@ $res_Id = $result['Emp_ID'];
 $res_Fname = $result['Firstname'];
  $res_Lname = $result['Lastname'];
  $role=$result['role'];
-}
+ $branch2=$result['Office'];
   }
   else{
     
-    header("Location: employee-login.php");
+    header("Location: login.php");
 }
 
 $query="SELECT * FROM employees where role='Community Affairs Officer'";
@@ -36,7 +36,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 1; // Get current page nu
 $offset = ($current_page - 1) * $records_per_page;
 
 
-$sql = "SELECT COUNT(*) AS totalEntries FROM employees where role='Community Affairs Officer' ";
+$sql = "SELECT COUNT(*) AS totalEntries FROM history where ReceivedAssistance='Guarantee Letter' AND branch='$branch2'  ";
 $result = $con->query($sql);
 
 if (!$result) {
@@ -53,13 +53,13 @@ $recordsPerPage = 10;
 $totalPages = ceil($totalEntries / $recordsPerPage);
 $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($currentPage - 1) * $recordsPerPage;
-$sql = "SELECT * FROM employees where role='Community Affairs Officer'  LIMIT $recordsPerPage OFFSET $offset";
+$sql = "SELECT * FROM history where ReceivedAssistance='Guarantee Letter' AND branch='$branch2'  LIMIT $recordsPerPage OFFSET $offset";
 $transactionResult = $con->query($sql);
 
 if (!$transactionResult) {
     die("Invalid query: " . $con->error);
 }
-
+  }
 ?>
 <!DOCTYPE html>
 <html lang="en">

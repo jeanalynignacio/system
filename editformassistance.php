@@ -2,16 +2,26 @@
 
 session_start();
 include("php/config.php");
- 
+
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
+
+require __DIR__ . "/vendor/autoload.php";
+use Infobip\Configuration;
+use Infobip\Api\SmsApi;
+use Infobip\Model\SmsDestination;
+use Infobip\Model\SmsTextualMessage;
+use Infobip\Model\SmsAdvancedTextualRequest;
+
 
     
 // Check if Beneficiary_Id is set in the URL parameter
 if(isset($_POST['Beneficiary_Id'])) {
     $beneID = $_POST['Beneficiary_Id'];
     $Status = $_POST['Status'];
+
+
 } else {
     echo "User ID is not set.";
     exit; // Exit if ID is not set
@@ -29,7 +39,7 @@ if(isset($_SESSION['Emp_ID'])) {
         $branch1 = $result['Office'];
     }
 } else {
-    header("Location: employee-login.php");
+    header("Location:login.php");
     exit();
 }
 
@@ -106,7 +116,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
     
          
-    elseif ($Status == "Release Payout") {
+    elseif ($Status == "Receive Payout") {
         date_default_timezone_set('Asia/Manila');
         $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
         $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
@@ -146,11 +156,11 @@ if ($result3) {
             if(mysqli_query($con, $query)){
                 $lastName = $result['Lastname'];  // Assuming 'Lastname' is part of the $result array
                 $Email = $result['Email'];  // Assuming 'Email' is part of the $result array
-                $employeeName = $_POST['EmpName'];
-    
-                require 'phpmailer/src/Exception.php';
-                require 'phpmailer/src/PHPMailer.php';
-                require 'phpmailer/src/SMTP.php';
+                $employeeName ="Mr.Chalor Howell S. Icban";
+                $link= "http://localhost/public_html/feedback.php";
+                require 'PHPMailer/src/Exception.php';
+                require 'PHPMailer/src/PHPMailer.php';
+                require 'PHPMailer/src/SMTP.php';
     
                 $mail = new PHPMailer(true);
                 try {
@@ -169,15 +179,17 @@ if ($result3) {
     
                     // Content
                     $mail->isHTML(true);
-                    $mail->Subject = 'Released Payout';
+                    $mail->Subject = 'Received Payout';
                     $mail->Body = "
                         <html>
                         <body>
                         <p>Dear Mr./Ms./Mrs. $lastName,</p>
                         <p>We have successfully provided your Financial Assistance. Please note that you may request another assistance after a period of 3 months.</p>
-                        <p>Thank you for your cooperation. God Bless!<br><br></p>
-                        <p>Best regards,<br>$employeeName</p>
-                        <p>Provincial Government of Bataan - Special Assistance Program</p>
+                        <p>If you have some extra time, kindly answer our feedback form through this <a href='$link'>link</a>. Your input is greatly appreciated and will help us improve our service.<br></p>
+    <p>Thank you for your cooperation. God Bless!<br><br></p>
+                        <p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
                         </body>
                         </html>
                     ";
@@ -224,11 +236,11 @@ if ($result3) {
    if($result2) {
     $lastName = $result['Lastname'];  // Assuming 'Lastname' is part of the $result array
     $Email = $result['Email'];  // Assuming 'Email' is part of the $result array
-    $employeeName = $_POST['EmpName'];
+    $employeeName ="Mr.Chalor Howell S. Icban";
 
-    require 'phpmailer/src/Exception.php';
-    require 'phpmailer/src/PHPMailer.php';
-    require 'phpmailer/src/SMTP.php';
+    require 'PHPMailer/src/Exception.php';
+    require 'PHPMailer/src/PHPMailer.php';
+    require 'PHPMailer/src/SMTP.php';
 
     $mail = new PHPMailer(true);
     try {
@@ -255,8 +267,9 @@ if ($result3) {
             <p>I am sorry to inform you that we currently have insufficient funds available to process your application for assistance.<br></p>
            <p>As a result, your application is pending at the moment. We will keep you updated as soon as funds become available.<br><br></p>
             <p>Thank you for your cooperation. God Bless!<br><br></p>
-            <p>Best regards,<br>$employeeName</p>
-            <p>Provincial Government of Bataan - Special Assistance Program</p>
+            <p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
             </body>
             </html>
         ";
@@ -310,13 +323,14 @@ elseif ($Status == "Pending due to Insufficient funds") {
 
 }
         elseif ($Status == "For Schedule") {
-
             $transaction_time = $_POST['time'];
             $Date = ($_POST['Given_Sched'] != '') ? $_POST['Given_Sched'] : '0000-00-00'; // Set to '0000-00-00' if empty
             $timestamp = strtotime($transaction_time);
            $transaction_time_24hr = date("H:i", $timestamp);
-        
-            $Status = "For Validation";
+           $number= $record['Contactnumber'];
+          
+
+         $Status = "For Validation";
               $overlapQuery = "SELECT * FROM transaction WHERE Given_Sched = '$Date' AND Given_Time = '$transaction_time_24hr' AND Beneficiary_Id != '$beneID'";
             $overlapResult = mysqli_query($con, $overlapQuery);
 
@@ -342,10 +356,10 @@ elseif ($Status == "Pending due to Insufficient funds") {
             
          if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Payout") {    
-            require 'phpmailer/src/Exception.php';
-            require 'phpmailer/src/PHPMailer.php';
-            require 'phpmailer/src/SMTP.php';
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Receive Payout") {    
+                require 'PHPMailer/src/Exception.php';
+                require 'PHPMailer/src/PHPMailer.php';
+                require 'PHPMailer/src/SMTP.php';
 
             $mail = new PHPMailer(true);
             $lastName = $record['Lastname'];
@@ -373,7 +387,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                 $mail->isHTML(true);
 
                 if($stats == 'For Schedule') {
-                    $employeeName = $_POST['EmpName'];
+                    $employeeName ="Mr.Chalor Howell S. Icban";
                     $mail->Subject = 'Schedule for requirements checking';
                     $mail->Body = "
                     <html>
@@ -385,9 +399,9 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                    <p>   If you are unable to attend the scheduled appointment, you may request a new appointment by clicking on this  <a href='http://localhost/public_html/requestresched.php'> link. </a> Please ensure that your reasons are valid and clearly explained so that your request can be considered.<br> 
                Please note that your reasons may need to be verified to avoid any inconvenience to other clients and our schedule. Thank you for your understanding and cooperation.</p>
 
-                   <p>Best regards,<br>$employeeName</p>
-                   
-                    <p>Provincial Government of Bataan - Special Assistance Program</p>
+                   <p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
                     </body>
                     </html>
                     ";
@@ -399,7 +413,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                     $transaction_time = $_POST['time'];
                     $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert to 12-hour format
                           
-                    $employeeName = $_POST['EmpName'];
+                    $employeeName ="Mr.Chalor Howell S. Icban";
                     $mail->Subject = 'Schedule for requirements checking';
                     $mail->Body = "
                     <html>
@@ -409,9 +423,9 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                     <p> However, we regret to inform you that your submitted requirements have expired. Kindly submit a new set of requirements on $Date at  $transaction_time_12hr to proceed with the validation of requirements to process your assistance.<br><br></p>
                    <p> Thank you for cooperation. God Bless!<br><br></p>
                   
-                   <p>Best regards,<br>$employeeName</p>
-                   
-                    <p>Provincial Government of Bataan - Special Assistance Program</p>
+                   <p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
                     </body>
                     </html>
                     ";
@@ -472,7 +486,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
              $result2 = mysqli_query($con, $query);
              if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Payout") {    
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Receive Payout") {    
                 require 'PHPMailer/src/Exception.php';
                 require 'PHPMailer/src/PHPMailer.php';
                 require 'PHPMailer/src/SMTP.php';
@@ -500,7 +514,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                 // Content
                 $mail->isHTML(true); // Set email format to HTML
                 if($status == 'Pending for Payout') {
-                    $employeeName = $_POST['EmpName'];
+                    $employeeName ="Mr.Chalor Howell S. Icban";
                     $mail->Subject = 'Pending for Payout';
                     $mail->Body = "
                         <html>
@@ -509,9 +523,10 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                         <p>Your assistance request is currently pending for payout.</p>
                         <p>We are processing your application, and you will receive your financial assistance soon.</p>
                         <p>Thank you for your patience and cooperation.</p>
-                        <p>Best regards,</p>
-                        <p>$employeeName</p>
-                        <p>Provincial Government of Bataan - Special Assistance Program</p>
+                        <p>Best regards,<br>
+                        $employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
                         </body>
                         </html>
                     ";
@@ -610,7 +625,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                     echo '<body>
                 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                 <script>
-                 swal("The amount must be up to 5000 Pesos only. If you need a higher amount, kindly choose a cheque.","","error")
+                 swal("The amount must be up to ₱5000 Pesos only. If you need a higher amount, kindly choose a cheque.","","error")
                 .then((value) => {
                     if (value) {
                    exit(); // Prevent further execution
@@ -630,10 +645,10 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
              $result2 = mysqli_query($con, $query);
              if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Payout") {    
-            require 'phpmailer/src/Exception.php';
-            require 'phpmailer/src/PHPMailer.php';
-            require 'phpmailer/src/SMTP.php';
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Receive Payout") {    
+                require 'PHPMailer/src/Exception.php';
+                require 'PHPMailer/src/PHPMailer.php';
+                require 'PHPMailer/src/SMTP.php';
 
             $mail = new PHPMailer(true);
             $lastName = $record['Lastname'];
@@ -661,7 +676,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                 // Content
                 $mail->isHTML(true); // Set email format to HTML
                 if($status == 'For Payout') {
-                    $employeeName = $_POST['EmpName'];
+                    $employeeName ="Mr.Chalor Howell S. Icban";
                     $amount = $_POST['amount'];
                     $mail->Subject = 'For Payout';
                     $mail->Body = "
@@ -676,9 +691,9 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                         <i>Important Reminder: You may request assistance again after 3 months  </i>
 
 
-                        <p>Best regards,<br>
-                        $employeeName</p>
-                        <p>Provincial Government of Bataan - Special Assistance Program</p>
+                        <p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
 
 
                         </body>
@@ -728,7 +743,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                 echo '<body>
             <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
             <script>
-            swal("The amount must be at least 5,000. If you need a lower amount, kindly choose cash","","error")
+            swal("The amount must be at least ₱5,000. If you need a lower amount, kindly choose cash","","error")
             .then((value) => {
                 if (value) {
                     exit(); // Prevent further execution
@@ -747,10 +762,10 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
          $result2 = mysqli_query($con, $query);
          if ($result2) {
         $Status = $_POST['Status'];
-        if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Payout") {    
-        require 'phpmailer/src/Exception.php';
-        require 'phpmailer/src/PHPMailer.php';
-        require 'phpmailer/src/SMTP.php';
+        if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Receive Payout") {    
+            require 'PHPMailer/src/Exception.php';
+            require 'PHPMailer/src/PHPMailer.php';
+            require 'PHPMailer/src/SMTP.php';
 
         $mail = new PHPMailer(true);
         $lastName = $record['Lastname'];
@@ -777,7 +792,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
             // Content
             $mail->isHTML(true); // Set email format to HTML
             if($status == 'For Payout') {
-                $employeeName = $_POST['EmpName'];
+                $employeeName ="Mr.Chalor Howell S. Icban";
                 $amount = $_POST['amount'];
                 $mail->Subject = 'For Payout';
                 $mail->Body = "
@@ -792,10 +807,9 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                     <i>Important Reminder: You may request assistance again after 3 months  </i>
 
 
-                    <p>Best regards,<br>
-                    $employeeName</p>
-                    <p>Provincial Government of Bataan - Special Assistance Program</p>
-
+                     <p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
 
                     </body>
                     </html>
@@ -868,11 +882,11 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
     if($result2) {
     $lastName = $result['Lastname'];  // Assuming 'Lastname' is part of the $result array
     $Email = $result['Email'];  // Assuming 'Email' is part of the $result array
-    $employeeName = $_POST['EmpName'];
+    $employeeName ="Mr.Chalor Howell S. Icban";
     
-    require 'phpmailer/src/Exception.php';
-    require 'phpmailer/src/PHPMailer.php';
-    require 'phpmailer/src/SMTP.php';
+    require 'PHPMailer/src/Exception.php';
+    require 'PHPMailer/src/PHPMailer.php';
+    require 'PHPMailer/src/SMTP.php';
     
     $mail = new PHPMailer(true);
     try {
@@ -899,8 +913,9 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
             <p>I am sorry to inform you that we currently have insufficient funds available to process your application for assistance.<br></p>
            <p>As a result, your application is pending at the moment. We will keep you updated as soon as funds become available.<br><br></p>
             <p>Thank you for your cooperation. God Bless!<br><br></p>
-            <p>Best regards,<br>$employeeName</p>
-            <p>Provincial Government of Bataan - Special Assistance Program</p>
+           <p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
             </body>
             </html>
         ";
@@ -955,10 +970,10 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
              $result2 = mysqli_query($con, $query);
             if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Payout") {    
-            require 'phpmailer/src/Exception.php';
-            require 'phpmailer/src/PHPMailer.php';
-            require 'phpmailer/src/SMTP.php';
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Receive Payout") {    
+                require 'PHPMailer/src/Exception.php';
+                require 'PHPMailer/src/PHPMailer.php';
+                require 'PHPMailer/src/SMTP.php';
 
             $mail = new PHPMailer(true);
             $lastName = $record['Lastname'];
@@ -983,7 +998,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                 // Content
                 $mail->isHTML(true); // Set email format to HTML
                if($status == 'Decline Request for Re-schedule') {
-                    $employeeName = $_POST['EmpName'];
+                $employeeName ="Mr.Chalor Howell S. Icban";
                     $mail->Subject = 'Request For Re-scheduled Declined';
                     $mail->Body = "
                         <html>
@@ -993,10 +1008,10 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                         <p>  Please be assured that we are doing our best to process all applications and requests efficiently. However, due to the following reason, we are unable to grant your rescheduling request.<br><br></p>
                     <p>  Reason:$reason<br><br></p>
                     <p>   We appreciate your understanding and patience in this matter. If you have any further questions or need additional assistance, please do not hesitate to contact us.<br><br></p>
-                        <p>Best regards,<br>$employeeName</p>
-                   
-                    <p>Provincial Government of Bataan - Special Assistance Program</p>
-                    </body>
+                        <p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
+    </body>
                     </html>
                     ";
     
@@ -1080,10 +1095,10 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
              $result2 = mysqli_query($con, $query);
             if ($result2) {
             $Status = $_POST['Status'];
-            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Release Payout") {    
-            require 'phpmailer/src/Exception.php';
-            require 'phpmailer/src/PHPMailer.php';
-            require 'phpmailer/src/SMTP.php';
+            if ($Status !== "Pending for Requirements" && $Status !== "For Validation" &&  $Status !== "Receive Payout") {    
+                require 'PHPMailer/src/Exception.php';
+                require 'PHPMailer/src/PHPMailer.php';
+                require 'PHPMailer/src/SMTP.php';
 
             $mail = new PHPMailer(true);
             $lastName = $record['Lastname'];
@@ -1110,7 +1125,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                 // Content
                 $mail->isHTML(true); // Set email format to HTML
                if($status == 'For Re-schedule') {
-                    $employeeName = $_POST['EmpName'];
+                $employeeName ="Mr.Chalor Howell S. Icban";
                     $mail->Subject = 'Re-schedule';
                     $mail->Body = "
                         <html>
@@ -1118,10 +1133,10 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                         <p>Dear Mr./Ms./Mrs. $lastName,</p>
                         <p>Your request for re-schedule has been accepted. Your new schedule is on $Date at  $transaction_time_12hr.</p>
                         <p> We kindly expect your presence on the said date.<br><br></p>
-<p>Best regards,<br>$employeeName</p>
-                   
-                    <p>Provincial Government of Bataan - Special Assistance Program</p>
-                    </body>
+ <p>Best regards,<br>$employeeName<br>
+ Special Assistance Program Coordinator<br>
+ Provincial Government of Bataan - Damayan Center</p>
+   </body>
                     </html>
                     ";
                 
@@ -1295,16 +1310,16 @@ if ($givenSched < $oneMonthAgo) {
             // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
             echo "<select id='status' name='Status' onchange='handleStatusChange()'>";
             echo "<option value='For Payout'>For Payout</option>";
-            echo "<option value='Release Payout'>Release Payout</option>";
+            echo "<option value='Receive Payout'>Receive Payout</option>";
             echo "</select>";
          
        }
-       elseif ($role === 'PSWD Employee'){
+       elseif ($role === 'PSWDO Employee'){
     
         // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
         echo "<select id='status' name='Status' onchange='handleStatusChange()'>";
         echo "<option value='For Payout'>For Payout</option>";
-        echo "<option value='Release Payout'>Release Payout</option>";
+        echo "<option value='Receive Payout'>Receive Payout</option>";
         echo "</select>";
      
    }else{
@@ -1344,7 +1359,7 @@ if ($givenSched < $oneMonthAgo) {
     var status = document.getElementById("status").value;
     var submitBtn = document.getElementById("submitbtn");
     
-    if (status == 'Release Payout') {
+    if (status == 'Receive Payout') {
         submitbtn.style.display = 'inline';
         submitBtn.value = 'Release Payout';
 
@@ -1393,8 +1408,7 @@ if(stats === 'Pending due to Insufficient funds') {
 
 
     }else{
-        document.getElementById('dt3').type = 'text';
-        document.getElementById('dt2').type = 'text';
+      
         emailFormat.innerHTML = `
          <div style = "color: black; padding:15px; background:white; margin-top:20px;"> 
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
@@ -1425,7 +1439,7 @@ if(stats === 'Pending due to Insufficient funds') {
         checkedRequirements = getCheckedRequirements('dialysis_requirement[]');
     }
 
-    // Debug: Log the checked requirements
+  
     console.log("Checked Requirements: ", checkedRequirements);
 
     // Check if all checkboxes are checked
@@ -1589,8 +1603,8 @@ function getCheckedRequirements(name) {
                            Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                                             <p>Your assistance request is currently for payout on <input type="date" id="calendar2" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
                     at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
-                    You will receive a total amount of <input type="text" autocomplete="off" min="1" max="9999" name="amount" style="margin-top:10px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">.<br><br>
-                         Kindly proceed to <span style="font-weight:bold;">PSWD. </span><input type="hidden" name="pswd" value="PSWD">   <br>
+                    You will receive a total amount of ₱<input type="text" autocomplete="off" min="1" max="9999" name="amount" style="margin-top:10px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">.<br><br>
+                         Kindly proceed to <span style="font-weight:bold;">PSWDO. </span><input type="hidden" name="pswd" value="PSWDO">   <br>
        
                            Please bring a valid ID and show this email upon arrival.<br><br>
                            Thank you for your patience and cooperation.<br><br>    
@@ -1633,7 +1647,7 @@ function getCheckedRequirements(name) {
                            Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                            <p>Your assistance request is currently for cheque payout on <input type="date" id="calendar3" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
                            at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
-                           You will receive a cheque with a total amount of <input type="text" autocomplete="off" name="amount" style="margin-top:10px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">.<br>
+                           You will receive a cheque with a total amount of ₱<input type="text" autocomplete="off" name="amount" style="margin-top:10px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">.<br>
                             Kindly proceed to <span style="font-weight:bold;">DSWD-Orani </span>
 <input type="hidden" name="pswd" value="DSWD-Orani"> to collect your cheque.<br>
                            Please bring a valid ID and show this email upon arrival.<br><br>
@@ -1710,13 +1724,14 @@ else if (status === 'Decline Request for Re-schedule') {
          </div>
         `;
     }
-    else if (status === 'Release Payout') { 
+    else if (status === 'Receive Payout') { 
    
    emailFormat.innerHTML = `
            <div style = "color: black; padding:15px; background:white; margin-top:20px;">
            Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
            <p>We have successfully provided your Financial Assistance. Please note that you may request another assistance after a period of 3 months. <br>
-           Thank you for your cooperation. God Bless!<br> 
+            If you have an extra time kindly answer our feedback form through this link.  Your input is greatly appreciated and will help us improve our service.<br> 
+            Thank you for your cooperation. God Bless!<br> 
            
            Best regards,<br>
            <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>

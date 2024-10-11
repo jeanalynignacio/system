@@ -14,7 +14,7 @@ if(isset($_SESSION['Emp_ID'])){
         $branch = $result['Office'];
     }
 } else {
-    header("Location: employee-login.php");
+    header("Location: login.php");
     exit;
 }
 

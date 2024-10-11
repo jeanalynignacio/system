@@ -15,7 +15,7 @@ $res_Fname = $result['Firstname'];
   }
   else{
     
-    header("Location: employee-login.php");
+    header("Location: login.php");
 }
 if(isset($_POST['beneid'])) {
     $beneid = $_POST['beneid'];

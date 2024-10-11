@@ -3,11 +3,11 @@
 
     include("php/config.php");
     if(!isset($_SESSION['valid'])){
-        header("Location: index.php");
+      
     }
-
+/*
     if(isset($_SESSION['valid'])){
-        $id = $_SESSION['id'];
+         $id = $_SESSION['id'];
         $query = mysqli_query($con, "SELECT * FROM beneficiary WHERE Representative_ID=$id");
 
         if($result = mysqli_fetch_assoc($query)){
@@ -25,13 +25,19 @@
     $res_Lname = $result['Lastname'];
     $res_profile = $result['userIDpic'];
     }
-    }
+    }*/
 
     if(isset($_SESSION['serviceType'])){
         $serviceType = $_SESSION['serviceType'];
         echo"<?php$serviceType?>";
     }else{
-        echo "Service type not set.";
+        $password = 'Jeana29!';
+
+        // Hash the password using bcrypt
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        
+        // Display the hashed password
+        echo $hashedPassword;
         exit;
     }
 
@@ -96,6 +102,7 @@
             echo "Error: " . mysqli_error($con);
         }
     }
+   
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -353,6 +360,7 @@
                 </div>
             </div>
         </div>-->
+    
         <div class="sub">
             <!--<input class="applysched" type="submit" value="Apply for Schedule" name="submit">-->
             <center><button type="submit" id="scheduleButton" name="submit" class="scheduleButton" disabled >Get a schedule</button><br>      </center>

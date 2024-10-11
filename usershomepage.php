@@ -26,7 +26,7 @@ if($result = mysqli_fetch_assoc($query)){
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>1BM - Special Assistance Program</title>
+    <title>PGB - Damayan Center</title>
     <link rel="stylesheet" href="usershomepage.css" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -54,14 +54,14 @@ if($result = mysqli_fetch_assoc($query)){
         <div class="container-fluid">
         <a
             class="navbar-brand"   href="#" id="logo"  style="font-size: 15px; color: #1477d2;">
-            <img src="images/background.png" /> Provincial Government of Bataan- Special Assistance Program
+            <img src="images/background.png" /> Provincial Government of Bataan- Damayan Center 
           </a>
           <button
             class="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
+            aria-controls="navbarSupportedContent"  
             aria-expanded="false"
             aria-label="Toggle navigation"
           >
@@ -114,14 +114,27 @@ if($result = mysqli_fetch_assoc($query)){
         
     </button>
 </form>
-<form action="status.php" method="POST" class="sub-menu-link">
-    <input type="hidden" name="userId" value="<?php echo $res_Id; ?>">
-    <button type="submit" class="btn-edit-profile" >
-        <img src="images/profile.png">
-        <p>Status </p>
-        
-    </button>
-</form>
+
+<?php
+ 
+ $query = "SELECT * FROM beneficiary WHERE Representative_ID = '$id'  ";
+ 
+ 
+ $feedbackResult = $con->query($query);
+ 
+ // Check if the query returned any rows
+ if ($feedbackResult && $feedbackResult->num_rows > 0): ?>
+     
+        <form action="status.php" method="POST" class="sub-menu-link">
+     <input type="hidden" name="userId" value="<?php echo $res_Id; ?>">
+     <button type="submit" class="btn-edit-profile" >
+         <img src="images/profile.png">
+         <p>Status </p>
+         
+     </button>
+ </form>
+   
+ <?php endif; ?>
 
    
         <a href="logout.php" class="sub-menu-link">
@@ -135,7 +148,7 @@ if($result = mysqli_fetch_assoc($query)){
         </div>
       </nav>
       
-<p class="welcome-message">Hello and welcome to PGB-SAP, <?php echo $res_Fname; ?>.</p>
+<p class="welcome-message">Hello and welcome to PGB-Damayan Center, <?php echo $res_Fname; ?>.</p>
 
 
       <div id="home">
@@ -161,7 +174,7 @@ if($result = mysqli_fetch_assoc($query)){
       </div>
 
       <div class="header" id="header">
-        <h3>Available Services offered by PGB-SAP</h3>
+        <h3>Available Services offered by PGB-Damayan Center</h3>
       </div>
 
       <div class="services">
@@ -227,7 +240,7 @@ if($result = mysqli_fetch_assoc($query)){
        <!--<center> <button class="btn1" onclick="window.location.href = 'applyingoptions.php';">Apply for Assistance</button></center>  -->
     </div>
     
-<h1 id = "partnered"> Partnered Hospitals inside Bataan </h1>
+<h1 id = "partnered"> Partnered Private Hospitals inside Bataan </h1>
 
 <div class="insideHospital">
     

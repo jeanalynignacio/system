@@ -88,6 +88,10 @@ if (isset($_POST['submit2'])) {
                 </div>
                 <?php endif; ?>
                
+                <center>  <a href="forgotpassemp.php" style="color:gray; text-decoration: none; display: inline-flex; align-items: center;margin-top:7px;">
+        <img src="images/back.png" style="height: 15px; width: 20px; margin-right: 6px;" />
+        Back
+    </a>  <center>
             </form>
         </div>
     </div>

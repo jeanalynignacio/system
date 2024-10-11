@@ -20,7 +20,7 @@ if (isset($_POST['submit'])) {
                     </script>';
                       echo '<script>
                      setTimeout(function(){
-                        window.location.href="employee-login.php";
+                        window.location.href="login.php";
                     } , 2000);
                   </script>
                   </body>'; 
@@ -33,7 +33,7 @@ if (isset($_POST['submit'])) {
                           </script>';
                             echo '<script>
                            setTimeout(function(){
-                              window.location.href="employee-login.php";
+                              window.location.href="login.php";
                           } , 2000);
                         </script>
                         </body>';
@@ -46,7 +46,7 @@ if (isset($_POST['submit'])) {
                 </script>';
                   echo '<script>
                  setTimeout(function(){
-                    window.location.href="employee-login.php";
+                    window.location.href="login.php";
                 } , 2000);
               </script>
               </body>';
@@ -75,7 +75,7 @@ if (isset($_POST['submit'])) {
               </script>';
                 echo '<script>
                setTimeout(function(){
-                  window.location.href="employee-login.php";
+                  window.location.href="login.php";
               } , 2000);
             </script>
             </body>';

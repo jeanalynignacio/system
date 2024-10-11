@@ -53,12 +53,12 @@ if (isset($_POST['submit'])) {
        
 
         // Check if there's an existing record with the same beneficiary ID, assistance, and within the last 2 months
-        $two_months_ago = date('Y-m-d', strtotime('-2 months', strtotime($date)));
+        $two_months_ago = date('Y-m-d', strtotime('-3 months', strtotime($date)));
     
         $query = "SELECT * FROM feedback WHERE Beneficiary_ID = '$Ben_Id' AND ServiceType = '$assistance' AND Date > '$two_months_ago'";
-        $result = mysqli_query($con, $query);
+        $result2 = mysqli_query($con, $query);
     
-        if (mysqli_num_rows($result) > 0) {
+        if (mysqli_num_rows($result2) > 0) {
          
             echo '<body>
             <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -393,7 +393,7 @@ if(isset($_SESSION['valid'])): ?>
   <label for="HAPPY234" style="background-image: url('images/5.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
 </div>
 
-<h1 style="font-size: 15px; margin-top: 25px; font-size: 15px; margin-left: 35px;"><strong>SQD3. Ang mga hakbang sa pagproseso. kasama na ang pagbayad ay madali at simple lamang.</strong></h1><br>
+<h1 style="font-size: 15px; margin-top: 25px; font-size: 15px; margin-left: 35px;"><strong>SQD3. Ang mga hakbang sa pagproseso, kasama na ang pagbayad ay madali at simple lamang.</strong></h1><br>
   <div class="emotion" style="margin-left: 55px;margin-top: -15px;margin-bottom: -15px;">
   <input type="radio" name="SQD3" id="SAD1234" class="smiley-radio" style="display: none;"  value="Dismayado" />
   <label for="SAD1234" style="background-image: url('images/1.png'); width: 55px; height: 55px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
@@ -445,6 +445,10 @@ if(isset($_SESSION['valid'])): ?>
 
   <input type="radio" name="SQD5" id="HAPPY234567" class="smiley-radio" style="display: none;" value="Sobrang saya" />
   <label for="HAPPY234567" style="background-image: url('images/5.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
+  <input type="radio" name="SQD5" id="NA" class="smiley-radio" style="display: none;" value="N/A" />
+  <label for="NA" style="background-image: url('images/6.png'); width: 55px; height: 54px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>
+
 </div>
 
 <h1 style="font-size: 15px; margin-top: 25px; font-size: 15px; margin-left: 35px;"><strong>SQD6. Pakiramdam ko ay patas ang opisina sa lahat. o walang palakasan", sa aking transaksyon</strong></h1><br>

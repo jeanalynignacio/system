@@ -7,9 +7,15 @@ include("php/config.php");
 
 if (isset($_POST['submit'])) {
     $code =  $_POST['code'];
-    $otp_str = str_shuffle("0123456789");
-    $verification_code= substr($otp_str, 0, 10);
-
+  
+    
+    $otp_str = "123456789"; // String na hindi naglalaman ng 0 sa unang character
+    $otp_str_with_zero = "0123456789"; // Buong range ng digits
+    
+    do {
+        $verification_code = substr(str_shuffle($otp_str_with_zero), 0, 6);
+    } while ($verification_code[0] == '0'); // Siguraduhin na hindi magsisimula sa 0
+    
     $query = "SELECT * FROM users WHERE Email='$code'";
     $result = mysqli_query($con, $query);
     if ($result) {
@@ -107,7 +113,7 @@ if (isset($_POST['submit'])) {
 <body>
     <div class="container">
         <div class="box form-box">
-            <header>Verification</header>
+            <header>Email</header>
             <form id="" action="" method="post">
                 <div class="field input">
                     <label for="username">Enter your email</label>
@@ -116,15 +122,20 @@ if (isset($_POST['submit'])) {
                 </div>
                 
                 <div class="field">
-                    <input type="submit" class="btn" name="submit" value="Verify" required >  
+                    <input type="submit" class="btn" name="submit" value="Verify" required > 
+                   
                     
                 </div>
                 <?php if(isset($errorMessage)): ?>
                 <div class="message">
                     <p><?php echo $errorMessage ?></p>
                 </div>
+           
                 <?php endif; ?>
-               
+                <center>  <a href="index.php" style="color:gray; text-decoration: none; display: inline-flex; align-items: center;margin-top:7px;">
+        <img src="images/back.png" style="height: 15px; width: 20px; margin-right: 6px;" />
+        Back to Home
+    </a>  <center>
             </form>
         </div>
     </div>

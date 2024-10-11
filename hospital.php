@@ -16,7 +16,7 @@ $res_Fname = $result['Firstname'];
   }
   else{
     
-    header("Location: employee-login.php");
+    header("Location: login.php");
 }
 ?>
 
@@ -256,16 +256,16 @@ while ($row = $result->fetch_assoc()) {
 $totalRemainingBal += $row['RemainingBal'];
 }
 ?>
-<h3 style="margin-left:20%; margin-top:-5%; color:#003399; cursor:default;">Budget:
-<input type="text" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
-</h3>
+
+<input type="hidden" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
+
 <?php
 
 } else {
 ?>
-<h3 style="margin-left:70%; margin-top:-2%; color:#003399; cursor:default;">Budget:
-<input type="text" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
-</h3>
+
+<input type="hidden" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
+
 <?php
 }
 ?>

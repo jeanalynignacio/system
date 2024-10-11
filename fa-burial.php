@@ -16,7 +16,7 @@ $res_Fname = $result['Firstname'];
   }
   else{
     
-    header("Location: employee-login.php");
+    header("Location: login.php");
 }
 ?>
 <!DOCTYPE html>
@@ -144,9 +144,9 @@ if ($result->num_rows > 0) {
         $totalRemainingBal += $row['RemainingBal'];
     }
         ?>
-        <h3 style="margin-left:70%; margin-top:-2%; color:#003399; cursor:default;">Budget:
+        <!--<h3 style="margin-left:70%; margin-top:-2%; color:#003399; cursor:default;">Budget:
             <input type="text" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
-        </h3>
+        </h3>-->
         <?php
     
 } else {

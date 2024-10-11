@@ -134,8 +134,8 @@ $selectedBarangay = $_POST['role'] ?? 'Select';
                     <option value="Select" <?php if ($selectedRole === 'Select') echo 'selected'; ?>>Select</option>
                     <option value="Admin" <?php if ($selectedRole === 'Admin') echo 'selected'; ?>>Admin</option>
                     <option value="Community Affairs Officer" <?php if ($selectedRole === 'Community Affairs Officer') echo 'selected'; ?>>Community Affairs Officer</option>
-                    <option value="Accounting Staff" <?php if ($selectedRole === 'Accounting Staff') echo 'selected'; ?>>Accounting Staff</option>
-                   
+                    <option value="PSWDO Employee" <?php if ($selectedRole === 'PSWDO Employee') echo 'selected'; ?>>PSWDO Employee</option>
+                    <option value="DSWD Employee" <?php if ($selectedRole === 'DSWD Employee') echo 'selected'; ?>>DSWD Employee</option>
                       </select>  
                       <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $roleError ?></p>
                              
@@ -148,10 +148,10 @@ $selectedBarangay1 = $_POST['office'] ?? 'Select';
                     <label for = "role" style="font-size: 18px;">Office</label>
                     <select id="cityDropdown" name="office" onchange="populateBarangays2()">
                     <option value="Select" <?php if ($selectedOffice === 'Select') echo 'selected'; ?>>Select</option>
-                    <option value="PGB-Balanga Branch" <?php if ($selectedOffice === 'PGB-Balanga Branch') echo 'selected'; ?>>PGB-Balanga Branch</option>
-                    <option value="PGB-Dinalupihan Branch" <?php if ($selectedOffice === 'PGB-Dinalupihan Branch') echo 'selected'; ?>>PGB-Dinalupihan Branch</option>
-                    <option value="PGB-Hermosa Branch" <?php if ($selectedOffice === 'PGB-Hermosa Branch') echo 'selected'; ?>>PGB-Hermosa Branch</option>
-                    <option value="PGB-Mariveles Branch" <?php if ($selectedOffice === 'PGB-Mariveles Branch') echo 'selected'; ?>>PGB-Mariveles Branch</option>
+                    <option value="PGB-Damayan Center-Balanga Branch" <?php if ($selectedOffice === 'PGB-Damayan Center-Balanga Branch') echo 'selected'; ?>>PGB-Damayan Center-Balanga Branch</option>
+                    <option value="PGB-Damayan Center-Dinalupihan Branch" <?php if ($selectedOffice === 'PGB-Damayan Center-Dinalupihan Branch') echo 'selected'; ?>>PGB-Damayan Center-Dinalupihan Branch</option>
+                    <option value="PGB-Damayan Center-Hermosa Branch" <?php if ($selectedOffice === 'PGB-Damayan Center-Hermosa Branch') echo 'selected'; ?>>PGB-Damayan Center-Hermosa Branch</option>
+                    <option value="PGB-Damayan Center-Mariveles Branch" <?php if ($selectedOffice === 'PGB-Damayan Center-Mariveles Branch') echo 'selected'; ?>>PGB-Damayan Center-Mariveles Branch</option>
                     
                       </select>  
                       <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $officeError ?></p>
@@ -178,6 +178,9 @@ $selectedBarangay1 = $_POST['office'] ?? 'Select';
                 </div>
 
                 <div class="links">
+                <center>
+                    <img src="images/back.png" style="vertical-align: middle; height: 15px;width:20px;margin-right:6px; "/><a href="dashboard.php" style="color:rgb(99, 95, 95); text-decoration: none;margin-right:10px;">Back to Home</a></center>
+
                  </div>
             </form>
             

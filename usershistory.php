@@ -14,15 +14,10 @@ if (isset($_SESSION['valid'])) {
 if ($result = mysqli_fetch_assoc($query)) {
     $res_Id = $result['Beneficiary_Id'];
 
-}
+}else{
+  $res_Id = $id;
 }
 
-// Fetch user details
-$query = mysqli_query($con, "SELECT * FROM users WHERE Id = '$id'");
-if ($result = mysqli_fetch_assoc($query)) {
-    $res_ID = $result['Id'];
-    $res_Fname = $result['Firstname'];
-    $res_Lname = $result['Lastname'];
 }
 
 $currentDate = date("Y-m-d");
@@ -37,7 +32,7 @@ $sql = "SELECT COUNT(*) AS totalEntries FROM history where Beneficiary_ID ='$res
 $result = $con->query($sql);
 
 if (!$result) {
-    die("Invalid query: " . $con->error);
+  //  die("Invalid query: " . $con->error);
 }
 
 $row = $result->fetch_assoc();
@@ -49,7 +44,10 @@ $Sql2=mysqli_query($con,"Select * FROM history WHERE Beneficiary_ID='$res_Id'");
 if ($result = mysqli_fetch_assoc($Sql2)) {
   $BeneID = $result['Beneficiary_ID'];
 
+}else{
+  $BeneID = $res_Id;
 }
+
 // Query to check if the beneficiary exists
 $checkBeneficiaryQuery = "SELECT COUNT(*) as count FROM history WHERE Beneficiary_ID = '$BeneID'";
 $beneficiaryResult = $con->query($checkBeneficiaryQuery);
@@ -68,7 +66,17 @@ if ($beneficiaryCount > 0) {
     if (!$transactionResult) {
         die("Invalid query: " . $con->error);
     }
+    
 }
+
+// Fetch user details
+$query = mysqli_query($con, "SELECT * FROM users WHERE Id = '$id'");
+if ($result = mysqli_fetch_assoc($query)) {
+    $res_ID = $result['Id'];
+    $res_Fname = $result['Firstname'];
+    $res_Lname = $result['Lastname'];
+}
+
 
 
 ?>
@@ -125,7 +133,7 @@ if ($beneficiaryCount > 0) {
             <a style = " color: #1477d2; padding-left:10px;" class="nav-link"  onclick="toggleMenu()" style="color: white" >Profile </a>
           </li>
 
-<div class="sub-menu-wrap" id="subMenu">
+<div class="sub-menu-wrap" id="subMenu" style="margin-right:320px;">
 <div class="sub-menu">
     <div class="user-info">
     <img src="images/profile.png">

@@ -100,12 +100,12 @@ if (isset($_POST['submit'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <title>Email Verification</title>
+    <title>Email</title>
 </head>
 <body>
     <div class="container">
         <div class="box form-box">
-            <header  style="background:#1477d2;">Email Verification</header>
+            <header  style="background:#1477d2;">Email</header>
             <form id="" action="" method="post">
                 <div class="field input">
                     <label for="username">Enter your email</label>
@@ -117,12 +117,17 @@ if (isset($_POST['submit'])) {
                     <input type="submit"  style="background:#1477d2;" class="btn" name="submit" value="Verify" required >  
                     
                 </div>
+
                 <?php if(isset($errorMessage)): ?>
                 <div class="message">
                     <p><?php echo $errorMessage ?></p>
                 </div>
                 <?php endif; ?>
                
+                <center>  <a href="index.php" style="color:gray; text-decoration: none; display: inline-flex; align-items: center;margin-top:7px;">
+        <img src="images/back.png" style="height: 15px; width: 20px; margin-right: 6px;" />
+        Back to Home
+    </a>  <center>
             </form>
         </div>
     </div>

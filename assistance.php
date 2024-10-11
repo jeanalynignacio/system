@@ -151,9 +151,9 @@ if ($result->num_rows > 0) {
     }
 
         ?>
-        <h3 style="margin-left:70%; margin-top:-2%; color:#003399; cursor:default;">Budget:
-            <input type="text" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
-        </h3>
+     
+            <input type="hidden" style="background:none; margin-right:30px; color:#003399; cursor:default; font-size:18px" value="<?php echo $totalRemainingBal; ?>" name="budgettext" readonly />
+       
         <?php
     
 } else {
@@ -194,7 +194,7 @@ if ($result->num_rows > 0) {
                         <?php
 include("php/config.php");
 
-if ($role === 'PSWD Employee' ){
+if ($role === 'PSWDO Employee' ){
 
 $sql = "SELECT t.Date, t.transaction_time, b.Beneficiary_Id, b.Lastname, b.Firstname, b.CityMunicipality, t.Given_Sched,t.Given_Time,t.TransactionType,  t.Status , f.FA_Type 
         FROM financialassistance f 
