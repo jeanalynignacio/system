@@ -133,6 +133,9 @@ if(isset($_SESSION['Emp_ID'])){
                     <input type="submit" class="btn" name="submit" value="Add Email">
                 </div>
             </form>
+            <center>
+                    <img src="images/back.png" style="vertical-align: middle; height: 15px;width:20px;margin-right:6px; "/><a href="index.php" style="color: #414344; text-decoration: none;margin-right:10px;">Back to Home</a></center>
+
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

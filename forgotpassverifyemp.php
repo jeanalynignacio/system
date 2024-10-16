@@ -70,7 +70,7 @@ if (isset($_POST['submit2'])) {
 <body>
     <div class="container">
         <div class="box form-box">
-            <header  style="background:#1477d2;" >Verification</header>
+            <header   >Verification</header>
             <form id="" action="" method="post">
                 <div class="field input">
                     <label for="username">Enter verification code here</label>
@@ -79,7 +79,7 @@ if (isset($_POST['submit2'])) {
                 </div>
                 
                 <div class="field">
-                    <input  style="background:#1477d2;" type="submit" class="btn" name="submit2" value="Verify" required >  
+                    <input  type="submit" class="btn" name="submit2" value="Verify" required >  
                     
                 </div>
                 <?php if(isset($errorMessage)): ?>

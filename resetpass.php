@@ -15,6 +15,8 @@ if(isset($_SESSION['Id'])) {
 $passError = "";
 if (isset($_POST['submit'])) {
     $code =  $_POST['code'];
+    $hashed_password = password_hash($code, PASSWORD_BCRYPT);
+                  
     $Id =  $_POST['Id'];
     if(empty($code))
     {
@@ -25,7 +27,7 @@ if (isset($_POST['submit'])) {
 
     if (empty($errors)) {
     
-                $update = "UPDATE users SET Password = '$code' WHERE Id='$Id'";
+                $update = "UPDATE users SET Password = '$hashed_password' WHERE Id='$Id'";
                 if (mysqli_query($con, $update)) {
                     echo '<body>
                     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -71,7 +73,7 @@ if (isset($_POST['submit'])) {
 <body>
     <div class="container">
         <div class="box form-box">
-            <header>Verification</header>
+            <header>New Password</header>
             <form id="" action="" method="post">
                 <div class="field input">
                     <label for="username">Enter your new password</label>

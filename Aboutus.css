@@ -1,0 +1,291 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;1,600&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  color: white;
+}
+
+body {
+  background-color: #1477d2;
+  height: 100%;
+}
+
+.all-content {
+  background: #1477d2;
+}
+
+html ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html ::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 10px;
+}
+
+html ::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* navbar start */
+
+#navbar {
+  background-color: white;
+  height: 150px;
+}
+
+#logo img {
+  border-radius: 10px;
+  width: 60px;
+  margin-left: 5px;
+}
+
+.navbar-nav {
+  margin-left: 50px;
+  
+}
+
+.nav-item .nav-link {
+  color: white;
+  margin-left: 10px;
+  font-weight: bold;
+  transition: 0.5s;
+}
+
+.nav-item .nav-link:hover {
+  background: #9fc9f3;
+  border-radius: 5px;
+  color: black;
+}
+
+#navbar form button {
+  background: black;
+  color: white;
+  border: 1px solid white;
+}
+.team-section {
+    padding: 50px 20px;
+    background-color: #fff;
+    
+}
+
+.container {
+    max-width: 1300px;
+    margin: 0 auto;
+    text-align: center;
+    
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+
+@media (max-width: 768px) {
+  .team-grid {
+    display: flex;
+    flex-direction: row; 
+    overflow-x: scroll; 
+    padding-bottom: 10px;
+  }
+
+  .team-member {
+    min-width: 300px;
+    margin-right: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .team-grid {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .team-member {
+    min-width: 250px; 
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .team-member img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .team-member h2 {
+    font-size: 1.3rem;
+  }
+
+  .team-member p {
+    font-size: 0.9rem;
+  }
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+  gap: 20px;
+}
+
+.team-member {
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px;
+  transition: transform 0.3s ease;
+}
+
+.team-member img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.footer {
+    padding: 20px;
+    text-align: center;
+    background: white;
+    margin-top: 20px;
+    height: 450px;
+  }
+  @media screen and (max-width: 80px) {
+    .leftcolumn,
+    .rightcolumn {
+      width: 100%;
+      padding: 0;
+    }
+  }
+  
+  .footer h1 {
+    margin-top: -20px;
+    font-size: 35px;
+    word-wrap: break-word;
+    color: black;
+    transition: 0.5s;
+    text-align: center;
+    transition: 0.5s;
+    padding: 15px;
+  }
+  
+  .footer p {
+    color: black;
+    text-wrap: wrap;
+    line-height: 1.5px;
+    margin: 15px;
+  }
+  
+  .footer img {
+    margin-top: -30px;
+    height: 200px;
+  }
+  
+  .Location h3 {
+    margin-top: 0;
+    font-size: 18px;
+    color: black;
+    transition: 0.5s;
+    text-align: center;
+    transition: 0.5s;
+  }
+  
+/* Style for the form container */
+form.service {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9; /* Background color for the form */
+  border: 1px solid #ccc; /* Border for the form */
+  padding: 10px; /* Padding inside the form */
+  border-radius: 10px; /* Rounded corners for the form */
+  width: 300px; /* Width of the form */
+  margin:10px auto; /* Center the form horizontally */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+}
+
+/* Style for the service button */
+button.service-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background:none; /* Background color for the button */
+  border: none; /* Remove default border */
+  color: white; /* Text color */
+  padding: 13px 2px; /* Padding inside the button */
+  text-align: center; /* Center text */
+  text-decoration: none; /* Remove underline from text */
+  font-size: 16px; /* Font size */
+  margin: 0 0; /* Margin around the button */
+  cursor: pointer; /* Pointer cursor on hover */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s; /* Transition effect for background color */
+}
+
+
+/* Style for the image inside the button */
+button.service-button img {
+  width: 80px; /* Image width */
+  height: 40; /* Maintain aspect ratio */
+  margin-top: 2px; /* Margin at the top */
+  margin-bottom: 10px; /* Negative margin at the bottom */
+}
+
+/* Style for the heading inside the button */
+button.service-button h3 {
+  margin: 20px 0; /* Margin around the heading */
+  font-size: 16px; /* Font size */
+}
+
+/* Style for the paragraph inside the button */
+button.service-button p {
+  font-size: 13px; /* Font size */
+  text-align: center; /* Center text */
+  margin: 1px 0; /* Margin around the paragraph */
+  padding: 0 2px; /* Padding inside the paragraph */
+}
+button.service-card:hover {
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.container1 {
+  position: relative;
+  width: 50%;
+}
+
+.image {
+  opacity: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: .5s ease;
+  backface-visibility: hidden;
+}
+
+.middle {
+  transition: .5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%)
+}
+
+.container1:hover .image {
+  opacity: 0.3;
+}
+
+.container1:hover .middle {
+  opacity: 1;
+}
+
+.text {
+  background-color: #4CAF50;
+  color: rgb(255, 255, 255);
+  font-size: 16px;
+  padding: 16px 32px;
+}

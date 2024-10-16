@@ -105,7 +105,7 @@ if (isset($_POST['submit'])) {
 <body>
     <div class="container">
         <div class="box form-box">
-            <header  style="background:#1477d2;">Email</header>
+            <header  >Email</header>
             <form id="" action="" method="post">
                 <div class="field input">
                     <label for="username">Enter your email</label>
@@ -114,7 +114,7 @@ if (isset($_POST['submit'])) {
                 </div>
                 
                 <div class="field">
-                    <input type="submit"  style="background:#1477d2;" class="btn" name="submit" value="Verify" required >  
+                    <input type="submit" class="btn" name="submit" value="Verify" required >  
                     
                 </div>
 

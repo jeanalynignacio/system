@@ -53,6 +53,10 @@ do {
                 $users1 = "SELECT * FROM users WHERE Username='$Username' LIMIT 1";
                 $results = mysqli_query($con, $users1);
                 $user1 = mysqli_fetch_assoc($results); 
+
+                $users2 = "SELECT * FROM employees WHERE username='$Username' LIMIT 1";
+                $results2 = mysqli_query($con, $users2);
+                $user2 = mysqli_fetch_assoc($results2); 
                 
                 $users = "SELECT * FROM users WHERE Email='$Email' LIMIT 1";
                 $results = mysqli_query($con, $users);
@@ -158,6 +162,10 @@ $selectedDate = new DateTime($Birthday);
                         array_push($errors, $unameError ="This username is already in use.");
                     
                     }
+                    elseif ($user2) { // If user exists
+                      array_push($errors, $unameError ="This username is already in use.");
+                  
+                  }
                     if(empty($Password))
                     {
                         array_push($errors, $passError = "Password is required");

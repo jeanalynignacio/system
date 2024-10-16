@@ -45,11 +45,7 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-               <a style = " color: #1477d2;" class="nav-link" aria-current="page" href="#">
-                  Home
-                </a>
-              </li>
+            
                <li class="nav-item">
                 <a style = " color: #1477d2;" class="nav-link" href="#Services"  onclick="showServices('header')" > Services Available </a>
               </li>
@@ -303,9 +299,13 @@
            <p> Bulwagan, Capitol Grounds</p>
            <p> Balanga City, Bataan </p>
            <p> <i class="fa-solid fa-phone" style = "color: #1477d2;"> </i> 0998 562 7784 </p>
+          <p> Have questions?  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=bataanpgbsap@gmail.com" style="color: #1477d2;">
+   
+          <img src="images/gmail.png" alt="Description" style="width: 18px; height: 18px; margin-left: 10px; margin-top:-3px;">  Email Us
+          </p>
           <p>
-    <a href="https://www.facebook.com/pgo.sap/" style="color: #1477d2;">
-       <i class="fa-brands fa-facebook" style = "color: #1477d2;" ></i> Province of Bataan - Special Assistance Program
+    <a href="https://www.facebook.com/1bataandamayancenter?mibextid=ZbWKwL" style="color: #1477d2; margin-bottom:100px;">
+       <i class="fa-brands fa-facebook"style="color: #1477d2;"></i> Province of Bataan -Special Assistance Program
     </a>
 </p>
 

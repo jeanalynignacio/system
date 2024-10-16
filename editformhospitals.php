@@ -260,7 +260,7 @@ if ($role == "Community Affairs Officer") {
                     $escaped_hospitals = addslashes($hospitals);
                     $AssistanceType2 = $AssistanceType . '-' . $escaped_hospitals;
                     $ReceivedAssistance = "Guarantee Letter";
-                    $Amount = $result['Amount'];
+                    $Amount = $_POST['amount'];
                     $EmpID = $_POST['Emp_ID']; // Assuming you have employee ID stored in session
  
                     // Insert into history table
@@ -301,7 +301,7 @@ if ($role == "Community Affairs Officer") {
                 // Recipients
                 $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
                 $mail->addAddress($Email);
-
+                $amount = $_POST['amount'];
                 // Content
                 $mail->isHTML(true);
                 $mail->Subject = 'Received Guarantee Letter';
@@ -309,7 +309,7 @@ if ($role == "Community Affairs Officer") {
                     <html>
                     <body>
                     <p>Dear Mr./Ms./Mrs. $lastName,</p>
-                    <p>We have successfully provided your Guarantee Letter. Please note that you may request another assistance after a period of 3 months.</p>
+                    <p>We have successfully provided your Guarantee Letter with the approved amount of ₱$amount. Please note that you may request another assistance after a period of 3 months.</p>
 <p>If you have some extra time, kindly answer our feedback form through this <a href='$link'>link</a>. Your input is greatly appreciated and will help us improve our service.<br></p>
 <p>Thank you for your cooperation. God Bless!<br><br></p>
 <p>Best regards,<br>$employeeName<br>
@@ -1035,9 +1035,16 @@ t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
         echo "<input type='text' id='status' name='Status' value='For Validation' readonly>";
     }
     elseif ($record['Status'] == 'Pending for Release of Guarantee Letter') {
-        // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
-        echo "<input type='text' id='status' name='Status' value='Releasing Of Guarantee Letter' readonly>";
+        if ($role === 'Admin'){ 
+            echo "<input type='text' id='status' name='Status' value='Receive Guarantee Letter' readonly>";
+       
+            //  echo "<option value='Releasing Of Guarantee Letter'>Releasing Of Guarantee Letter</option>";
+             // echo "<option value='Receive Guarantee Letter'>Receive Guarantee Letter</option>";
+             // echo "</select>";
+          }else{
+            echo "<input type='text' id='status' name='Status' value='Releasing Of Guarantee Letter' readonly>";
 
+          }
     }
     elseif ($record['Status'] == 'Request for Re-schedule') {
         // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
@@ -1104,10 +1111,12 @@ t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
                 
            
                 <div class="button-row">
+                <a id="downloadPdfBtn" href="http://localhost/public_html/MAIP-Bataan.pdf" style="display: none;background:   #3d881a;  text-align: center;  color:white; text-decoration:none;width:250px;height:30px;border-radius: 7px; padding-top:5px; margin-top:40px; margin-left:10px; " download="MAIP-Bataan.pdf" style="display:none;">Download Guarantee Letter</a>
+            
                 <input type="submit" value="Submit" id="submitbtn" name="submit" onclick="showConfirmation()" />
                 <input type="button" value="Cancel" name="cancel" onclick="cancelEdit()" />
-              <input type="button" id="download-pdf" value="PDF" name="download-pdf" style="background:green;" onclick="PDF()">
-              <!--<input type="file" name="uploadedFile" accept="image/*" style="margin-top:10px;">
+             
+                <!--<input type="file" name="uploadedFile" accept="image/*" style="margin-top:10px;">
 -->
             </div>
             
@@ -1174,7 +1183,9 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
     requirements.style.display = 'none'; 
    
     if (status === 'For Schedule') {
-        pdf.style.display = 'none'; 
+     //   pdf.style.display = 'none'; 
+     document.getElementById('downloadPdfBtn').style.display = 'none'; // Show the PDF download button
+ 
         submitbtn.style.display = 'inline';
         emailFormat.innerHTML = `
            <div style = "color: black; padding:10px; background:white; margin-top:20px;"> 
@@ -1190,7 +1201,9 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
             </div> 
         `;
     } else if (status === 'For Validation') {
-        pdf.style.display = 'none'; 
+       // pdf.style.display = 'none'; 
+       document.getElementById('downloadPdfBtn').style.display = 'none'; // Show the PDF download button
+ 
         submitbtn.style.display = 'inline';
         requirements.style.display = 'block';
         requirements.innerHTML = `
@@ -1222,7 +1235,9 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
 
     
     } else if (status === 'Pending for Release of Guarantee Letter') {
-        pdf.style.display = 'none'; 
+      //  pdf.style.display = 'none'; 
+      document.getElementById('downloadPdfBtn').style.display = 'inline'; // Show the PDF download button
+ 
         submitbtn.style.display = 'inline';
         emailFormat.innerHTML = `
          <div style = "color: black; padding:15px; background:white; margin-top:20px;">
@@ -1238,14 +1253,15 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
          </div>
         `;
     } else if (status === 'Request for Re-schedule') {
-       
+        document.getElementById('downloadPdfBtn').style.display = 'none'; // Show the PDF download button
+ 
         requirements.style.display = 'block'; 
         requirements.innerHTML = `
                 <h3 style = "color: white;">Click this   <a href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox" target="_blank" style = "color:  #3cd82e;">link</a> to check the email of beneficiary.</h3>
               
             `;
             submitbtn.style.display = 'none'; // Hide the submit button
-            pdf.style.display = 'none'; 
+           // pdf.style.display = 'none'; 
            
     }
 
@@ -1253,10 +1269,12 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
       
 
   
- else if (status === 'Releasing Of Guarantee Letter' && role==='Admin') { 
-        pdf.style.display = 'none'; 
-        submitbtn.style.display = 'inline'; 
-            emailFormat.innerHTML = `
+ else if (status === 'Releasing Of Guarantee Letter' ) { 
+       // pdf.style.display = 'none'; 
+       document.getElementById('downloadPdfBtn').style.display = 'inline'; // Show the PDF download button
+ 
+        submitbtn.style.display = 'none'; 
+          /*  emailFormat.innerHTML = `
                 <div style="color: black; padding:15px; background:white; margin-top:20px;">
                     Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                     <p>Your request for hospital bills assistance has been approved. You may go on <input type="date" id="calendar" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
@@ -1278,7 +1296,7 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
     <option value="PGB-Dinalupihan Branch" <?php if ($record['branch'] == "PGB-Dinalupihan Branch") echo 'selected="selected"'; ?>>PGB-Dinalupihan Branch</option>
     <option value="PGB-Hermosa Branch" <?php if ($record['branch'] == "PGB-Hermosa Branch") echo 'selected="selected"'; ?>>PGB-Hermosa Branch</option>
     <option value="PGB-Mariveles Branch" <?php if ($record['branch'] == "PGB-Mariveles Branch") echo 'selected="selected"'; ?>>PGB-Mariveles Branch</option>
-</select>*/
+</select>*
             var amountField = document.getElementsByName('amount')[0];
     var branchField = document.getElementById('branch');
     var date2 = document.getElementById('calendar2');
@@ -1300,11 +1318,12 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
        empname.disabled = true;
        submitbtn.style.display = 'none';
     }
+    */
     }
 
  
     else if (status === 'For Re-schedule') { 
-        pdf.style.display = 'none'; 
+      //  pdf.style.display = 'none'; 
         submitbtn.style.display = 'inline';
         emailFormat.innerHTML = `
         <div style = "color: black; padding:15px; background:white; margin-top:20px;">
@@ -1320,7 +1339,7 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
         `;
 }
 else if (status === 'Decline Request for Re-schedule') {
-    pdf.style.display = 'none'; 
+  //  pdf.style.display = 'none'; 
     submitbtn.style.display = 'inline';
         emailFormat.innerHTML = `
          <div style = "color: black; padding:15px; background:white; margin-top:-8px;">
@@ -1340,11 +1359,12 @@ else if (status === 'Decline Request for Re-schedule') {
     }
 
     else if (status === 'Receive Guarantee Letter') { 
-   
+        document.getElementById('downloadPdfBtn').style.display = 'none'; // Show the PDF download button
+
         emailFormat.innerHTML = `
                 <div style = "color: black; padding:15px; background:white; margin-top:20px;">
                 Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-                <p>We have successfully provided your Guarantee Letter. Please note that you may request another assistance after a period of 3 months. <br>
+                <p>We have successfully provided your Guarantee Letter with the approved amount of ₱ <input type="text" autocomplete="off" name="amount" style="margin-top:10px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">. Please note that you may request another assistance after a period of 3 months. <br>
                  If you have an extra time kindly answer our feedback form through this link.  Your input is greatly appreciated and will help us improve our service.<br> 
                 Thank you for your cooperation. God Bless!<br><br>
                 Best regards,<br>
@@ -1354,7 +1374,8 @@ else if (status === 'Decline Request for Re-schedule') {
              </div> 
                 `;  
                 submitbtn.style.display = 'inline';
-                pdf.style.display = 'none';     }
+             //   pdf.style.display = 'none';   
+              }
 
 }
 

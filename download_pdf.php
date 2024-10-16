@@ -5,16 +5,16 @@ if (isset($_GET['sponsor'])) {
     
     // Define the path to the PDF file based on the branch
     switch ($sponsor) {
-        case 'PGB-Balanga Branch':
+        case 'PGB-Damayan Center-Balanga Branch':
             $file = 'MAIP-Bataan.pdf';
             break;
-        case 'PGB-Dinalupihan Branch':
+        case 'PGB-Damayan Center-Dinalupihan Branch':
             $file = 'MAIP-Velasco.pdf';
             break;
-        case 'PGB-Hermosa Branch':
+        case 'PGB-Damayan Center-Hermosa Branch':
             $file = 'hermosa_branch.pdf';
             break;
-        case 'PGB-Mariveles Branch':
+        case 'PGB-Damayan Center-Mariveles Branch':
             $file = 'mariveles_branch.pdf';
             break;
         default:

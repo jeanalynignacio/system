@@ -47,6 +47,8 @@
                      $Email = '';
                     $Username = $_POST['Username'];
                     $Password = $_POST['Password'];
+                    $hashed_password = password_hash($Password, PASSWORD_BCRYPT);
+                  
                     $role = $_POST['role'];
                     $office = $_POST['office'];
             if(empty($Lastname))
@@ -87,7 +89,7 @@
 
 
 // Use the complete user ID in the INSERT query
-$query ="INSERT INTO employees( Lastname, Firstname, Username,Email, password_hash,role,verification_code,status,Office) VALUES ('$Lastname', '$Firstname', '$Username','$Email', '$Password','$role','$verification_code',0,'$office')";
+$query ="INSERT INTO employees( Lastname, Firstname, Username,Email, password_hash,role,verification_code,status,Office) VALUES ('$Lastname', '$Firstname', '$Username','$Email', '$hashed_password','$role','$verification_code',0,'$office')";
 if(mysqli_query($con, $query)){
   
   echo '<body>

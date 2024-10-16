@@ -132,10 +132,10 @@ $selectedbranch = $_POST['branch'] ?? 'Select';
                     <span class="details">Branch</span>
                     <select id="cityDropdown" name="branch" >
                     <option value="Select" >Select</option>
-                    <option value="PGB-Balanga Branch" <?php if ($selectedbranch === 'PGB-Balanga Branch') echo 'selected'; ?>>PGB-Balanga Branch</option>
-                    <option value="PGB-Dinalupihan Branch" <?php if ($selectedbranch === 'PGB-Dinalupihan Branch') echo 'selected'; ?>>PGB-Dinalupihan Branch</option>
-                    <option value="PGB-Hermosa Branch" <?php if ($selectedbranch === 'PGB-Hermosa Branch') echo 'selected'; ?>>PGB-Hermosa Branch</option>
-                    <option value="PGB-Mariveles Branch" <?php if ($selectedbranch === 'PGB-Mariveles Branch') echo 'selected'; ?>>PGB-Mariveles Branch</option>
+                    <option value="PGB-Damayan Center-Balanga Branch" <?php if ($selectedbranch === 'PGB-Damayan Center-Balanga Branch') echo 'selected'; ?>>PGB-Damayan Center-Balanga Branch</option>
+                    <option value="PGB-Damayan Center-Dinalupihan Branch" <?php if ($selectedbranch === 'PGB-Damayan Center-Dinalupihan Branch') echo 'selected'; ?>>PGB-Damayan Center-Dinalupihan Branch</option>
+                    <option value="PGB-Damayan Center-Hermosa Branch" <?php if ($selectedbranch === 'PGB-Damayan Center-Hermosa Branch') echo 'selected'; ?>>PGB-Damayan Center-Hermosa Branch</option>
+                    <option value="PGB-Damayan Center-Mariveles Branch" <?php if ($selectedbranch === 'PGB-Damayan Center-Mariveles Branch') echo 'selected'; ?>>PGB-Damayan Center-Mariveles Branch</option>
                   
                       </select>  
                              

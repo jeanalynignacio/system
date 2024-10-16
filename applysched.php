@@ -18,6 +18,8 @@
             $res_REPID = $result['Representative_ID'];
             $Email= $result['Email'];
             $lastName = $result['Lastname'];
+            $Relationship = $result['Relationship'];
+           
         }
     }
     if(isset($_SESSION['valid'])){
@@ -40,6 +42,16 @@
     }else{
         echo "Service type not set.";
         exit;
+    }
+    
+    if (isset($_SESSION['serviceType'])) {
+        $serviceType = $_SESSION['serviceType']; // Use the existing session variable
+    } elseif (isset($_POST['serviceType'])) {
+        $_SESSION['serviceType'] = $_POST['serviceType']; // Store in session from form submission
+        $serviceType = $_SESSION['serviceType'];
+    } else {
+        echo "Service type is not set.";
+        exit();
     }
 
 //$serviceType = $_POST['serviceType'];
@@ -147,7 +159,7 @@
                 <body>
                 <p>Dear Mr./Ms./Mrs. $lastName,</p>
                 <p>Your request for assistance has been submitted and is currently pending validation.</p>
-                <p>To ensure a smooth process, please visit our office as soon as possible to get validated and to receive your guarantee letter.</p>
+                <p>To ensure a smooth process,  please visit our office between 8:00 AM and 5:00 PM to get validated and to receive your guarantee letter.</p>
                 <p>Thank you for your cooperation. We appreciate your prompt attention to this matter.</p>
                 
                 <p>Best regards,<br>$employeeName<br>
@@ -276,7 +288,8 @@
         <div class="container" style="background:white;">
             <form action="#" class="form-email" method="POST">
                 <input type="hidden" name="Beneficiary_ID" value="<?php echo $res_Id; ?>">
-                <input type="hidden" name="serviceType" value="<?php echo htmlspecialchars($serviceType); ?>">
+                <input type="hidden"  id="Relationship" name="Relationship" value="<?php echo $Relationship; ?>">
+                  <input type="hidden" name="serviceType" value="<?php echo htmlspecialchars($serviceType); ?>">
                   <input type="hidden" name="hospitals" value="<?php echo htmlspecialchars($hospitals); ?>">
               
                 <div>
@@ -286,7 +299,7 @@
                     </label><br><br>
                     
                   
-                   
+                 
 
                     <?php if ($serviceType === 'medicines') : ?>
                         <label>
@@ -315,14 +328,34 @@
                        <input type="checkbox" onclick="checkAllChecked()"> Brgy. Indigency (Pasyente) / Brgy. Indigency (Representative)<br>
                    
                     </ul>
-                    <h1>SUPPORTING DOCUMENTS</h1>
-                    <ul style = "text-align: left; margin-left:60px">
-                        <input type="checkbox" onclick="checkAllChecked()"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> Xerox ng Marriage Certificate (Kung asawa ang pasyente)<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)<br>
-                    </ul>
-                </div>
+                  
+                    <?php if ($Relationship === 'Mother' || $Relationship === 'Daughter/Son' || $Relationship === 'Father') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+
+                    <input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)<br>
+   </ul>
                 <?php endif; ?>
+                <?php if ($Relationship === 'Spouse') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+                <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE CERTIFICATE (KUNG ASAWA ANG PASYENTE)<br>
+                     </ul>
+                <?php endif; ?>
+
+                <?php if ($Relationship === 'Sibling') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+
+                <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG KUNG KAPATID ANG PASYENTE)<br>
+                </ul>
+                <?php endif; ?>
+
+
+                 </div>
+                 <?php endif; ?>
+
+              
                 <?php if ($serviceType === 'Burial') : ?>
                     
                      <h1>FINANCIAL ASSISTANCE FOR BURIAL REQUIREMENTS</h1>
@@ -334,14 +367,34 @@
                         <input type="checkbox" onclick="checkAllChecked()"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad<br>
                         <input type="checkbox" onclick="checkAllChecked()"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)<br>
                     </ul>
-                    <h1>SUPPORTING DOCUMENTS</h1>
-                    <ul style = "text-align: left; margin-left:60px">
-                        <input type="checkbox" onclick="checkAllChecked()"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)<br>
-                       <input type="checkbox" onclick="checkAllChecked()"> Xerox ng Marriage Certificate (Kung asawa ang pasyente)<br>
-                       <input type="checkbox" onclick="checkAllChecked()"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)<br>
-                    </ul>
-                </div>
+                 
+                    <?php if ($Relationship === 'Mother' || $Relationship === 'Daughter/Son' || $Relationship === 'Father') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+
+                    <input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)<br>
+   </ul>
                 <?php endif; ?>
+                <?php if ($Relationship === 'Spouse') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+                <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE CERTIFICATE (KUNG ASAWA ANG PASYENTE)<br>
+                     </ul>
+                <?php endif; ?>
+
+                <?php if ($Relationship === 'Sibling') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+
+                <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG KUNG KAPATID ANG PASYENTE)<br>
+                </ul>
+                <?php endif; ?>
+
+
+                 </div>
+                 <?php endif; ?>
+
+              
 
               
                 <?php if ($serviceType === 'hospitalbills') : ?>
@@ -356,16 +409,34 @@
                         <input type="checkbox" onclick="checkAllChecked()"> BRGY. INDIGENCY (PASYENTE)<br>
                         <input type="checkbox" onclick="checkAllChecked()"> SOCIAL CASE STUDY (MSWDO)<br>
                 </ul>
-                        <h1>SUPPORTING DOCUMENTS</h1>
-                        <ul style = "text-align: left; margin-left:60px" >
-                   
-                        <input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE)<br>
-                        <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE<br>
                        
-                    </ul>
-                </div>
+                        <?php if ($Relationship === 'Mother' || $Relationship === 'Daughter/Son' || $Relationship === 'Father') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+
+                    <input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)<br>
+   </ul>
                 <?php endif; ?>
+                <?php if ($Relationship === 'Spouse') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+                <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE CERTIFICATE (KUNG ASAWA ANG PASYENTE)<br>
+                     </ul>
+                <?php endif; ?>
+
+                <?php if ($Relationship === 'Sibling') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+
+                <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG KUNG KAPATID ANG PASYENTE)<br>
+                </ul>
+                <?php endif; ?>
+
+
+                 </div>
+                 <?php endif; ?>
+
+              
 
 
                 <?php if ($serviceType === 'laboratories') : ?>
@@ -379,16 +450,34 @@
                          <input type="checkbox" onclick="checkAllChecked()"> BRGY. INDIGENCY (PASYENTE)<br>
                          
                  </ul>
-                         <h1>SUPPORTING DOCUMENTS</h1>
-                         <ul style = "text-align: left; margin-left:60px" >
-                    
-                         <input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)<br>
-                         <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE)<br>
-                         <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE<br>
-                        
+                         
+                         <?php if ($Relationship === 'Mother' || $Relationship === 'Daughter/Son' || $Relationship === 'Father') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+
+                    <input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)<br>
+   </ul>
+                <?php endif; ?>
+                <?php if ($Relationship === 'Spouse') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+                <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE CERTIFICATE (KUNG ASAWA ANG PASYENTE)<br>
                      </ul>
+                <?php endif; ?>
+
+                <?php if ($Relationship === 'Sibling') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+
+                <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG KUNG KAPATID ANG PASYENTE)<br>
+                </ul>
+                <?php endif; ?>
+
+
                  </div>
                  <?php endif; ?>
+
+              
                  <?php if ($serviceType === 'Radiation & Chemotherapy') : ?>
                      <h1>FINANCIAL ASSISTANCE FOR Radiation & Chemotherapy</h1>
                      <ul style = "text-align: left; margin-left:60px" >
@@ -399,16 +488,35 @@
                          <input type="checkbox" onclick="checkAllChecked()"> BRGY. INDIGENCY (PASYENTE)<br>
                          
                  </ul>
-                         <h1>SUPPORTING DOCUMENTS</h1>
-                         <ul style = "text-align: left; margin-left:60px" >
-                    
-                         <input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)<br>
-                         <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE)<br>
-                         <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE<br>
-                         
+                        
+                         <?php if ($Relationship === 'Mother' || $Relationship === 'Daughter/Son' || $Relationship === 'Father') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+
+                    <input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)<br>
+   </ul>
+                <?php endif; ?>
+                <?php if ($Relationship === 'Spouse') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+                <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE CERTIFICATE (KUNG ASAWA ANG PASYENTE)<br>
                      </ul>
+                <?php endif; ?>
+
+                <?php if ($Relationship === 'Sibling') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+
+                <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG KUNG KAPATID ANG PASYENTE)<br>
+                </ul>
+                <?php endif; ?>
+
+
                  </div>
                  <?php endif; ?>
+
+              
+                
                  <?php if ($serviceType === 'dialysis') : ?>
                      
                      <h1>FINANCIAL ASSISTANCE FOR DIALYSIS</h1>
@@ -419,13 +527,28 @@
                     <input type="checkbox" onclick="checkAllChecked()"> SULAT (SULAT KAMAY) NA HUMIHINGI NG TULONG KAY GOV. JOET S. GARCIA<br>
                     <input type="checkbox" onclick="checkAllChecked()"> XEROX VALID ID NG PASYENTE W/ 3 SIGNATURES OR XEROX VALID ID NG NAGLALAKAD<br>
                 </ul>
-
+                <?php if ($Relationship === 'Mother' || $Relationship === 'Daughter/Son' || $Relationship === 'Father') : ?>
                 <h1>SUPPORTING DOCUMENTS</h1>
                 <ul style="text-align: left; margin-left:60px">
+
                     <input type="checkbox" onclick="checkAllChecked()"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)<br>
-                   <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE CERTIFICATE (KUNG ASAWA ANG PASYENTE)<br>
-                    <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG KUNG KAPATID ANG PASYENTE)<br>
+   </ul>
+                <?php endif; ?>
+                <?php if ($Relationship === 'Spouse') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+                <input type="checkbox" onclick="checkAllChecked()"> XEROX NG MARRIAGE CERTIFICATE (KUNG ASAWA ANG PASYENTE)<br>
+                     </ul>
+                <?php endif; ?>
+
+                <?php if ($Relationship === 'Sibling') : ?>
+                <h1>SUPPORTING DOCUMENTS</h1>
+                <ul style="text-align: left; margin-left:60px">
+
+                <input type="checkbox" onclick="checkAllChecked()"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG KUNG KAPATID ANG PASYENTE)<br>
                 </ul>
+                <?php endif; ?>
+
 
                  </div>
                  <?php endif; ?>
@@ -484,7 +607,24 @@
                 requirementList.appendChild(li);
             });
         }
-        
+        let relationship = document.getElementById("Relationship"); // Example: Get the relationship from your database
+
+// Function to show/hide supporting documents based on relationship
+function showSupportingDocs() {
+    if (relationship === "Mother" || relationship === "Daughter/Son" || relationship === "Father") {
+        document.getElementById('birthCertificateMother').style.display = 'block';
+    }
+    if (relationship === "Spouse") {
+        document.getElementById('marriageCertificateSpouse').style.display = 'block';
+    }
+    if (relationship === "Sibling") {
+        document.getElementById('birthAndMarriageSibling').style.display = 'block';
+    }
+}
+
+// Call the function on page load to show the relevant documents
+showSupportingDocs();
+
         function checkAllChecked() {
             const checkboxes = document.querySelectorAll('input[type="checkbox"]');
             const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);

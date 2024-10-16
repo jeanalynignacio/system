@@ -15,6 +15,7 @@ if(isset($_SESSION['Emp_ID'])) {
 $passError = "";
 if (isset($_POST['submit'])) {
     $code =  $_POST['code'];
+    $hashed_password = password_hash($code, PASSWORD_BCRYPT);
     $Emp_ID =  $_POST['Emp_ID'];
     if(empty($code))
     {
@@ -25,7 +26,7 @@ if (isset($_POST['submit'])) {
 
     if (empty($errors)) {
     
-                $update = "UPDATE employees SET password_hash = '$code' WHERE Emp_ID='$Emp_ID'";
+                $update = "UPDATE employees SET password_hash = '$hashed_password' WHERE Emp_ID='$Emp_ID'";
                 if (mysqli_query($con, $update)) {
                     echo '<body>
                     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -34,7 +35,7 @@ if (isset($_POST['submit'])) {
                     </script>';
                       echo '<script>
                      setTimeout(function(){
-                        window.location.href="employee-login.php";
+                        window.location.href="login.php";
                     } , 2000);
                   </script>
                   </body>'; 
@@ -71,7 +72,7 @@ if (isset($_POST['submit'])) {
 <body>
     <div class="container">
         <div class="box form-box">
-            <header  style="background:#1477d2;">New Password</header>
+            <header  >New Password</header>
             <form id="" action="" method="post">
                 <div class="field input">
                     <label for="username">Enter your new password</label>
@@ -83,8 +84,8 @@ if (isset($_POST['submit'])) {
 
                 
                 <div class="field">
-                    <input  style="background:#1477d2;"  type="submit" class="btn" name="submit" value="Submit" required >  
-                    
+                    <input  type="submit" class="btn" name="submit" value="Submit" required >  
+                  
 
                 </div>
 
@@ -96,6 +97,10 @@ if (isset($_POST['submit'])) {
                 <?php endif; ?>
                
             </form>
+            <center>  <a href="index.php" style="color:gray; text-decoration: none; display: inline-flex; align-items: center;margin-top:7px;">
+        <img src="images/back.png" style="height: 15px; width: 20px; margin-right: 6px;" />
+        Back to Home
+    </a>  <center>
         </div>
     </div>
     <script>

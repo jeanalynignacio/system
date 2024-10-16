@@ -114,6 +114,9 @@ if (isset($_POST['submit'])) {
                 <?php endif; ?>
                
             </form>
+            <center>
+                    <img src="images/back.png" style="vertical-align: middle; height: 15px;width:20px;margin-right:6px; "/><a href="index.php" style="color:rgb(99, 95, 95); text-decoration: none;margin-right:10px;">Back to Home</a></center>
+
         </div>
     </div>
    

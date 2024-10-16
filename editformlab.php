@@ -1192,12 +1192,7 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
                         <p>You are currently set to receive your requested assistance. You may go on <input type="date" id="calendar2" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
                         at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['time'])); ?>" />.<br>
                        You will receive a guarantee letter with the approved amount of ₱<input type="text" autocomplete="off" name="Amount" style="margin-top:10px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">.<br><br>
-                                    Kindly proceed to <select name="branch" id="branch" style="margin-top:5px;">
-    <option value="PGB-Balanga Branch" <?php if ($record['branch'] == "PGB-Balanga Branch") echo 'selected="selected"'; ?>>PGB-Balanga Branch</option>
-    <option value="PGB-Dinalupihan Branch" <?php if ($record['branch'] == "PGB-Dinalupihan Branch") echo 'selected="selected"'; ?>>PGB-Dinalupihan Branch</option>
-    <option value="PGB-Hermosa Branch" <?php if ($record['branch'] == "PGB-Hermosa Branch") echo 'selected="selected"'; ?>>PGB-Hermosa Branch</option>
-    <option value="PGB-Mariveles Branch" <?php if ($record['branch'] == "PGB-Mariveles Branch") echo 'selected="selected"'; ?>>PGB-Mariveles Branch</option>
-</select>to claim your guarantee letter. <br>
+                          Kindly proceed to <?php echo $branch1; ?> to claim your guarantee letter. <br>
 
                     Please bring a valid ID and show this email upon arrival.<br><br>
                     Thank you for your patience and cooperation.<br><br>    

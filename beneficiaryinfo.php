@@ -16,10 +16,35 @@ if($result = mysqli_fetch_assoc($query)){
     $res_Id = $result['Id'];
     $res_Fname = $result['Firstname'];
      $res_Lname = $result['Lastname'];
+     $res_Email= $result['Email'];
+     $Contactnumber = $result['Contactnumber'];
+     $street = $result['HousenoStreet'];
+     $brgy= $result['Barangay'];
+     $city = $result['CityMunicipality'];
 }
-                 }
-            
+                }
+                if (isset($_POST['serviceType'])) {
+                  $_SESSION['serviceType'] = $_POST['serviceType']; // Store in session
+              
+                    
                  
+                  $serviceType = $_SESSION['serviceType'];
+              
+              } elseif (!isset($_SESSION['serviceType'])) {
+                  echo "Service type is not set.";
+                  exit();
+              }
+            
+             
+              if (isset($_SESSION['serviceType'])) {
+                  $serviceType = $_SESSION['serviceType']; // Use the existing session variable
+              } elseif (isset($_POST['serviceType'])) {
+                  $_SESSION['serviceType'] = $_POST['serviceType']; // Store in session from form submission
+                  $serviceType = $_SESSION['serviceType'];
+              } else {
+                  echo "Service type is not set.";
+                  exit();
+              }       
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -93,7 +118,7 @@ if($result = mysqli_fetch_assoc($query)){
 
                     $minDate = new DateTime();
                     $maxDate = new DateTime();
-                    $minDate->modify('-1 day');
+                    $minDate->modify('-0 day');
 $maxDate->modify('-150 years');
 // Convert $Birthday to a DateTime object for comparison
 $selectedDate = new DateTime($Birthday);
@@ -137,29 +162,19 @@ else {
                     }
                       
                   elseif ($selectedDate > $minDate) {
-                    array_push($errors, $bdayError = "The beneficiary must be atleast 1 year old");
+                    array_push($errors, $bdayError = "The beneficiary must be at least one day old; <br> A birthdate today is acceptable.");
+
                 }
                 elseif ($selectedDate < $maxDate) {
                   array_push($errors, $bdayError = "You must be at least 100 years old");
               }
                 
-                    if(empty($Contactnumber))
-                    {
-                      array_push($errors, $numError = "Contact Number is required");
-                    }
-                    elseif (strlen($Contactnumber) > 11) {
-                      array_push($errors,  $numError = "Mobile number must be maximum of 11 characters");
-                      }
-                      elseif (!preg_match('/^\d+$/', $Contactnumber)) {
-                        array_push($errors, $numError = "Mobile number should contain numbers only");
-                    } 
-                      elseif ($user_phone) { // if user contact exists
-                        array_push($errors, $numError ="This number cannot be used anymore.");
-                          }
-                    elseif (strlen($Contactnumber) < 11) {
-                            array_push($errors,  $numError = "Mobile number must be minimum of 11 characters");
-                            }
+                  
                       
+              if($relationship=="Select")
+              {
+                array_push($errors, $relationError = "Relationship is required");
+              }
                     if(empty($Province))
                     {
                       array_push($errors, $provError = "Province is required");
@@ -180,17 +195,7 @@ else {
                     {
                       array_push($errors, $stError = "House No/Street is required");
                     }
-                    if(empty($Email))
-                    {
-                      array_push($errors, $emailError = "Email is required");
-                    }
-                    elseif ($user) { // If user exists
-                      array_push($errors, $emailError ="This email address is already in use.");
                   
-                  }
-                    elseif (!filter_var($Email, FILTER_VALIDATE_EMAIL)) {
-                  array_push($errors, $emailError = "Invalid email format");
-                    }
                     
                   
             
@@ -240,16 +245,24 @@ if(mysqli_query($con, $query)){
                     <input type="date" name="Birthday" id="Birthday" value="<?php echo $_POST['Birthday'] ?? ''; ?>"> 
                     <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $bdayError ?></p>                  
                 </div>
-                <div class="field input">
-                    <label for = "Contactnumber" style="font-size: 18px;">Contact Number</label>
-                    <input type="text" name="Contactnumber" id="Contactnumber" autocomplete="off" value="<?php echo $_POST['Contactnumber'] ?? ''; ?>">                  
+             
+                    <input type="hidden" name="Contactnumber" id="Contactnumber" autocomplete="off" value="<?php echo isset($Contactnumber) ? $Contactnumber : ''; ?>">                  
                     <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $numError ?></p>
-                   
-                  </div>
+               
+                    
+
+
                 <div class="field input">
                     <label for = "Province" style="font-size: 18px;">Province</label>
                     <input type="text" name="Province" id="Province" value="Bataan">                  
                   </div>
+                  <div class="field input" style="display: flex; align-items: left;">
+    <input type="checkbox" id="sameAddress" onclick="copyAddress()" 
+           style="transform: scale(0.8); margin-left: -180px;  height:25px;   cursor: pointer;"> 
+    <label for="sameAddress" style="font-size: 16px; font-style: italic; color: blue; cursor: pointer;">
+        Same as Representative Address
+    </label>
+</div>
                 <div class="field input">
                 <?php
 // Define variables to store selected city and barangay
@@ -278,7 +291,8 @@ $selectedBarangay = $_POST['Barangay'] ?? 'Select';
                 </div>
 
                 <div class="field input">
-               
+                <input type="hidden" name="serviceType" value="<?php echo htmlspecialchars($serviceType); ?>">
+
                     <label for="Barangay" style="font-size: 18px;">Barangay</label>
                     <select id="barangayDropdown" name="Barangay" value="Select">
                         <option value="Select">Select</option> 
@@ -372,11 +386,10 @@ barangayDropdown.setAttribute("name", "Barangay");
                     <input type="text" name="HousenoStreet" id="HousenoStreet" autocomplete="off" value="<?php echo $_POST['HousenoStreet'] ?? ''; ?>">                  
                     <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $stError ?></p>
                   </div>
-                <div class="field input">
-                    <label for = "Email" style="font-size: 18px;">Email</label>
-                    <input type="text" name="Email" id="Email" autocomplete="off" value="<?php echo $_POST['Email'] ?? ''; ?>">                  
+               
+                     <input type="hidden" name="Email" id="Email" autocomplete="off" value="<?php echo isset($res_Email) ? $res_Email : ''; ?>">                  
                     <p style="color: rgb(150, 26, 26); font-size: 18px;"><?php echo $emailError ?></p>
-                  </div>
+                
 
                   <div class="field input">
                     <label for = "Contactnumber" style="font-size: 18px;">Representative Name</label>
@@ -395,8 +408,8 @@ $selectedBarangay = $_POST['Barangay'] ?? 'Select';
                     <option value="Select" <?php if ($relationshipselect === 'Select') echo 'selected'; ?>>Select</option>
                     <option value="Mother" <?php if ($relationshipselect === 'Mother') echo 'selected'; ?>>Mother</option>
                     <option value="Father" <?php if ($relationshipselect === 'Father') echo 'selected'; ?>>Father</option>
-                    <option value="Sister" <?php if ($relationshipselect === 'Sister') echo 'selected'; ?>>Sister</option>
-                    <option value="Brother" <?php if ($relationshipselect=== 'Brother') echo 'selected'; ?>>Brother</option>
+                    <option value="Sibling" <?php if ($relationshipselect === 'Sibling') echo 'selected'; ?>>Sibling</option>
+                    <option value="Spouse" <?php if ($relationshipselect=== 'Spouse') echo 'selected'; ?>>Spouse</option>
                    
                    
                       </select>  
@@ -411,10 +424,37 @@ $selectedBarangay = $_POST['Barangay'] ?? 'Select';
        
                
             </form>
-            
+            <center>   
+            <a href="applyingoptions.php" style="color:rgb(99, 95, 95); text-decoration: none; display: inline-flex; align-items: center;">
+        <img src="images/back.png" style="height: 15px; width: 20px; margin-right: 6px;" />
+        Back to home
+    </a>  </div>
         </div>
        
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</body>
+  <script>
+    function copyAddress() {
+    const isChecked = document.getElementById('sameAddress').checked;
+    const repProvince = 'Bataan'; // Replace with dynamic value if needed
+    const repCity = '<?php echo isset($city) ? $city : ''; ?>';
+    const repBarangay = '<?php echo isset($brgy) ? $brgy : ''; ?>';
+    const repHouseNo = '<?php echo isset($street) ? $street : ''; ?>';
+
+    if (isChecked) {
+        document.getElementById('Province').value = repProvince;
+        document.getElementById('cityDropdown').value = repCity;
+        populateBarangays(); // Populate barangay dropdown based on selected city
+        document.getElementById('barangayDropdown').value = repBarangay;
+        document.getElementById('HousenoStreet').value = repHouseNo;
+    } else {
+        document.getElementById('Province').value = '';
+        document.getElementById('cityDropdown').value = 'Select';
+        populateBarangays(); // Reset barangay options
+        document.getElementById('barangayDropdown').value = 'Select';
+        document.getElementById('HousenoStreet').value = '';
+    }
+}
+</script>
+  </body>
 </html>

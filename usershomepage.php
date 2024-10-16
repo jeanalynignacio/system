@@ -397,7 +397,7 @@ if($result = mysqli_fetch_assoc($query)){
  
    
     </div>
-<div class="footer" id=footer>
+    <div class="footer" id=footer>
           <div class="Location">
            <div class="content1">
            <img src="images/logo-png.png"/>
@@ -405,16 +405,44 @@ if($result = mysqli_fetch_assoc($query)){
            <p> Bulwagan, Capitol Grounds</p>
            <p> Balanga City, Bataan </p>
            <p> <i class="fa-solid fa-phone" style = "color: #1477d2;"> </i> 0998 562 7784 </p>
+          <p> Have questions?  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=bataanpgbsap@gmail.com" style="color: #1477d2;">
+   
+          <img src="images/gmail.png" alt="Description" style="width: 18px; height: 18px; margin-left: 10px; margin-top:-3px;">  Email Us
+          </p>
           <p>
-    <a href="https://www.facebook.com/pgo.sap/" style="color: #1477d2;">
-       <i class="fa-brands fa-facebook" style = "color: #1477d2;" ></i> Province of Bataan - Special Assistance Program
+    <a href="https://www.facebook.com/1bataandamayancenter?mibextid=ZbWKwL" style="color: #1477d2; margin-bottom:100px;">
+       <i class="fa-brands fa-facebook"style="color: #1477d2;"></i> Province of Bataan -Special Assistance Program
     </a>
 </p>
 
               
-           <p>All content is in the public unless otherwise stated</p>
+          
+           <p>All content is in the public unless otherwise stated</p> <br>
+        <!--  <a href = "login.php" style = "margin-top: 30px;"> Admin/Employee Login </a>-->
        </div>
     </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<!-- home section end -->
+<script type = "text/javascript">
+    function showServices(header) {
+      var offeredservices = document.getElementById(header);
+      if (offeredservices) {
+        offeredservices.scrollIntoView({behavior: 'smooth'})
+      }
+    }
+
+    function showHospitals(partnered) {
+      var hospitals = document.getElementById(partnered);
+      if (hospitals) {
+        hospitals.scrollIntoView({behavior: 'smooth'})
+      }
+    }
+     function showContact(footer) {
+      var contact = document.getElementById(footer);
+      if (contact) {
+        contact.scrollIntoView({behavior: 'smooth'})
+      }
+    }
 
 <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"

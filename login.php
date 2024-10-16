@@ -61,20 +61,21 @@ if(isset($_POST['submit'])){
      else {
         $errorMessage = "Wrong Username or Password";
     }
-}     $query = "SELECT * FROM employees WHERE username = '$Username' " ;
+}    
 $result2 = mysqli_query($con, "SELECT * FROM employees WHERE BINARY username = '$Username' ") or die("Select Error");
-    
+$row2 = mysqli_fetch_assoc($result2);
 
 
-if (mysqli_num_rows($result2) == 1) {
-    $row = mysqli_fetch_assoc($result2);
-    if($Password ==$row['password_hash']){
-      if ($row['Email'] !== NULL && $row['Email'] !== "" ) {
-        $_SESSION['valid'] = $row['username'];
+if(is_array($row2) && !empty($row2)){
+       
+    if (password_verify($Password, $row2['password_hash'])) {
+          
+      if ($row2['Email'] !== NULL && $row2['Email'] !== "" ) {
+        $_SESSION['valid'] = $row2['username'];
 
-        $_SESSION['Emp_ID'] = $row['Emp_ID'];
+        $_SESSION['Emp_ID'] = $row2['Emp_ID'];
         
-       if ($row['status'] == 1){
+       if ($row2['status'] == 1){
             // Login successful   $_SESSION['Email'] = $Email;
            
                 echo '<body>
@@ -88,11 +89,11 @@ if (mysqli_num_rows($result2) == 1) {
                 } , 2000);
               </script>
               </body>';
-              
+              exit();
            
        } else{
-        $Email = $row['Email'];
-        $res_Id = $row['Emp_ID']; 
+        $Email = $row2['Email'];
+        $res_Id = $row2['Emp_ID']; 
         // Define variables to store selected city and barangay
         $otp_str = "123456789"; // String na hindi naglalaman ng 0 sa unang character
         $otp_str_with_zero = "0123456789"; // Buong range ng digits
@@ -134,7 +135,7 @@ if (mysqli_num_rows($result2) == 1) {
             echo '<body>
             <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
             <script>
-            swal("Email not verified. Please verify your email.", "", "success")
+            swal("Email not verified. Please verify your email.", "", "info")
             </script>';
               echo '<script>
              setTimeout(function(){
@@ -152,14 +153,18 @@ if (mysqli_num_rows($result2) == 1) {
         
         else {
             // Email not verified
-            $result = mysqli_query($con, "SELECT * FROM employees WHERE username = '$Username' AND password_hash = '$Password' ") or die("Select Error");
-            $row = mysqli_fetch_assoc($result);
-            
-            
-            if(is_array($row) && !empty($row)){
-                $_SESSION['Emp_ID'] = $row['Emp_ID'];
-                
-           
+            $result = mysqli_query($con, "SELECT * FROM employees WHERE username = '$Username'") or die("Select Error");
+$row3 = mysqli_fetch_assoc($result);
+
+// Check if the user exists
+if (is_array($row3) && !empty($row3)) {
+    // Verify the password using password_verify()
+    if (password_verify($Password, $row3['password_hash'])) {
+        // Password matches, proceed with email check
+        $_SESSION['Emp_ID'] = $row3['Emp_ID'];
+
+        // Check if the email is missing
+        if (empty($row3['Email'])) {
             echo '<body>
             <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
             <script>
@@ -171,11 +176,11 @@ if (mysqli_num_rows($result2) == 1) {
             }, 3000);
             </script>
             </body>';
+            exit();
+        }
 
-          }
-
-  }
-           
+  
+     
   }  else {
             // Email not verified
             $errorMessage = "Incorrect Password. Please try again";               
@@ -186,29 +191,35 @@ if (mysqli_num_rows($result2) == 1) {
           
             $errorMessage = "User not found. Please register.";
 }
-
+    
+        }
 
 
 if(empty($errorMessage) /*&& empty($passError) && empty($logError)*/ ) {
     $result = mysqli_query($con, "SELECT * FROM employees WHERE username = '$Username' AND password_hash = '$Password' ") or die("Select Error");
-    $row = mysqli_fetch_assoc($result);
+    $row4 = mysqli_fetch_assoc($result);
     
     
-    if(is_array($row) && !empty($row)){
-        $_SESSION['firstname'] = $row['Firstname'];
-       $_SESSION['email'] = $row['Email'];
-        $_SESSION['username'] = $row['username'];
-        $_SESSION['password'] = $row['password_hash'];
-        $_SESSION['Emp_ID'] = $row['Emp_ID'];
-        $_SESSION['valid'] = $row['Lastname'];
+    if(is_array($row4) && !empty($row4)){
+        $_SESSION['firstname'] = $row4['Firstname'];
+       $_SESSION['email'] = $row4['Email'];
+        $_SESSION['username'] = $row4['username'];
+        $_SESSION['password'] = $row4['password_hash'];
+        $_SESSION['Emp_ID'] = $row4['Emp_ID'];
+        $_SESSION['valid'] = $row4['Lastname'];
       
     
    
 }
 }
-}  
+} else{$errorMessage = "Incorrect Password. Please try again";     
+}
 
-} 
+} else{
+    $errorMessage = "User not found. Please register.";
+}
+}
+}
 
 
 

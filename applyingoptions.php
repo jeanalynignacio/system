@@ -34,9 +34,21 @@ $_SESSION['hospitals'] = $_POST['hospitals'];
     echo "Service type is not set.";
     exit();
 }
+
+if (isset($_SESSION['serviceType'])) {
+    $serviceType = $_SESSION['serviceType']; // Use the existing session variable
+} elseif (isset($_POST['serviceType'])) {
+    $_SESSION['serviceType'] = $_POST['serviceType']; // Store in session from form submission
+    $serviceType = $_SESSION['serviceType'];
+} else {
+    echo "Service type is not set.";
+    exit();
+}
 if (isset($_POST['myself']) || isset($_POST['relative'])) {
     $serviceType = $_SESSION['serviceType'];
 }
+$serviceType = $_SESSION['serviceType'] ?? 'Not selected';
+
 
    
 // Query to count the transactions
@@ -99,7 +111,7 @@ if (isset($_POST['myself'])) {
                             swal("Notification", "You cannot apply at this time. You need atleast three months before applying again. Your last transaction was on ' . $formattedDate . '","info")
                             .then((value) => {
                                 if (value) {
-                                    window.location.href = "applyingoptions.php";
+                                    window.location.href = "usershomepage.php";
                                 }
                             });
                             </script>
@@ -118,7 +130,7 @@ if (isset($_POST['myself'])) {
                         swal("Notification", "You already requested a schedule. Please wait for the email to know when your schedule of appearance to the office is. Thank you.","info")
                         .then((value) => {
                             if (value) {
-                                window.location.href = "applyingoptions.php";
+                                    window.location.href = "usershomepage.php";
                             }
                         });
                         </script>
@@ -135,7 +147,7 @@ if (isset($_POST['myself'])) {
                         swal("Notification", "You already pending for requirements. Please wait for the email to know when your schedule of appearance to the office is. Thank you.")
                         .then((value) => {
                             if (value) {
-                                window.location.href = "applyingoptions.php";
+                                     window.location.href = "usershomepage.php";
                             }
                         });
                         </script>
@@ -152,7 +164,7 @@ if (isset($_POST['myself'])) {
                         swal("Notification", "You already pending for payout. Please wait for the email to know when your schedule of appearance to the office is. Thank you.","info")
                         .then((value) => {
                             if (value) {
-                                window.location.href = "applyingoptions.php";
+                                     window.location.href = "usershomepage.php";
                             }
                         });
                         </script>
@@ -169,7 +181,7 @@ if (isset($_POST['myself'])) {
                         swal("Notification", "You already request for reschedule. Please wait to an email to know if it is accepted or not.")
                         .then((value) => {
                             if (value) {
-                                window.location.href = "applyingoptions.php";
+                                    window.location.href = "usershomepage.php";
                             }
                         });
                         </script>
@@ -186,7 +198,7 @@ if (isset($_POST['myself'])) {
                         swal("Notification", "You already pending for validation. Please wait for the email to know when your schedule of appearance to the office is. Thank you.","info")
                         .then((value) => {
                             if (value) {
-                                window.location.href = "applyingoptions.php";
+                                    window.location.href = "usershomepage.php";
                             }
                         });
                         </script>
@@ -212,7 +224,7 @@ if (isset($_POST['myself'])) {
                            swal("Notification", "You cannot apply at this time. You need at least three months before applying again. Your last transaction was on ' . $formattedDate . '", "info")
                             .then((value) => {
                             if (value) {
-                                window.location.href = "applyingoptions.php";
+                                   window.location.href = "usershomepage.php";
                             }
                         });
                         </script>
@@ -226,7 +238,7 @@ if (isset($_POST['myself'])) {
                 swal("Notification", "You already applied for your relative. Please wait for further instructions. Always check your email for further updates. Thank you.","info")
                 .then((value) => {
                     if (value) {
-                        window.location.href = "applyingoptions.php";
+                        window.location.href = "usershomepage.php";
                     }
                 });
                 </script>
@@ -317,7 +329,7 @@ elseif (isset($_POST['relative'])) {
                              swal("Notification", "You have an existing application. Please wait for further instructions. Always check your email for further updates. Thank you.", "info")
     .then((value) => {
                                 if (value) {
-                                    window.location.href = "applyingoptions.php";
+                                    window.location.href = "usershomepage.php";
                                 }
                             });
                             </script>
@@ -342,7 +354,7 @@ elseif (isset($_POST['relative'])) {
                                swal("Notification", "You cannot apply at this time. You need at least three months before applying again. Your last transaction was on ' . $formattedDate . '", "info")
                                 .then((value) => {
                                 if (value) {
-                                    window.location.href = "applyingoptions.php";
+                                        window.location.href = "usershomepage.php";
                                 }
                             });
                             </script>
@@ -372,7 +384,7 @@ elseif (isset($_POST['relative'])) {
                swal("Notification", "You cannot apply at this time. You need at least three months before applying again. Your last transaction was on ' . $formattedDate . '", "info")
                 .then((value) => {
                 if (value) {
-                    window.location.href = "applyingoptions.php";
+                        window.location.href = "usershomepage.php";
                 }
             });
             </script>
@@ -386,7 +398,7 @@ elseif (isset($_POST['relative'])) {
     swal("Notification", "You already applied for yourself. Please wait for further instructions. Always check your email for further updates. Thank you.","info")
     .then((value) => {
         if (value) {
-            window.location.href = "applyingoptions.php";
+                 window.location.href = "usershomepage.php";
         }
     });
     </script>
@@ -517,8 +529,13 @@ elseif (isset($_POST['relative'])) {
             <form id="" action="" method="post">
             
             <div class="field">
-                    <input type="submit" class="btn1" name="myself" value="For Myself / Para sa Sarili" required >     
-                     </div>
+                  <input type="hidden" required name="serviceType" value="<?php echo $serviceType; ?>">
+
+                  
+                     <?php if ($serviceType !== 'Burial'): ?>
+                    <input type="submit"  id="submitButton" class="btn1" name="myself" value="For Myself / Para sa Sarili" required >     
+                    <?php endif; ?>
+                  </div>
                 
                 <div class="field">
                     <input type="submit" class="btn2" name="relative" value="For my relative / Para sa Kamag-anak" required >                  
