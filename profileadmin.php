@@ -22,6 +22,9 @@ $res_Fname = $result['Firstname'];
 
 
 if(isset($_POST['submit'])) {
+    if(isset($_POST['confirmed']) && $_POST['confirmed'] === "yes") {
+
+
     // Check if the user confirmed the update
    // if(isset($_POST['confirmed']) && $_POST['confirmed'] === "yes") {
         $EmpID = $_POST['Emp_ID'];
@@ -29,28 +32,31 @@ if(isset($_POST['submit'])) {
         $Firstname=$_POST['Firstname'];
       //  $Email=$_POST['Email'];
         $username=$_POST['username'];
-        $password=$_POST['password_hash'];
        
         // Construct the update query
         $query = "UPDATE employees
             SET Lastname = '$Lastname',
                 Firstname = '$Firstname',
-             
-                username = '$username',
-                password_hash = '$password'
+                username = '$username'
+              
             WHERE Emp_ID = '$EmpID'";
 
         $result=mysqli_query($con,$query);
 
         // Execute the update query
         if ($result) {
-            ?>
-            <script>
-                alert("Update successful");
-                 window.location.href = "profileadmin.php";
-            </script>
-          <?php
            
+            echo '<body>
+                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                         <script>
+                         swal("Updated successfully","","success")
+                         .then((value) => {
+                             if (value) {
+                                 window.location.href = "dashboard.php";
+                             }
+                         });
+                         </script>
+                         </body>';   
             exit();
         } else {
            echo "Error updating records: " . mysqli_error($con);
@@ -62,7 +68,7 @@ if(isset($_POST['submit'])) {
     exit();
 }
     }
-
+}
 ?>
 
 <!DOCTYPE html>
@@ -105,11 +111,7 @@ if(isset($_POST['submit'])) {
                     <input type="text"  autocomplete="off" required value="<?php echo $res_username ?? ''; ?>" id="username"  name="username" disabled/>
                 </div>
 
-                <div class="input-box">
-                    <span class="details">Password</span>
-                    <input type="text"  autocomplete="off" required value="<?php echo $res_password ?? ''; ?>" id="password_hash"  name="password_hash" disabled/>
-                    <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility()"></i>
-                </div>
+                
             </div>
 
             <br> 
@@ -118,7 +120,7 @@ if(isset($_POST['submit'])) {
  <input type="button" id="enableFieldsButton" name="btn2" value="EDIT" onclick="enableFields()" />
         
                 <!-- Submit button -->
-    <input type="submit" value="Done Edit" name="submit" id="submit"  class="hidden" />
+    <input type="submit" value="Done Edit" name="submit" id="submit" onclick="showConfirmation()"  class="hidden" />
 <input type="button" value="Back" name="cancel" id="cancel" onclick="cancelEdit()"/>
 
 
@@ -152,8 +154,7 @@ if(isset($_POST['submit'])) {
         document.getElementById("Firstname").disabled = false;
         document.getElementById("Email").disabled = true;
         document.getElementById("username").disabled = false;
-        document.getElementById("password_hash").disabled = false;
-
+       
         
     document.getElementById("submit").classList.remove("hidden");
         document.getElementById("cancel").classList.remove("hidden");
@@ -161,19 +162,6 @@ if(isset($_POST['submit'])) {
     
     }
 
- function togglePasswordVisibility() {
-            const passwordField = document.getElementById('password_hash');
-            const togglePassword = document.querySelector('.toggle-password');
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                togglePassword.classList.remove('fa-eye');
-                togglePassword.classList.add('fa-eye-slash');
-            } else {
-                passwordField.type = 'password';
-                togglePassword.classList.remove('fa-eye-slash');
-                togglePassword.classList.add('fa-eye');
-            }
-        }
 
     </script>
 </body>

@@ -68,10 +68,10 @@
 
       <div id="home">
       <div class="w3-centerw3-section" >
-        <img class="mySlides" src="images/sap1.png" style="width: 1200px;margin-left:100px;" height="900px; " >
-        <img class="mySlides" src="images/sap2.png" style="width: 1200px;margin-left:100px;" height="900px" >
-        <img class="mySlides" src="images/sap3.jpg" style="width: 1200px;margin-left:100px;" height="900px">
-        <img class="mySlides" src="images/sap4.png" style="width: 1200px;margin-left:100px;" height="900px">
+        <img class="mySlides" src="images/g1.jpg" style="width: 1000px;margin-left:200px;" height="600px; " >
+        <img class="mySlides" src="images/g2.jpg" style="width: 1000px;margin-left:200px;" height="600px" >
+        <img class="mySlides" src="images/g3.jpg" style="width: 1000px;margin-left:200px;" height="600px">
+        <img class="mySlides" src="images/g4.jpg" style="width: 1000px;margin-left:200px;" height="600px">
       </div>
       <section class="team-section">
         <div class="container">
@@ -122,7 +122,7 @@
                 </section>
                 </div>
                 </div>
-
+          
     <div class="footer" id=footer style="background:#1477d2;">
        <div class="Location">
            <div class="content1">

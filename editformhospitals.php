@@ -72,10 +72,15 @@ if ($Status == "For Validation") {
     $checkedRequirements = isset($_POST['requirement']) ? $_POST['requirement'] : array();
     $EmpID = $_POST['Emp_ID'];
     $newStatus = $_POST['Status'];
+    $relationship = $_POST['relationship']; // Get the relationship from form data or adjust as necessary
 
-    // Determine if all requirements are checked
-    $allChecked = count($checkedRequirements) === 10; // Replace 8 with the actual number of requirements
-
+    if ($relationship === "" || $relationship === "Myself") {
+        // If relationship is empty or "myself", set the required number of checks to 7
+        $allChecked = count($checkedRequirements) === 7;
+    } else {
+        // For other relationships, set the required number of checks to 8
+        $allChecked = count($checkedRequirements) === 8;
+    }
     // Determine new status based on all requirements being checked
     if ($allChecked) {
         $newStatus = 'Pending for Release of Guarantee Letter';
@@ -1012,7 +1017,8 @@ t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
                 <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;">Full Name</span>
                     <input disabled type = "text" required name="EmpName" value = "<?php echo $record['Firstname'] . " " . $record['Lastname']; ?>" > 
-                       
+                    <input type = "hidden" id="relationship" name="relationship" required value = "<?php echo $record['Relationship']; ?>">
+                 
                 </div> 
            
 
@@ -1201,37 +1207,65 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
             </div> 
         `;
     } else if (status === 'For Validation') {
-       // pdf.style.display = 'none'; 
-       document.getElementById('downloadPdfBtn').style.display = 'none'; // Show the PDF download button
- 
-        submitbtn.style.display = 'inline';
-        requirements.style.display = 'block';
-        requirements.innerHTML = `
-            <div style="color: black; padding:10px; background:white; margin-top:10px;margin-bottom:-5px;">
-                <div class="input-box">
-                    <span class="details" style="color: blue;">Hospital Bill Amount</span>
-                    ₱<input type="text" style="padding:10px; height:30px;" required value="<?php echo $record['billamount']; ?>" name="billamount" />
-                </div>
-                <h3 style="color: blue;">REQUIREMENTS FOR HOSPITAL BILL ASSISTANCE VALIDATION</h3>
-                <ul style="text-align: left; margin-left:40px;">
-                    <input type="checkbox" name="requirement[]" value="Final Bill w/ Discharge Date (May pirma ng Billing Clerk)/Promissory Note"> Final Bill w/ Discharge Date (May pirma ng Billing Clerk)/Promissory Note <br>
-                    <input type="checkbox" name="requirement[]" value="Medical Abstract/Medical Certificate (May Pangalan Pirma at License # ng Doctor)"> Medical Abstract/Medical Certificate (May Pangalan Pirma at License # ng Doctor) <br>
-                    <input type="checkbox" name="requirement[]" value="Sulat (Sulat Kamay) na Humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (Sulat Kamay) na Humihingi ng tulong kay Gov. Joet S. Garcia <br>
-                    <input type="checkbox" name="requirement[]" value="Xerox Valid ID ng Pasyente"> Xerox Valid ID ng Pasyente <br>
-                    <input type="checkbox" name="requirement[]" value="Xerox Valid ID ng Maglalakad"> Xerox Valid ID ng Maglalakad <br>
-                    <input type="checkbox" name="requirement[]" value="BRGY. INDIGENCY (PASYENTE)"> BRGY. INDIGENCY (PASYENTE) <br>
-                    <input type="checkbox" name="requirement[]" value="SOCIAL CASE STUDY (MSWDO)"> SOCIAL CASE STUDY (MSWDO) <br>
-                </ul>
-                <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
-                <ul style="text-align: left; margin-left:40px;">
-                    <input type="checkbox" name="requirement[]" value="XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE) <br>
-                    <input type="checkbox" name="requirement[]" value="XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE)"> XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE) <br>
-                    <input type="checkbox" name="requirement[]" value="BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE <br>
-                </ul>
-                <input type="hidden" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-            </div>
+// Hide the PDF download button initially
+document.getElementById('downloadPdfBtn').style.display = 'none';
+
+// Get the relationship value
+let relationship = document.getElementById('relationship').value;
+
+// Show submit button and requirements section
+submitbtn.style.display = 'inline';
+requirements.style.display = 'block';
+
+// Initial HTML structure for the requirements section
+let requirementsHTML = `
+    <div style="color: black; padding:10px; background:white; margin-top:10px;margin-bottom:-5px;">
+        <div class="input-box">
+            <span class="details" style="color: blue;">Hospital Bill Amount</span>
+            ₱<input type="text" style="padding:10px; height:30px;" required value="<?php echo $record['billamount']; ?>" name="billamount" />
+        </div>
+        <h3 style="color: blue;">REQUIREMENTS FOR HOSPITAL BILL ASSISTANCE VALIDATION</h3>
+        <ul style="text-align: left; margin-left:40px;">
+            <input type="checkbox" name="requirement[]" value="Final Bill w/ Discharge Date (May pirma ng Billing Clerk)/Promissory Note"> Final Bill w/ Discharge Date (May pirma ng Billing Clerk)/Promissory Note <br>
+            <input type="checkbox" name="requirement[]" value="Medical Abstract/Medical Certificate (May Pangalan Pirma at License # ng Doctor)"> Medical Abstract/Medical Certificate (May Pangalan Pirma at License # ng Doctor) <br>
+            <input type="checkbox" name="requirement[]" value="Sulat (Sulat Kamay) na Humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (Sulat Kamay) na Humihingi ng tulong kay Gov. Joet S. Garcia <br>
+            <input type="checkbox" name="requirement[]" value="Xerox Valid ID ng Pasyente"> Xerox Valid ID ng Pasyente <br>
+            <input type="checkbox" name="requirement[]" value="Xerox Valid ID ng Maglalakad"> Xerox Valid ID ng Maglalakad <br>
+            <input type="checkbox" name="requirement[]" value="BRGY. INDIGENCY (PASYENTE)"> BRGY. INDIGENCY (PASYENTE) <br>
+            <input type="checkbox" name="requirement[]" value="SOCIAL CASE STUDY (MSWDO)"> SOCIAL CASE STUDY (MSWDO) <br>
+        </ul>`;
+
+// Adding supporting documents based on the relationship value
+if (relationship === 'Mother' || relationship === 'Father' || relationship === 'Daughter/Son') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:40px">
+            <input type="checkbox" name="requirement[]" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
+        </ul>`;
+} else if (relationship === 'Spouse') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:40px">
+            <input type="checkbox" name="requirement[]" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
+        </ul>`;
+} else if (relationship === 'Sibling') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:40px">
+            <input type="checkbox" name="requirement[]" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
+        </ul>`;
+} else if (relationship === 'Myself' || relationship === '') {
+    requirementsHTML += `
         `;
-    
+}
+
+// Append the hidden employee name input and close the div
+requirementsHTML += `
+    </div>
+    <input type="hidden" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>`;
+
+// Set the innerHTML to the final HTML string
+document.getElementById('requirements').innerHTML = requirementsHTML;
 
     
     } else if (status === 'Pending for Release of Guarantee Letter') {

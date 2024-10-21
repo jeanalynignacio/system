@@ -11,16 +11,20 @@ $res_Id = $result['Emp_ID'];
 $res_Fname = $result['Firstname'];
  $res_Lname = $result['Lastname'];
  $role=$result['role'];
+ $office =$result['Office'];
+ 
 }
   }
   else{
     
     header("Location: login.php");
 }
+$office = mysqli_real_escape_string($con, $office);
 
-$query="SELECT * FROM employees where role='Community Affairs Officer'";
-        $result = mysqli_query($con, $query);
+// Second query to get employees in the same office
+$query = "SELECT * FROM employees WHERE Office = '$office' AND Emp_ID != '$id'";
 
+$result = mysqli_query($con, $query);
 
 
 
@@ -36,7 +40,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 1; // Get current page nu
 $offset = ($current_page - 1) * $records_per_page;
 
 
-$sql = "SELECT COUNT(*) AS totalEntries FROM employees where role='Community Affairs Officer' ";
+$sql = "SELECT COUNT(*) AS totalEntries FROM employees where Office='$office' AND Emp_ID != '$id'";
 $result = $con->query($sql);
 
 if (!$result) {
@@ -53,12 +57,64 @@ $recordsPerPage = 10;
 $totalPages = ceil($totalEntries / $recordsPerPage);
 $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($currentPage - 1) * $recordsPerPage;
-$sql = "SELECT * FROM employees where role='Community Affairs Officer'  LIMIT $recordsPerPage OFFSET $offset";
+$sql = "SELECT * FROM employees where Office='$office'  AND Emp_ID != '$id'  LIMIT $recordsPerPage OFFSET $offset";
 $transactionResult = $con->query($sql);
 
 if (!$transactionResult) {
     die("Invalid query: " . $con->error);
 }
+
+if (isset($_POST['Emp_ID']) && isset($_POST['password'])) {
+    $EmpID = mysqli_real_escape_string($con, $_POST['Emp_ID']);
+    $password = mysqli_real_escape_string($con, $_POST['password']);
+
+    // Assuming you have a function to get the current user's hashed password
+    $query = "SELECT password_hash FROM employees WHERE Emp_ID = '$id'";
+    $result = mysqli_query($con, $query);
+
+    if ($result && $row = mysqli_fetch_assoc($result)) {
+        // Check if the entered password matches the hashed password in the database
+        if (password_verify($password, $row['password_hash'])) {
+            // Password is correct, proceed to delete
+            $deleteQuery = "DELETE FROM employees WHERE Emp_ID = '$EmpID'";
+            $deleteResult = mysqli_query($con, $deleteQuery);
+
+            if ($deleteResult) {
+                echo '<body>
+                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                <script>
+                swal("Record Deleted successfully","","success")
+                .then((value) => {
+                    if (value) {
+                        window.location.href = "employeeRecords.php";
+                    }
+                });
+                </script>
+                </body>';  
+            } else {
+                echo "Error deleting record: " . mysqli_error($con);
+            }
+        } else {
+            echo '<body>
+                  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                  <script>
+                  swal("Incorrect password.","Please try again.","error")
+                  .then((value) => {
+                      if (value) {
+                          window.location.href = "employeeRecords.php";
+                      }
+                  });
+                  </script>
+                  </body>';
+           
+        }
+    } else {
+     
+        echo '<script>alert("Error fetching user data: " ); window.location.href = "employeeRecords.php";</script>';
+        
+    }
+}
+
 
 ?>
 <!DOCTYPE html>
@@ -76,56 +132,62 @@ awesome/6.4.0/css/all.min.css"/>
 </head>
 <body>
 <div class="sidebar">
-<div class="logo"></div>
-
-<ul class="menu">
-<li>
-<a href="#" onclick="dashboard()">
-<i class="fas fa-tachometer-alt"> </i>
-<span> Dashboard </span>
-</a>
-</li>
-<li >
-<a href="#" onclick="records()">
-<i class="fas fa-chart-bar"> </i>
-<span> Beneficiary's Records </span>
-</a>
-</li>
-<li>
-<a href="#" onclick="assistance()">
-<i class="fas fa-handshake-angle"> </i>
-<span> Financial Assistance </span>
-</a>
-</li>
-<li>
-<a href="#" onclick="hospital()">
-<i class="fas fa-hospital"> </i>
-<span> Hospitals </span>
-</a>
-</li>
-<li>
-<a href="#" onclick="medicines()">
-<i class="fa-solid fa-capsules"></i>
-<span>Medicines</span>
-</a>
-</li>
-<li>
-    <a href="#" onclick="laboratories()">
-        <i class="fa-solid fa-flask-vial"></i>
-            <span>Laboratories</span>
-</a>
-    </li>
-<?php if ($role === 'Admin'): ?>
-            <li class="active">
-                <a href="#" onclick="employees()">
+        <div class="logo"  style="height: 2px;" ></div>
+        <ul class="menu" style="margin-top: 15px; margin-left: -8px;" >
+            <li>
+                <a href="#" onclick="dashboard()"   style="font-size:14px;height:10px; ">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="records()"style="font-size:14px;height:10px; ">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Beneficiary's Records</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="assistance()" style="font-size:14px;height:10px; ">
+                    <i class="fas fa-handshake-angle"></i>
+                    <span>Financial Assistance</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="hospital()" style="font-size:14px;height:10px; ">
+                    <i class="fas fa-hospital"></i>
+                    <span>Hospitals</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="medicines()" style="font-size:14px;height:10px; ">
+                    <i class="fa-solid fa-capsules"></i>
+                    <span>Medicines</span>
+                </a>
+            </li>
+            <li  >
+                <a href="#" onclick="laboratories()" style="font-size:14px;height:10px; padding-right:-2px; ">
+                <i class="fa-solid fa-flask-vial"></i>
+                    <span>Laboratories</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
+                <i class="fa-solid fa-flask-vial"></i>
+                    <span>Dialysis</span>
+                </a>
+            </li>
+            <?php if ($role === 'Admin'): ?>
+                <li class="active" >
+                <a href="#" onclick="employees()" style="font-size:14px;height:10px; ">
                     <i class="fas fa-users"></i>
                     <span>Employees</span>
                 </a>
             </li>
-            
+           
         <?php endif; ?>
-        <li class="user" >
-            <a href="#" onclick="profile()">
+       <br>
+            <li class="user"  >
+            <a href="#" onclick="profile()" style="font-size:14px;height:10px; ">
                     <i class="fas fa-user"></i>
                                     
                 <span>Profile</span>
@@ -133,14 +195,14 @@ awesome/6.4.0/css/all.min.css"/>
                 </a>
             </li>
             <li class="logout">
-                <a href="#" onclick="logout()">
+                <a href="#" onclick="logout()" style="font-size:14px;height:10px; ">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>
             </li>
-</ul>
-
-</div>
+         
+        </ul>
+    </div>
 <div class="main--content">
 <div class="header--wrapper">
 <div class="header--title">
@@ -182,12 +244,13 @@ awesome/6.4.0/css/all.min.css"/>
 <th>Role:</th>
 <th>Office:</th>
 <th>Action:</th>
+<th>Action:</th>
 </tr>
 </thead>
 <tbody>
 <?php
 include("php/config.php");
-$sql = "SELECT * FROM employees where role='Community Affairs Officer'";
+$sql = "SELECT * FROM employees where Office='$office' AND Emp_ID != '$id'";
 $result = $con->query($sql);
 if (!$result) {
 die("Invalid query: " . $con->error);
@@ -212,6 +275,13 @@ name='Emp_ID' value='" . $row['Emp_ID'] . "'>
 
 </form>
 </td>
+ <td>
+            <form method='post' class='delete-form' id='form_" . $row['Emp_ID'] . "'>
+                <input type='hidden' name='Emp_ID' value='" . $row['Emp_ID'] . "'>
+                <button type='button' style='color:red' onclick='showConfirmation(" . $row['Emp_ID'] . ")'>DELETE</button>
+            </form>
+           
+        </td>
 </tr>";
 }
 ?>
@@ -251,7 +321,7 @@ name='Emp_ID' value='" . $row['Emp_ID'] . "'>
 </div> 
 </div> 
     
-<input type="hidden" id="confirmed" name="confirmed" value="">
+<input type="hidden" name="confirmed" id="confirmed" value="no">
 
                     
 
@@ -283,16 +353,30 @@ function profile() {
         window.location = "http://localhost/public_html/profileadmin.php";
     }
     function logout() {
-    var confirmation = confirm("Are you sure you want to Logout?");
-    if (confirmation) {
-        // If user clicks OK, set the value to "yes"
-        document.getElementById("confirmed").value = "yes";
-        // Redirect the user
-        window.location.href = "http://localhost/public_html/logoutemp.php";
-    } else {
-        // If user cancels, set the value to "no"
-        document.getElementById("confirmed").value = "no";
+    // Load SweetAlert script if not already loaded
+    if (typeof swal === 'undefined') {
+        var script = document.createElement('script');
+        script.src = 'https://unpkg.com/sweetalert/dist/sweetalert.min.js';
+        document.head.appendChild(script);
     }
+
+    // Show SweetAlert confirmation dialog
+    swal({
+        title: "Are you sure you want to Logout?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willLogout) => {
+        if (willLogout) {
+            // If user confirms, set the value to "yes"
+            document.getElementById("confirmed").value = "yes";
+            // Redirect the user
+            window.location.href = "http://localhost/public_html/logoutemp.php";
+        } else {
+            // If user cancels, set the value to "no"
+            document.getElementById("confirmed").value = "no";
+        }
+    });
 }
 function toggleForm() {
 var form = document.getElementById("addForm");
@@ -355,6 +439,45 @@ row.style.display = "none";
 }
 }
 
+function showConfirmation(empId) {
+    swal({
+        title: "Are you sure?",
+        text: "Enter your password to confirm deletion:",
+        content: {
+            element: "input",
+            attributes: {
+                placeholder: "Password",
+                type: "password",
+            },
+        },
+        buttons: true,
+        dangerMode: true,
+    }).then((value) => {
+        if (value) {
+            const password = value; // Get the password entered by the user
+            
+            // Get the form by ID
+            const form = document.getElementById('form_' + empId);
+            
+            // Create a hidden input for the password
+            const passwordInput = document.createElement('input');
+            passwordInput.type = 'hidden';
+            passwordInput.name = 'password'; // Name for the password input
+            passwordInput.value = password; // Set the password value
+            
+            // Append the password input to the form
+            form.appendChild(passwordInput);
+            
+            // Submit the form
+            form.submit();
+        }
+    });
+}
+
+
+
+
 </script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </body>
 </html>

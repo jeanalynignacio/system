@@ -500,7 +500,7 @@ elseif (isset($_POST['relative'])) {
 </button>
 </form>
 
-    <a href="logout.php" class="sub-menu-link">
+<a href="#" onclick="logout()" class="sub-menu-link">
             <img src="images/logout.png">
             <p> Log out</p>
        
@@ -525,7 +525,7 @@ elseif (isset($_POST['relative'])) {
             </center>
         </div>
          
-               
+        <input type="hidden" id="confirmed" name="confirmed" value="">   
             <form id="" action="" method="post">
             
             <div class="field">
@@ -556,6 +556,32 @@ elseif (isset($_POST['relative'])) {
    }
 
 
+   function logout() {
+    // Load SweetAlert script if not already loaded
+    if (typeof swal === 'undefined') {
+        var script = document.createElement('script');
+        script.src = 'https://unpkg.com/sweetalert/dist/sweetalert.min.js';
+        document.head.appendChild(script);
+    }
+
+    // Show SweetAlert confirmation dialog
+    swal({
+        title: "Are you sure you want to Logout?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willLogout) => {
+        if (willLogout) {
+            // If user confirms, set the value to "yes"
+            document.getElementById("confirmed").value = "yes";
+            // Redirect the user
+            window.location.href = "http://localhost/public_html/logout.php";
+        } else {
+            // If user cancels, set the value to "no"
+            document.getElementById("confirmed").value = "no";
+        }
+    });
+}
     </script>
 </body>
 </html>

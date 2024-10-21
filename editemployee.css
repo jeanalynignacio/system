@@ -161,6 +161,47 @@ form input[type="date"] {
 }
 
 
+
+
+/* Hide the cancel and submit buttons initially */
+#cancel.hidden, #submit.hidden, #button.hidden, #save.hidden {
+  display: none;
+}
+.btn2{
+  background-color: #5f9961; /* Green */
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+
+}
+#EnableFieldsButton{
+  background-color: #4CAF50; /* Green */
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+
+}
+/* Reduce opacity of disabled input fields */
+input[disabled] {
+  opacity: 2; /* Change this value as needed */
+  
+}
+
+
 /* responsive */
 
 @media (max-width: 584px) {

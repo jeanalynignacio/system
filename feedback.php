@@ -30,7 +30,39 @@ if($result3 = mysqli_fetch_assoc($query3)){
 
 
 if (isset($_POST['submit'])) {
-    
+    $errors = [];
+
+    if (empty($_POST['CC1'])) {
+        $errors[] = "CC1 selection is required.";
+    } else {
+        $CC1 = mysqli_real_escape_string($con, $_POST['CC1']);
+    }
+
+    if (empty($_POST['CC2'])) {
+        $errors[] = "CC2 selection is required.";
+    } else {
+        $CC2 = mysqli_real_escape_string($con, $_POST['CC2']);
+    }
+
+    if (empty($_POST['CC3'])) {
+        $errors[] = "CC3 selection is required.";
+    } else {
+        $CC3 = mysqli_real_escape_string($con, $_POST['CC3']);
+    }
+    for ($i = 0; $i <= 8; $i++) {
+        if (empty($_POST['SQD'.$i])) {
+            $errors[] = "SQD$i selection is required.";
+        } else {
+            ${'SQD'.$i} = mysqli_real_escape_string($con, $_POST['SQD'.$i]);
+        }
+    }
+
+    if (empty($_POST['comments'])) {
+        $comments = ""; // Set comments to an empty string if not provided
+    } else {
+        $comments = mysqli_real_escape_string($con, $_POST['comments']);
+    }
+    if (empty($errors)) {
     //   $name = mysqli_real_escape_string($con, $_POST['name2']);
         $date = mysqli_real_escape_string($con, $_POST['date']);
         $email = mysqli_real_escape_string($con, $_POST['email2']);
@@ -92,7 +124,28 @@ if (isset($_POST['submit'])) {
             echo "ERROR: Could not execute $query. " . mysqli_error($con);
         }
     }
+}else {
+    // Display the errors
+    foreach ($errors as $error) {
+        $errorMessage = implode('\n', $errors); // Join errors with newline characters for readability
+
+        echo '<body>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script>
+            swal({
+                title: "Error",
+                text: "' . $errorMessage . '",
+                icon: "error"
+            }).then(function() {
+                // Redirect to the feedback page after alert is dismissed
+                window.location.href = "feedback.php";
+            });
+            </script>
+            </body>';
+    }
 }
+} 
+
 ?>
 
 <!DOCTYPE html>
@@ -233,13 +286,6 @@ if(isset($_SESSION['valid'])): ?>
             </p>
         </div>
         <div class="namee">
-         <!--<h1 style="font-size: 15px; margin-top: 35px; font-size: 15px; margin-left: 35px;"><strong>Name</strong></h1>
- 
-                    <input type="text"  disabled name="name" id="name" autocomplete="off"  style="font-size: 15px;  font-size: 15px; margin-left: 35px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>">                  
-                     <input type="hidden"   name="name2" id="name2" autocomplete="off"   value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>">                  
-
-                     <input type="checkbox" id="anonymousCheck" name="anonymousCheck" onclick="toggleAnonymous()"> 
-<label for="anonymousCheck">Check if you want to remain anonymous</label><br>-->
 </div>
 <div class="emaill">
         <h1 style="font-size: 15px; margin-top: 35px; font-size: 15px; margin-left: 35px;"><strong>Email</strong></h1>
@@ -323,10 +369,10 @@ if(isset($_SESSION['valid'])): ?>
         <input type="radio" id="c1" name="CC3" value="Sobrang nakatulong">
         <label for="c1">1. Sobrang nakatulong</label><br>
 
-        <input type="radio" id="c2" name="CC3" value="Medyo madaling makita">
+        <input type="radio" id="c2" name="CC3" value="Nakatulong naman">
         <label for="c2">2. Nakatulong naman</label><br>
 
-        <input type="radio" id="c3" name="CC3" value="Mahirap makita">
+        <input type="radio" id="c3" name="CC3" value="Hindi nakatulong">
         <label for="c3">3. Hindi nakatulong</label><br>
 
         <input type="radio" id="c4" name="CC3" value="N/A">
@@ -451,7 +497,7 @@ if(isset($_SESSION['valid'])): ?>
 
 </div>
 
-<h1 style="font-size: 15px; margin-top: 25px; font-size: 15px; margin-left: 35px;"><strong>SQD6. Pakiramdam ko ay patas ang opisina sa lahat. o walang palakasan", sa aking transaksyon</strong></h1><br>
+<h1 style="font-size: 15px; margin-top: 25px; font-size: 15px; margin-left: 35px;"><strong>SQD6. Pakiramdam ko ay patas ang opisina sa lahat. o "walang palakasan", sa aking transaksyon</strong></h1><br>
   <div class="emotion" style="margin-left: 55px;margin-top: -15px;margin-bottom: -15px;">
   <input type="radio" name="SQD6" id="SAD1234567" class="smiley-radio" style="display: none;" value="Dismayado"/>
   <label for="SAD1234567" style="background-image: url('images/1.png'); width: 50px; height: 50px; display: inline-block; background-size: cover;margin-right:15px;cursor:pointer;"></label>

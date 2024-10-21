@@ -161,7 +161,7 @@ if ($result = mysqli_fetch_assoc($query)) {
 </button>
 </form>
 
-    <a href="logout.php" class="sub-menu-link">
+<a href="#" onclick="logout()" class="sub-menu-link">
             <img src="images/logout.png">
             <p> Log out</p>
        
@@ -179,10 +179,10 @@ if ($result = mysqli_fetch_assoc($query)) {
   $date = date('Y-m-d');
 
   // Calculate the date from two months ago
-  $two_months_ago = date('Y-m-d', strtotime('-2 months', strtotime($date)));
+  $two_months_ago = date('Y-m-d', strtotime('-3 months', strtotime($date)));
   
   // OR simply use:
-  $two_months_ago = date('Y-m-d', strtotime('-2 months'));
+  $two_months_ago = date('Y-m-d', strtotime('-3 months'));
 $query = "SELECT * FROM history WHERE Beneficiary_ID = '$BeneID'  AND ReceivedDate > '$two_months_ago'";
 
 // Execute the query
@@ -198,6 +198,9 @@ if ($feedbackResult && $feedbackResult->num_rows > 0): ?>
             </button>
         </form>
     </div>
+
+    <input type="hidden" id="confirmed" name="confirmed" value="">\
+
 <?php endif; ?>
 
             <table style="margin-top:10px; width:1500px;">
@@ -246,6 +249,34 @@ if ($feedbackResult && $feedbackResult->num_rows > 0): ?>
         function toggleMenu(){
             subMenu.classList.toggle("open-menu");
    }
+
+   
+   function logout() {
+    // Load SweetAlert script if not already loaded
+    if (typeof swal === 'undefined') {
+        var script = document.createElement('script');
+        script.src = 'https://unpkg.com/sweetalert/dist/sweetalert.min.js';
+        document.head.appendChild(script);
+    }
+
+    // Show SweetAlert confirmation dialog
+    swal({
+        title: "Are you sure you want to Logout?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willLogout) => {
+        if (willLogout) {
+            // If user confirms, set the value to "yes"
+            document.getElementById("confirmed").value = "yes";
+            // Redirect the user
+            window.location.href = "http://localhost/public_html/logout.php";
+        } else {
+            // If user cancels, set the value to "no"
+            document.getElementById("confirmed").value = "no";
+        }
+    });
+}
 </script>
 </body>
 </html>

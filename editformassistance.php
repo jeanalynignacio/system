@@ -1246,6 +1246,7 @@ t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
                     <input disabled type = "text" required value = "<?php echo $record['FA_Type']; ?>">
                        <input type = "hidden" id="d" name="FA_Type" required value = "<?php echo $record['FA_Type']; ?>">
                        <input type = "hidden" id="stats" name="stats" required value = "<?php echo $record['Status']; ?>">
+                       <input type = "hidden" id="relationship" name="relationship" required value = "<?php echo $record['Relationship']; ?>">
                 
                     
                 </div>
@@ -1473,6 +1474,8 @@ function areAllChecked(checkedRequirements) {
 }
 
 function getCheckedRequirements(name) {
+    let relationship = document.getElementById('relationship').value;
+
     let checkboxes = document.getElementsByName(name);
     let checkedRequirements = [];
     for (let i = 0; i < checkboxes.length; i++) {
@@ -1483,30 +1486,46 @@ function getCheckedRequirements(name) {
         if (faType === 'Burial') {
             submitbtn.style.display = 'inline';
         requirements.style.display = 'block'; 
-      
-            requirements.innerHTML = `
-            
-             <div style = "color: black; padding:15px; background:white; margin-top:20px;">
-                <h3 style = "color: blue;">REQUIREMENTS FOR BURIAL ASSISTANCE VALIDATION</h3>
-                  <ul style = "text-align: left; margin-left:60px">
+        let relationship = document.getElementById('relationship').value;
 
-                    <input type="checkbox" name="burial_requirement[]" value="Registered Death Certificate (2 PHOTOCOPIES)"> Registered Death Certificate (2 PHOTOCOPIES) <br>
-                    <input type="checkbox" name="burial_requirement[]" value="Funeral Contract with Balance (2 PHOTOCOPIES)"> Funeral Contract with Balance (2 PHOTOCOPIES) <br>
-                    <input type="checkbox" name="burial_requirement[]" value="Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY)"> Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY) <br>
-                    <input type="checkbox" name="burial_requirement[]" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia <br>
-                    <input type="checkbox" name="burial_requirement[]" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad <br>
-                    <input type="checkbox" name="burial_requirement[]" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad) <br>
-                    </ul>
-                    <h3 style = "color: blue;">SUPPORTING DOCUMENTS</h3>
-                    <ul style = "text-align: left; margin-left:60px">
-                    <input type="checkbox" name="burial_requirement[]" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
-                    <input type="checkbox" name="burial_requirement[]" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
-                    <input type="checkbox" name="burial_requirement[]" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
-                    </ul>
-             </div>
-              <input type="hidden"  name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-          
-            `;
+        let requirementsHTML = `            
+    <div style="color: black; padding:15px; background:white; margin-top:20px;">
+        <h3 style="color: blue;">REQUIREMENTS FOR BURIAL ASSISTANCE VALIDATION</h3>
+        <ul style="text-align: left; margin-left:60px">
+            <input type="checkbox" name="burial_requirement[]" value="Registered Death Certificate (2 PHOTOCOPIES)"> Registered Death Certificate (2 PHOTOCOPIES) <br>
+            <input type="checkbox" name="burial_requirement[]" value="Funeral Contract with Balance (2 PHOTOCOPIES)"> Funeral Contract with Balance (2 PHOTOCOPIES) <br>
+            <input type="checkbox" name="burial_requirement[]" value="Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY)"> Promissory Note or Certification with Balance (1 ORIGINAL, 1 PHOTOCOPY) <br>
+            <input type="checkbox" name="burial_requirement[]" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia <br>
+            <input type="checkbox" name="burial_requirement[]" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad <br>
+            <input type="checkbox" name="burial_requirement[]" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad) <br>
+        </ul>`;
+
+if (relationship === 'Mother' || relationship === 'Father' || relationship === 'Daughter/Son') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:60px">
+            <input type="checkbox" name="burial_requirement[]" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
+        </ul>`;
+} else if (relationship === 'Spouse') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:60px">
+            <input type="checkbox" name="burial_requirement[]" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
+        </ul>`;
+} else if (relationship === 'Sibling') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:60px">
+            <input type="checkbox" name="burial_requirement[]" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
+        </ul>`;
+}
+
+requirementsHTML += `
+    </div>
+    <input type="hidden" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>`;
+
+// Set the innerHTML to the final HTML string
+document.getElementById('requirements').innerHTML = requirementsHTML;
                  
    
         }
@@ -1515,51 +1534,91 @@ function getCheckedRequirements(name) {
  else if (faType === 'Chemotherapy & Radiation') {
     submitbtn.style.display = 'inline';
     requirements.style.display = 'block'; 
-            requirements.innerHTML = `
-            
-                  <div style = "color: black; padding:15px; background:white; margin-top:20px;">
-                <h3 style = "color: blue;">REQUIREMENTS FOR CHEMOTHERAPY & RADIATION ASSISTANCE VALIDATIONS</h3>
-                  <ul style = "text-align: left; margin-left:60px">
-                    <input type="checkbox" name="chemo_requirement[]" value="Medical Abstract"> Medical Abstract <br>
-                    <input type="checkbox" name="chemo_requirement[]" value="Request Letter from Barangay Health Center"> Request Letter from Barangay Health Center <br>
-                    <input type="checkbox" name="chemo_requirement[]" value="Xerox Valid ID ng Pasyente"> Xerox Valid ID ng Pasyente <br>
-                    <input type="checkbox" name="chemo_requirement[]" value="Xerox Valid ID ng Maglalakad"> Xerox Valid ID ng Maglalakad <br>
-                    <input type="checkbox" name="chemo_requirement[]" value="BRGY. INDIGENCY (PASYENTE)"> BRGY. INDIGENCY (PASYENTE) <br>
-                    </ul>
-                    <h3 style = "color: blue;">SUPPORTING DOCUMENTS</h3>
-                    <ul style = "text-align: left; margin-left:60px">
-                    <input type="checkbox" name="chemo_requirement[]" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
-                    <input type="checkbox" name="chemo_requirement[]" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
-                    <input type="checkbox" name="chemo_requirement[]" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
-                    </ul>
-             </div>
-               <input type="hidden"  name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-          
-            `;
+    let relationship = document.getElementById('relationship').value;
+
+    let requirementsHTML = `            
+    <div style="color: black; padding:15px; background:white; margin-top:20px;">
+        <h3 style="color: blue;">REQUIREMENTS FOR CHEMOTHERAPY & RADIATION ASSISTANCE VALIDATIONS</h3>
+        <ul style="text-align: left; margin-left:60px">
+            <input type="checkbox" name="chemo_requirement[]" value="Medical Abstract"> Medical Abstract <br>
+            <input type="checkbox" name="chemo_requirement[]" value="Request Letter from Barangay Health Center"> Request Letter from Barangay Health Center <br>
+            <input type="checkbox" name="chemo_requirement[]" value="Xerox Valid ID ng Pasyente"> Xerox Valid ID ng Pasyente <br>
+            <input type="checkbox" name="chemo_requirement[]" value="Xerox Valid ID ng Maglalakad"> Xerox Valid ID ng Maglalakad <br>
+            <input type="checkbox" name="chemo_requirement[]" value="BRGY. INDIGENCY (PASYENTE)"> BRGY. INDIGENCY (PASYENTE) <br>
+        </ul>`;
+
+if (relationship === 'Mother' || relationship === 'Father' || relationship === 'Daughter/Son') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:60px">
+            <input type="checkbox" name="chemo_requirement[]" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
+        </ul>`;
+} else if (relationship === 'Spouse') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:60px">
+            <input type="checkbox" name="chemo_requirement[]" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
+        </ul>`;
+} else if (relationship === 'Sibling') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:60px">
+            <input type="checkbox" name="chemo_requirement[]" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
+        </ul>`;
+}
+
+requirementsHTML += `
+    </div>
+    <input type="hidden" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>`;
+
+// Set the innerHTML to the final HTML string
+document.getElementById('requirements').innerHTML = requirementsHTML;
+
         }
         else if (faType === 'Dialysis') {
+            let relationship = document.getElementById('relationship').value;
+
             submitbtn.style.display = 'inline';
             requirements.style.display = 'block'; 
-            requirements.innerHTML = `
-             <div style = "color: black; padding:15px; background:white; margin-top:-10px;">
-                <h3 style = "color: blue;" >REQUIREMENTS FOR DIALYSIS</h3>
-                <ul style = "text-align: left; margin-left:60px"><br>
-                       <input type="checkbox"  name="dialysis_requirement[]"  value="Medical Abstract"> Medical Abstract<br>
-                    <input type="checkbox"  name="dialysis_requirement[]"  value="Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)"> Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No.<br> (2 PHOTOCOPIES)<br>
-                   <input type="checkbox"  name="dialysis_requirement[]" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)<br>
-                    <input type="checkbox"  name="dialysis_requirement[]"  value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia<br>
-                   <input type="checkbox"  name="dialysis_requirement[]"  value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad<br>
-                </ul><br>
-                <h3  style = "color: blue;">SUPPORTING DOCUMENTS</h3>
-                    <ul style = "text-align: left; margin-left:60px"><br>
-                    <input type="checkbox"  name="dialysis_requirement[]"  value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
-                    <input type="checkbox"  name="dialysis_requirement[]"  value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
-                    <input type="checkbox"  name="dialysis_requirement[]"  value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
-                    </ul>
-             </div>
-               <input type="hidden"  name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
-          
-            `;
+            let requirementsHTML = `
+    <div style="color: black; padding:15px; background:white; margin-top:-10px;">
+        <h3 style="color: blue;">REQUIREMENTS FOR DIALYSIS</h3>
+        <ul style="text-align: left; margin-left:60px">
+            <input type="checkbox" name="dialysis_requirement[]" value="Medical Abstract"> Medical Abstract <br>
+            <input type="checkbox" name="dialysis_requirement[]" value="Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No. (2 PHOTOCOPIES)"> Reseta ng Gamot NOTE: 1st & 2nd checks same date, same doctor, same signature with Doctor's License No. (2 PHOTOCOPIES)<br>
+            <input type="checkbox" name="dialysis_requirement[]" value="Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)"> Brgy. Indigency (Pasyente) & Brgy. Indigency (Naglalakad)<br>
+            <input type="checkbox" name="dialysis_requirement[]" value="Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia"> Sulat (SULAT KAMAY) na humihingi ng tulong kay Gov. Joet S. Garcia<br>
+            <input type="checkbox" name="dialysis_requirement[]" value="Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad"> Xerox Valid ID ng Pasyente w/ 3 signatures or Xerox Valid ID ng naglalakad<br>
+        </ul>`;
+
+// Add supporting documents based on the relationship
+if (relationship === 'Mother' || relationship === 'Father' || relationship === 'Daughter/Son') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:60px">
+            <input type="checkbox" name="dialysis_requirement[]" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
+        </ul>`;
+} else if (relationship === 'Spouse') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:60px">
+            <input type="checkbox" name="dialysis_requirement[]" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
+        </ul>`;
+} else if (relationship === 'Sibling') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:60px">
+            <input type="checkbox" name="dialysis_requirement[]" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
+        </ul>`;
+}
+
+// Add hidden employee name input
+requirementsHTML += `
+    </div>
+    <input type="hidden" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>`;
+
+// Set the innerHTML to the final HTML string
+document.getElementById('requirements').innerHTML = requirementsHTML;
         }
     } else if (status === 'Pending for Payout') {
         submitbtn.style.display = 'inline';

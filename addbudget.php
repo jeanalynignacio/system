@@ -15,7 +15,7 @@ $res_Fname = $result['Firstname'];
   }
   else{
     
-    header("Location: employee-login.php");
+    header("Location: login.php");
 }
 if(isset($_POST['submit'])) {
 // Check if the user confirmed the update
@@ -119,6 +119,8 @@ $selectedassistance = $_POST['assistancetype'] ?? 'Select';
                     <option value="Financial Assistance-Chemotherapy & Radiation" <?php if ($selectedassistance === 'Financial Assistance-Chemotherapy & Radiation') echo 'selected'; ?>>Financial Assistance-Chemotherapy & Radiation</option>
                     <option value="Financial Assistance-Dialysis" <?php if ($selectedassistance === 'Financial Assistance-Dialysis') echo 'selected'; ?>>Financial Assistance-Dialysis</option>
                      <option value="Hospital Bills" <?php if ($selectedassistance === 'Hospital Bills') echo 'selected'; ?>>Hospital Bills</option>
+                     <option value="Laboratories" <?php if ($selectedassistance === 'Laboratories') echo 'selected'; ?>>Laboratories</option>
+                
                     </select>  
                              
                 </div>

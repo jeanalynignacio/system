@@ -65,8 +65,15 @@ if ($Status == "For Validation") {
  $EmpID = $_POST['Emp_ID'];
  $newStatus = $_POST['Status'];
 
- 
- $allChecked = count($checkedRequirements) === 8; // Replace 8 with the actual number of requirements
+ $relationship = $_POST['relationship']; // Get the relationship from form data or adjust as necessary
+
+if ($relationship === "" || $relationship === "Myself") {
+    // If relationship is empty or "myself", set the required number of checks to 7
+    $allChecked = count($checkedRequirements) === 5;
+} else {
+    // For other relationships, set the required number of checks to 8
+    $allChecked = count($checkedRequirements) === 6;
+}
 
     // Determine new status based on all requirements being checked
     if ($allChecked) {
@@ -109,126 +116,7 @@ if ($result) {
 
 
 elseif ($Status == "Receive Guarantee Letter") {
-    date_default_timezone_set('Asia/Manila');
-    $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
-    $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
-    
-    $beneID = $_POST['Beneficiary_Id'];
-    $maxFileSize = 5000000; // 5MB in bytes
-
-    if ($role == "Community Affairs Officer") {
-        if ($_FILES["image"]["error"] === 4) {
-            array_push($errors, $profileError = "Image does not exist");
-        } elseif ($_FILES["image"]["size"] > $maxFileSize) {
-            array_push($errors, $profileError = "Image size is too large. Please upload an image smaller than 5MB.");
-        } else {
-            $filename = $_FILES["image"]["name"];
-            $tmpName = $_FILES["image"]["tmp_name"];
-            $validImageExtension = ['jpg', 'jpeg', 'png'];
-            $imageExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-    
-            if (!in_array($imageExtension, $validImageExtension)) {
-                array_push($errors, $profileError = "Invalid image extension");
-            } else {
-                $newImageName = uniqid() . '.' . $imageExtension;
-    
-                if (empty($errors)) {
-                    move_uploaded_file($tmpName, 'proofGL/' . $newImageName);
-    
-    $SQL = mysqli_query($con, "SELECT b.*, t.*, l.*
-                               FROM beneficiary b
-                               INNER JOIN transaction t ON b.Beneficiary_Id = t.Beneficiary_Id
-                               INNER JOIN laboratories l ON b.Beneficiary_Id = l.Beneficiary_ID
-                               WHERE b.Beneficiary_Id = '$beneID'");
-
-    if($result = mysqli_fetch_assoc($SQL)){
-        $branch = $result['branch'];
-        $TransactionType = $result['TransactionType'];
-        $AssistanceType = $result['AssistanceType'];
-        $LabType = $result['LabType'];
-        $EmpID = $_POST['Emp_ID'];  // Assuming Emp_ID is passed via POST
-$Amount=$result['Amount'];
-$EmpID = $_SESSION['EmpID'];
-        // Insert into history table
-        $query = "INSERT INTO history (Beneficiary_ID, ReceivedDate, ReceivedTime, TransactionType, AssistanceType, ReceivedAssistance, Emp_ID, branch,Amount)
-                  VALUES ('$beneID', '$ReceivedDate', '$ReceivedTime', '$TransactionType', '$AssistanceType', 'Guarantee Letter', '$EmpID', '$branch','$Amount')";
-
-        if(mysqli_query($con, $query)){
-            $sql1 = "DELETE FROM transaction WHERE Beneficiary_Id='$beneID'";
-            $sql2 = "DELETE FROM laboratories WHERE Beneficiary_ID='$beneID'";
-            $sql5 = "DELETE FROM beneficiary WHERE Beneficiary_ID='$beneID'";
-            $sql3 = "SELECT RemainingBal FROM budget WHERE AssistanceType='$AssistanceType' AND branch='$branch'";
-
-            $result3 = mysqli_query($con, $sql3);
-
-            if ($result3) {
-                if ($resultbal = mysqli_fetch_assoc($result3)) {
-                    if ($resultbal['RemainingBal'] != 0) {
-                        $updateQuery = "UPDATE budget SET RemainingBal = RemainingBal - $Amount WHERE branch = '$branch' AND AssistanceType = '$AssistanceType'";
-                        $result4 = mysqli_query($con, $updateQuery);
-
-                        if ($result4 && mysqli_query($con, $sql1) && mysqli_query($con, $sql2) && mysqli_query($con, $sql5)) {
-                            echo '<body>
-                                  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                                  <script>
-                                  swal("This beneficiary already received his/her assistance","","success")
-                                  .then((value) => {
-                                      if (value) {
-                                          window.location.href = "laboratories.php";
-                                      }
-                                  });
-                                  </script>
-                                  </body>';
-                        } else {
-                            echo "Error updating budget or deleting records.";
-                        }
-                    } else {
-                        echo '<body>
-                              <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                              <script>
-                              swal("You have insufficient balance","","error")
-                              .then((value) => {
-                                  if (value) {
-                                      window.location.href = "laboratories.php";
-                                  }
-                              });
-                              </script>
-                              </body>';
-                    }
-                } else {
-                    echo '<body>
-                          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                          <script>
-                          swal("This branch has no budget","","error")
-                          .then((value) => {
-                              if (value) {
-                                  exit();
-                              }
-                          });
-                          </script>
-                          </body>';
-                }
-            } else {
-                echo '<body>
-                      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                      <script>
-                      swal("No existing balance","","error")
-                      .then((value) => {
-                          if (value) {
-                              exit();
-                          }
-                      });
-                      </script>
-                      </body>';
-            }
-        } else {
-            echo "Error inserting data into history table: " . mysqli_error($con);
-        }
-    }
-}
-}
-}
-} else{
+ 
 date_default_timezone_set('Asia/Manila');
 $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
 $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
@@ -246,7 +134,7 @@ $branch = $result['branch'];
         $TransactionType = $result['TransactionType'];
         $AssistanceType = $result['AssistanceType'];
         $ReceivedAssistance = "Guarantee Letter";
-        $Amount = $result['Amount'];
+        $Amount = $_POST['amount'];
         $EmpID = $_POST['Emp_ID']; // Assuming you have employee ID stored in session
 
         // Insert into history table
@@ -287,7 +175,7 @@ try {
     // Recipients
     $mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
     $mail->addAddress($Email);
-
+    $amount = $_POST['amount'];
     // Content
     $mail->isHTML(true);
     $mail->Subject = 'Received Guarantee Letter';
@@ -295,7 +183,7 @@ try {
         <html>
         <body>
         <p>Dear Mr./Ms./Mrs. $lastName,</p>
-        <p>We have successfully provided your Guarantee Letter. Please note that you may request another assistance after a period of 3 months.</p>
+        <p>We have successfully provided your Guarantee Letter with the approved amount of ₱$amount. Please note that you may request another assistance after a period of 3 months.</p>
 <p>If you have some extra time, kindly answer our feedback form through this <a href='$link'>link</a>. Your input is greatly appreciated and will help us improve our service.<br></p>
 <p>Thank you for your cooperation. God Bless!<br><br></p>
  <p>Best regards,<br>$employeeName<br>
@@ -362,7 +250,7 @@ echo "Error inserting data into history table: " . mysqli_error($con);
 }
 }
 }
-}
+
 
 
 
@@ -1026,6 +914,8 @@ t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
             </div>
 
         <div class="user-details">
+        <input type = "hidden" id="relationship" name="relationship" required value = "<?php echo $record['Relationship']; ?>">
+                 
                 <div class="input-box">
                     <span class="details" style="color:  #f5ca3b;"> Types of Laboratory </span>
                     <input disabled type="text" required value="<?php echo $record['LabType']; ?>" name="LabType"/>
@@ -1050,9 +940,13 @@ t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
         echo "<input type='text' id='status' name='Status' value='For Validation' readonly>";
     }
     elseif ($record['Status'] == 'Pending for Releasing Guarantee Letter') {
-        // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
-        echo "<input type='text' id='status' name='Status' value='Releasing Guarantee Letter' readonly>";
-    }
+        if ($role === 'Admin'){ 
+            echo "<input type='text' id='status' name='Status' value='Receive Guarantee Letter' readonly>";
+       
+          }else{
+            echo "<input type='text' id='status' name='Status' value='Releasing Guarantee Letter' readonly>";
+
+          }   }
     elseif ($record['Status'] == 'Request for Re-schedule') {
         // If the current status is "Pending for Requirements", display only "For Validation" in the dropdown
         echo "<select id='status' name='Status' onchange='handleStatusChange()'>";
@@ -1099,8 +993,10 @@ t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID'
                 </div>
            
                 <div class="button-row">
+                <a id="downloadPdfBtn" href="http://localhost/public_html/MAIP-Bataan.pdf" style="display: none;background:   #3d881a;  text-align: center;  color:white; text-decoration:none;width:250px;height:30px;border-radius: 7px; padding-top:5px; margin-top:40px; margin-left:10px; " download="MAIP-Bataan.pdf" style="display:none;">Download Guarantee Letter</a>
+                   
                 <input type="submit" value="Submit" id="submitbtn" name="submit" onclick="showConfirmation()" />
-                <input type="button" value="Cancel" name="cancel" onclick="cancelEdit()" />
+                <input type="button" value="Cancel" style="margin-left:-20px;" name="cancel" onclick="cancelEdit()" />
                 </div>
         
         
@@ -1123,6 +1019,8 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
             requirements.style.display = 'none'; // Hide requirements by default
             
             if (status === 'For Schedule') {
+                document.getElementById('downloadPdfBtn').style.display = 'none'; // Show the PDF download button
+ 
                 submitbtn.style.display = 'inline';
                 emailFormat.innerHTML = `
                      <div style = "color: black; padding:15px; background:white; margin-top:20px;"> 
@@ -1139,30 +1037,61 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
           </div> 
                 `;
             } else if (status === 'For Validation') {
+                document.getElementById('downloadPdfBtn').style.display = 'none';
+
+                let relationship = document.getElementById('relationship').value;
                 submitbtn.style.display = 'inline';
                 requirements.style.display = 'block';
-                requirements.innerHTML = `
-                    <div style="color: black; padding:15px; background:white; margin-top:20px;">
-                        
-                        <h3 style="color:blue;">REQUIREMENTS FOR LABORATORY ASSISTANCE VALIDATION</h3>
-                        <ul style = "text-align: left; margin-left:60px" >
-                            <input type="checkbox" name="requirement[]" value="Death Laboratories result"> LABORATORIES RESULT <br>
-                            <input type="checkbox" name="requirement[]" value="Request Letter from Barangay Health Center"> REQUEST LETTER FROM BARANGAY HEALTH CENTER <br>
-                            <input type="checkbox" name="requirement[]" value="Xerox Valid ID ng Pasyente"> XEROX VALID ID NG PASYENTE <br>
-                            <input type="checkbox" name="requirement[]" value="Xerox Valid ID ng Maglalakad"> XEROX VALID ID NG MAGLALAKAD<br>
-                            <input type="checkbox" name="requirement[]" value="BRGY. INDIGENCY (PASYENTE)"> BRGY. INDIGENCY (PASYENTE) <br>
           
-                        </ul>
-                        <h3 style="color:blue;margin-top:15px;">SUPPORTING DOCUMENTS</h3>
-                         <ul style = "text-align: left; margin-left:60px" >
-                            <input type="checkbox" name="requirement[]" value="XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE)"> XEROX COPY NG BIRTH CERTIFICATE (KUNG ANAK O MAGULANG ANG PASYENTE) <br>
-                            <input type="checkbox" name="requirement[]" value="XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE)"> XEROX NG MARRIAGE (CERTIFICATE KUNG ASAWA ANG PASYENTE) <br>
-                            <input type="checkbox" name="requirement[]" value="BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE"> BIRTH CERTIFICATE AND MARRIAGE CERTIFICATE (NG MAGULANG) KUNG KAPATID ANG PASYENTE <br>
-                           
-                    </ul>
-                    </div>
-                `;
+                
+
+let requirementsHTML = `
+    <div style="color: black; padding:10px; background:white; margin-top:10px;margin-bottom:-5px;">
+       
+        <h3 style="color: blue;">REQUIREMENTS FOR LABORATORY ASSISTANCE VALIDATION</h3>
+        <ul style="text-align: left; margin-left:40px;">
+            <input type="checkbox" name="requirement[]" value="Death Laboratories result"> LABORATORIES RESULT <br>
+            <input type="checkbox" name="requirement[]" value="Request Letter from Barangay Health Center"> REQUEST LETTER FROM BARANGAY HEALTH CENTER <br>
+            <input type="checkbox" name="requirement[]" value="Xerox Valid ID ng Pasyente"> XEROX VALID ID NG PASYENTE <br>
+            <input type="checkbox" name="requirement[]" value="Xerox Valid ID ng Maglalakad"> XEROX VALID ID NG MAGLALAKAD<br>
+            <input type="checkbox" name="requirement[]" value="BRGY. INDIGENCY (PASYENTE)"> BRGY. INDIGENCY (PASYENTE) <br>
+        </ul>`;
+
+// Add supporting documents based on relationship
+if (relationship === 'Mother' || relationship === 'Father' || relationship === 'Daughter/Son') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:40px">
+            <input type="checkbox" name="requirement[]" value="Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente)"> Xerox copy ng Birth Certificate (Kung anak o magulang ang pasyente) <br>
+        </ul>`;
+
+} else if (relationship === 'Spouse') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:40px">
+            <input type="checkbox" name="requirement[]" value="Xerox ng Marriage Certificate (Kung asawa ang pasyente)"> Xerox ng Marriage Certificate (Kung asawa ang pasyente) <br>
+        </ul>`;
+} else if (relationship === 'Sibling') {
+    requirementsHTML += `
+        <h3 style="color: blue;">SUPPORTING DOCUMENTS</h3>
+        <ul style="text-align: left; margin-left:40px">
+            <input type="checkbox" name="requirement[]" value="Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente)"> Birth Certificate and Marriage Certificate (ng magulang kung kapatid ang pasyente) <br>
+        </ul>`;
+}
+
+requirementsHTML += `
+    </div>
+    <input type="hidden" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>`;
+
+// Set the innerHTML to the final HTML string
+document.getElementById('requirements').innerHTML = requirementsHTML;
+
+    
+
+    
             } else if (status === 'Pending for Releasing Guarantee Letter') {
+                document.getElementById('downloadPdfBtn').style.display = 'inline'; // Show the PDF download button
+  
                 submitbtn.style.display = 'inline';
                 emailFormat.innerHTML = `
                     <div style="color: black; padding:15px; background:white; margin-top:20px;">
@@ -1177,16 +1106,19 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
          </div>
                 `;
                 } else if (status === 'Request for Re-schedule') {
+                    document.getElementById('downloadPdfBtn').style.display = 'none';
+
                 requirements.style.display = 'block';
                 requirements.innerHTML = `
                     <h3 style="color: white; margin-top:15px;" >Click this <a href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox" target="_blank" style="color:  #3cd82e;">link</a> to check the email of beneficiary.</h3>
                 `;
                 submitbtn.style.display = 'none';
             } 
-            else if (status === 'Releasing Guarantee Letter' && role==='Admin') { 
-                submitbtn.style.display = 'inline';
-              
-                emailFormat.innerHTML = `
+            else if (status === 'Releasing Guarantee Letter') { 
+                document.getElementById('downloadPdfBtn').style.display = 'inline'; // Show the PDF download button
+ 
+ submitbtn.style.display = 'none'; 
+              /*  emailFormat.innerHTML = `
                     <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                         <p>You are currently set to receive your requested assistance. You may go on <input type="date" id="calendar2" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
@@ -1223,7 +1155,7 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
        date2.disabled = true
        empname.disabled = true;
        submitbtn.style.display = 'none';
-    }
+    } */
     }
      else if (status === 'For Re-schedule') {
                 submitbtn.style.display = 'inline';
@@ -1263,23 +1195,26 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
     else if (status === 'Pending for Requirements') {
             submitbtn.style.display = 'none'; 
        
-    }
+
+            
+            
     else if (status === 'Receive Guarantee Letter') {
-      
+        document.getElementById('downloadPdfBtn').style.display = 'none'; // Show the PDF download button
+
         emailFormat.innerHTML = `
-                 <div style = "color: black; padding:15px; background:white; margin-top:20px;">
+                   <div style = "color: black; padding:15px; background:white; margin-top:20px;">
                 Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-                <p>We have successfully provided your Guarantee Letter. Please note that you may request another assistance after a period of 3 months. <br>
+                <p>We have successfully provided your Guarantee Letter with the approved amount of ₱ <input type="text" autocomplete="off" name="amount" style="margin-top:10px;" placeholder="Enter amount" value="<?php echo $record['Amount']; ?>">. Please note that you may request another assistance after a period of 3 months. <br>
                  If you have an extra time kindly answer our feedback form through this link.  Your input is greatly appreciated and will help us improve our service.<br> 
-                Thank you for your cooperation. God Bless!<br>
-                 Best regards,<br>
-            Mr.Chalor Howell S. Icban<br>
+                Thank you for your cooperation. God Bless!<br><br>
+                Best regards,<br>
+             Mr.Chalor Howell S. Icban<br>
           Special Assistance Program Coordinator<br>
         Provincial Government of Bataan - Damayan Center</p>
-            </div> 
-                `;
+             </div> 
+                `;  
                 submitbtn.style.display = 'inline';
-                pdf.style.display = 'none';     
+              //  pdf.style.display = 'none';     
     }
         }
 
@@ -1302,7 +1237,7 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
                 document.getElementById("confirmed").value = "no";
             }
         }
-    
+  }
     </script>
 
 </body>

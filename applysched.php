@@ -67,9 +67,10 @@
         $Given_Time=NULL;
         switch ($serviceType) {
             case 'dialysis':
-                $serviceType= "Dialysis";
-                $query = "INSERT INTO financialassistance (Beneficiary_ID, FA_Type) VALUES ('$BENEID', '$serviceType')";
-                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time,Given_Time) VALUES ('$BENEID', 'Online', 'Financial Assistance', 'For Schedule', CURDATE(),'$TIME',NULL)";
+                $medType2=$_POST['diaType'];
+                $serviceType = "Dialysis";
+                $query = "INSERT INTO dialysis (Beneficiary_ID, DialysisAssistanceType) VALUES ('$BENEID', '$medType2')";
+                $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Validation', CURDATE(),'$TIME')";
                 break;
             case 'Burial':
                 $serviceType = "Burial";
@@ -104,7 +105,7 @@
                     $labtype=$_POST['labType'];
                     $serviceType = "Laboratories";
                     $query = "INSERT INTO laboratories (Beneficiary_ID, LabType) VALUES ('$BENEID', '$labtype')";
-                    $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Validatio', CURDATE(),'$TIME')";
+                    $query2 = "INSERT INTO transaction (Beneficiary_Id, TransactionType, AssistanceType, Status, Date,transaction_time) VALUES ('$BENEID', 'Online', '$serviceType', 'For Validation', CURDATE(),'$TIME')";
                     break;
             default:
                 die("Invalid category selected");
@@ -273,7 +274,7 @@
 </button>
 </form>
 
-    <a href="logout.php" class="sub-menu-link">
+<a href="#" onclick="logout()" class="sub-menu-link">
             <img src="images/logout.png">
             <p> Log out</p>
        
@@ -287,19 +288,19 @@
 
         <div class="container" style="background:white;">
             <form action="#" class="form-email" method="POST">
-                <input type="hidden" name="Beneficiary_ID" value="<?php echo $res_Id; ?>">
-                <input type="hidden"  id="Relationship" name="Relationship" value="<?php echo $Relationship; ?>">
-                  <input type="hidden" name="serviceType" value="<?php echo htmlspecialchars($serviceType); ?>">
-                  <input type="hidden" name="hospitals" value="<?php echo htmlspecialchars($hospitals); ?>">
-              
+             
                 <div>
                     <label class="bur" style="color:blue; font-size:30px; margin-top:50px;">
                      Please check your requirements if complete you can proceed to requesting schedule<br>
                         <center><h3>(Icheck kung kumpleto ang mga kinakailangan. Kung oo, maaari kang magpatuloy sa paghingi ng iskedyul.)</h3></center>
                     </label><br><br>
                     
-                  
-                 
+                    <input type="hidden" name="Beneficiary_ID" value="<?php echo $res_Id; ?>">
+                <input type="hidden"  id="Relationship" name="Relationship" value="<?php echo $Relationship; ?>">
+                  <input type="hidden" name="serviceType" value="<?php echo htmlspecialchars($serviceType); ?>">
+                  <input type="hidden" name="hospitals" value="<?php echo htmlspecialchars($hospitals); ?>">
+              
+                    
 
                     <?php if ($serviceType === 'medicines') : ?>
                         <label>
@@ -310,7 +311,7 @@
                       
                     <select id="status" name="medType" required >
                         <?php
-                        $status = array('Amlodipine','Losartan','Metformin','Pending for Release Medicine' ,'Releasing of Medicine','Request for Re-schedule','For Re-schedule', 'Decline Request for Re-schedule', 'Release Medicine');
+                        $status = array('Amlodipine','Losartan','Metformin');
                         foreach ($status as $stat) {
                             $selected = ($record['MedicineType'] == $stat) ? 'selected' : '';
                             echo "<option $selected>$stat</option>";
@@ -353,6 +354,9 @@
 
 
                  </div>
+
+                 <input type="hidden" id="confirmed" name="confirmed" value="">
+                 
                  <?php endif; ?>
 
               
@@ -518,14 +522,25 @@
               
                 
                  <?php if ($serviceType === 'dialysis') : ?>
-                     
+             
                      <h1>FINANCIAL ASSISTANCE FOR DIALYSIS</h1>
+                         <h3>Please select Dialysis Assistance you want to apply for: </h3>
+                    <select id="status" name="diaType" required >
+                        <?php
+                        $status = array('Epogen','Dialyzer');
+                        foreach ($status as $stat) {
+                            $selected = ($record['DialysisAssistanceType'] == $stat) ? 'selected' : '';
+                            echo "<option $selected>$stat</option>";
+                        }
+                        ?>
+                    </select>
                      <ul style="text-align: left; margin-left:60px">
                     <input type="checkbox" onclick="checkAllChecked()"> MEDICAL ABSTRACT<br>
                     <input type="checkbox" onclick="checkAllChecked()"> RESETA NG GAMOT NOTE: 1ST & 2ND CHECKS SAME DATE, SAME DOCTOR, SAME SIGNATURE WITH DOCTOR'S LICENSE NO. (2 PHOTOCOPIES)<br>
                     <input type="checkbox" onclick="checkAllChecked()"> BRGY. INDIGENCY (PASYENTE) & BRGY. INDIGENCY (NAGLALAKAD)<br>
                     <input type="checkbox" onclick="checkAllChecked()"> SULAT (SULAT KAMAY) NA HUMIHINGI NG TULONG KAY GOV. JOET S. GARCIA<br>
                     <input type="checkbox" onclick="checkAllChecked()"> XEROX VALID ID NG PASYENTE W/ 3 SIGNATURES OR XEROX VALID ID NG NAGLALAKAD<br>
+                    <input type="checkbox" onclick="checkAllChecked()"> BRGY. INDIGENCY (PASYENTE) / BRGY. INDIGENCY (REPRESENTATIVE)   <br>
                 </ul>
                 <?php if ($Relationship === 'Mother' || $Relationship === 'Daughter/Son' || $Relationship === 'Father') : ?>
                 <h1>SUPPORTING DOCUMENTS</h1>
@@ -640,6 +655,32 @@ showSupportingDocs();
    }
 
         
+   function logout() {
+    // Load SweetAlert script if not already loaded
+    if (typeof swal === 'undefined') {
+        var script = document.createElement('script');
+        script.src = 'https://unpkg.com/sweetalert/dist/sweetalert.min.js';
+        document.head.appendChild(script);
+    }
+
+    // Show SweetAlert confirmation dialog
+    swal({
+        title: "Are you sure you want to Logout?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willLogout) => {
+        if (willLogout) {
+            // If user confirms, set the value to "yes"
+            document.getElementById("confirmed").value = "yes";
+            // Redirect the user
+            window.location.href = "http://localhost/public_html/logout.php";
+        } else {
+            // If user cancels, set the value to "no"
+            document.getElementById("confirmed").value = "no";
+        }
+    });
+}
     </script>
 </body>
 </html>

@@ -63,21 +63,77 @@ if (!$transactionResult) {
 </head>
 <body>
 <div class="sidebar">
-    <div class="logo"></div>
-    <ul class="menu">
-        <li><a href="#" onclick="dashboard()"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
-        <li class="active"><a href="#" onclick="records()"><i class="fas fa-chart-bar"></i><span>Beneficiary's Records</span></a></li>
-        <li><a href="#" onclick="assistance()"><i class="fas fa-handshake-angle"></i><span>Financial Assistance</span></a></li>
-        <li><a href="#" onclick="hospital()"><i class="fas fa-hospital"></i><span>Hospitals</span></a></li>
-        <li><a href="#" onclick="medicines()"><i class="fa-solid fa-capsules"></i><span>Medicines</span></a></li>
-        <li><a href="#" onclick="laboratories()"><i class="fa-solid fa-flask-vial"></i><span>Laboratories</span></a></li>
-        <?php if ($role === 'Admin'): ?>
-            <li><a href="#" onclick="employees()"><i class="fas fa-users"></i><span>Employees</span></a></li>
+        <div class="logo"  style="height: 2px;" ></div>
+        <ul class="menu" style="margin-top: 15px; margin-left: -30px;" >
+            <li>
+                <a href="#" onclick="dashboard()"   style="font-size:14px;height:10px; ">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="records()"style="font-size:14px;height:10px; ">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Beneficiary's Records</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="assistance()" style="font-size:14px;height:10px; ">
+                    <i class="fas fa-handshake-angle"></i>
+                    <span>Financial Assistance</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="hospital()" style="font-size:14px;height:10px; ">
+                    <i class="fas fa-hospital"></i>
+                    <span>Hospitals</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="medicines()" style="font-size:14px;height:10px; ">
+                    <i class="fa-solid fa-capsules"></i>
+                    <span>Medicines</span>
+                </a>
+            </li>
+            <li  >
+                <a href="#" onclick="laboratories()" style="font-size:14px;height:10px; padding-right:-2px; ">
+                <i class="fa-solid fa-flask-vial"></i>
+                    <span>Laboratories</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
+                <i class="fa-solid fa-flask-vial"></i>
+                    <span>Dialysis</span>
+                </a>
+            </li>
+            <?php if ($role === 'Admin'): ?>
+            <li>
+                <a href="#" onclick="employees()" style="font-size:14px;height:10px; ">
+                    <i class="fas fa-users"></i>
+                    <span>Employees</span>
+                </a>
+            </li>
+           
         <?php endif; ?>
-        <li class="user"><a href="#" onclick="profile()"><i class="fas fa-user"></i><span>Profile</span></a></li>
-        <li class="logout"><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
-    </ul>
-</div>
+       <br>
+            <li class="user"  >
+            <a href="#" onclick="profile()" style="font-size:14px;height:10px; ">
+                    <i class="fas fa-user"></i>
+                                    
+                <span>Profile</span>
+                <input type="hidden" name="Emp_ID" value="<?php echo "{$resEmp_ID['Emp_ID']}"; ?>">
+                </a>
+            </li>
+            <li class="logout">
+                <a href="#" onclick="logout()" style="font-size:14px;height:10px; ">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+         
+        </ul>
+    </div>
 <div class="main--content">
     <div class="header--wrapper">
         <div class="header--title">
@@ -116,9 +172,9 @@ if (!$transactionResult) {
 <h1 style="font-size: 15px; margin-top: -25px; font-size: 15px; margin-left: 35px;"><strong>SQD8: Nakuha ko ang kinakallangan ko mula sa tanggapan ng gobyemo. kung tinanggihan man. Ito ay sapat na ipinaliwanag sa akin.</strong></h1><br>
 
   
-        <div class="table--container">
-             <table>
-                <thead>
+        <div class="table--container" >
+             <table style="width: 100px;" >
+                <thead >
                     <tr>
                         <th>Date:</th>
                     
