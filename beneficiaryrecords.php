@@ -101,8 +101,8 @@ $beneficiaries = array_slice($beneficiariesArray, $offset, $records_per_page);
                 </a>
             </li>
             <li>
-                <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
-                <i class="fa-solid fa-flask-vial"></i>
+            <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
+            <i class="fa-solid fa-file-medical" style="margin-right:6px; margin-left:5px;"></i>
                     <span>Dialysis</span>
                 </a>
             </li>
@@ -279,6 +279,9 @@ function laboratories() {
 function profile() {
     window.location = "http://localhost/public_html/profileadmin.php";
 }
+function dialysis() {
+window.location = "http://localhost/public_html/dialysis.php";
+    }
 function logout() {
     // Load SweetAlert script if not already loaded
     if (typeof swal === 'undefined') {

@@ -70,8 +70,8 @@ $res_Fname = $result['Firstname'];
                 </a>
             </li>
             <li>
-                <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
-                <i class="fa-solid fa-flask-vial"></i>
+            <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
+            <i class="fa-solid fa-file-medical" style="margin-right:6px; margin-left:5px;"></i>
                     <span>Dialysis</span>
                 </a>
             </li>
@@ -106,7 +106,7 @@ $res_Fname = $result['Firstname'];
     <div class="main--content">
         <div class="header--wrapper">
             <div class="header--title">
-                <span> 1Bataan Malasakit - Special Assistance Program </span>
+                <span>  Provincial Government of Bataan-Damayan Center   </span>
                 <h2> Financial Assistance </h2>
             </div>
             <div class="user--info">
@@ -126,7 +126,7 @@ $res_Fname = $result['Firstname'];
                     <ul class = "dropdown">
                         <li> <a href = "#" onclick="burial()"> Burial </a></li>
                         <li> <a href = "#" onclick="chemrad()"> Chemotheraphy & Radiation </a></li>
-                        <li> <a href = "#" onclick="dialysis()"> Dialysis Patients </a></li>
+                   
                     </ul>
                     </ul>
                   
@@ -360,7 +360,7 @@ function chemrad(){
 }
 
 function dialysis(){
-    window.location = "http://localhost/public_html/fa-dialysis.php"
+    window.location = "http://localhost/public_html/dialysis.php"
 }
 
 

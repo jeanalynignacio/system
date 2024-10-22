@@ -34,6 +34,20 @@ body {
   height: 80px;
   padding: 16px;
 }
+.btn1{
+  color: rgb(20, 23, 155);
+  cursor: pointer;
+  margin-left: 940px;
+  margin-bottom: 10px;
+  height: 30px;
+  font-size: small;
+ }
+ .btn1:hover{
+   background-color: #1d4d91; /* Change background color on hover */
+   color: #fdfdfd;
+   padding: 2px;
+   border-radius: 5px;
+ }
 
 .menu {
   height: 88%;

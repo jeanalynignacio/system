@@ -114,7 +114,7 @@ if ($result) {
     echo "Error: " . mysqli_error($con);
 }
 }
-elseif ($Status == "Pending due to Insufficient funds") {
+elseif ($Status == "Pending due to Insufficient stocks") {
     $Status = "For Schedule";
 
 }
@@ -142,9 +142,9 @@ elseif ($Status == "Pending due to Insufficient funds") {
         });
         </script>
         </body>';
-        
+
             }else{
-                $query = "UPDATE financialassistance f
+                $query = "UPDATE dialysis f
                 INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
                 INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
                 SET t.Given_Sched = '$Date', t.Given_Time = '$transaction_time', t.Status = '$Status', t.Emp_ID='$EmpID',f.branch='$branch1'
@@ -204,7 +204,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                     ";
 
                 }
-                elseif($stats == 'Pending due to Insufficient funds') {
+                elseif($stats == 'Pending due to Insufficient stocks') {
                     date_default_timezone_set('Asia/Manila');
                     $Date = date('Y-m-d'); // Set the current date for Given_Sched
                     $transaction_time = $_POST['time'];
@@ -216,7 +216,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                     <html>
                     <body>
                     <p>Dear Mr./Ms./Mrs. $lastName,</p>
-                    <p>I am writing to inform you that we now have the necessary funds available to proceed with your application.<br></p>
+                    <p>I am writing to inform you that we now have the necessary stocks available to proceed with your application.<br></p>
                     <p> However, we regret to inform you that your submitted requirements have expired. Kindly submit a new set of requirements on $Date at  $transaction_time_12hr to proceed with the validation of requirements to process your assistance.<br><br></p>
                    <p> Thank you for cooperation. God Bless!<br><br></p>
                   
@@ -236,7 +236,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                         swal("Update and email send successful","","success")
                         .then((value) => {
                             if (value) {
-                                window.location.href = "assistance.php";
+                                window.location.href = "dialysis.php";
                             }
                         });
                         </script>
@@ -251,7 +251,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
             swal("Updated successfully","","success")
             .then((value) => {
                 if (value) {
-                    window.location.href = "assistance.php";
+                    window.location.href = "dialysis.php";
                 }
             });
             </script>
@@ -259,7 +259,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
 
         } else {
             echo "Error updating records: " . mysqli_error($con);
-            header("Location: assistance.php");
+            header("Location: dialysis.php");
             exit();
         }
          
@@ -340,7 +340,7 @@ $transaction_time_12hr = date("g:i A", strtotime($transaction_time)); // Convert
                 <body>
                 <p>Dear Mr./Ms./Mrs. $lastName,</p>
                 <p>Your assistance request is currently pending for payout.</p>
-                <p>We are processing your application, and you will receive your financial assistance soon.</p>
+                <p>We are processing your application, and you will receive your assistance soon.</p>
                 <p>Thank you for your patience and cooperation.</p>
                  <p>Best regards,<br>$employeeName<br>
  Special Assistance Program Coordinator<br>
@@ -421,19 +421,31 @@ if ($result = mysqli_fetch_assoc($SQL)) {
              WHERE ItemName='$MedicineType' 
              AND branch='$branch' 
              AND ExpDate >= CONVERT_TZ(NOW(), '+00:00', '+08:00') 
-             AND Quantity > 0 
+            
              ORDER BY ExpDate ASC 
-             LIMIT 1";
+             ";
 
     $result3 = mysqli_query($con, $sql3);
 
-    if ($result3) {
         if ($resultbal = mysqli_fetch_assoc($result3)) {
             $exp = $resultbal['ExpDate'];
             $beneID = $_POST['Beneficiary_Id'];
 
             $branch = $resultbal['branch'];
-            if ($resultbal['Quantity'] != 0) {
+
+            $sql4= "SELECT * FROM dialysisstocks 
+            WHERE ItemName='$MedicineType' 
+            AND branch='$branch' 
+            AND ExpDate >= CONVERT_TZ(NOW(), '+00:00', '+08:00') 
+           AND Quantity > 0
+            ORDER BY ExpDate ASC 
+            LIMIT 1 ";
+
+             $result42 = mysqli_query($con, $sql4);
+
+              if ($result42 && ($result12 = mysqli_fetch_assoc($result42))) {
+          
+                if ($result12['Quantity'] != 0) {
                 // Update query to decrease the Quantity
                 $updateQuery = "UPDATE dialysisstocks 
                                 SET Quantity = Quantity - 1 
@@ -529,16 +541,16 @@ $result2 = mysqli_query($con, $sql2);
 } else {
    
 
-    date_default_timezone_set('Asia/Manila');
-    $ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
-    $ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
-    
-    $query = "UPDATE dialysis f
-     INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
-     INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
-     SET t.Status = 'Pending due to Insufficient stocks', t.Emp_ID='$EmpID', t.Given_Sched = '$ReceivedDate',
-         t.Given_Time = '$ReceivedTime'
-     WHERE b.Beneficiary_Id = '$beneID'";
+date_default_timezone_set('Asia/Manila');
+$ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
+$ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
+
+$query = "UPDATE dialysis f
+ INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+ INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+ SET t.Status = 'Pending due to Insufficient stocks', t.Emp_ID='$EmpID', t.Given_Sched = '$ReceivedDate',
+     t.Given_Time = '$ReceivedTime'
+ WHERE b.Beneficiary_Id = '$beneID'";
 
 $result2 = mysqli_query($con, $query);
 if($result2) {
@@ -569,17 +581,17 @@ $mail->addAddress($Email);
 $mail->isHTML(true);
 $mail->Subject = 'Pending Application due to Insufficient Stocks';
 $mail->Body = "
-    <html>
-    <body>
-    <p>Dear Mr./Ms./Mrs. $lastName,</p>
- <p>We regret to inform you that we currently do not have sufficient stocks available to process your assistance application.<br></p>
-  <p>As a result, your application is pending at the moment. We will keep you updated as soon as stocks become available.<br><br></p>
-    <p>Thank you for your cooperation. God Bless!<br><br></p>
-    <p>Best regards,<br>$employeeName<br>
+<html>
+<body>
+<p>Dear Mr./Ms./Mrs. $lastName,</p>
+<p>We regret to inform you that we currently do not have sufficient stocks available to process your assistance application.<br></p>
+<p>As a result, your application is pending at the moment. We will keep you updated as soon as stocks become available.<br><br></p>
+<p>Thank you for your cooperation. God Bless!<br><br></p>
+<p>Best regards,<br>$employeeName<br>
 Special Assistance Program Coordinator<br>
 Provincial Government of Bataan - Damayan Center</p>
-    </body>
-    </html>
+</body>
+</html>
 ";
 
 $mail->send();
@@ -588,25 +600,121 @@ echo '<body>
 <script>
 swal("This branch has no stocks","","error")
 .then((value) => {
-    if (value) {
-        window.location.href = "dialysis.php";
-    }
+if (value) {
+    window.location.href = "dialysis.php";
+}
 });
 </script>
 </body>';
 } catch (Exception $e) {
 echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+echo '<body>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+swal("Message could not be sent","","error")
+.then((value) => {
+if (value) {
+    window.location.href = "dialysis.php";
+}
+});
+</script>
+</body>';
 }
 
 }
+
+} 
+} else{
+   
+date_default_timezone_set('Asia/Manila');
+$ReceivedDate = date('Y-m-d'); // Set the current date for Given_Sched
+$ReceivedTime = date('H:i:s'); // Set the current date and time for transaction_time
+
+$query = "UPDATE dialysis f
+ INNER JOIN beneficiary b ON b.Beneficiary_Id = f.Beneficiary_ID
+ INNER JOIN transaction t ON t.Beneficiary_Id = f.Beneficiary_ID
+ SET t.Status = 'Pending due to Insufficient stocks', t.Emp_ID='$EmpID', t.Given_Sched = '$ReceivedDate',
+     t.Given_Time = '$ReceivedTime'
+ WHERE b.Beneficiary_Id = '$beneID'";
+
+$result2 = mysqli_query($con, $query);
+if($result2) {
+$lastName = $result['Lastname'];  // Assuming 'Lastname' is part of the $result array
+$Email = $result['Email'];  // Assuming 'Email' is part of the $result array
+$employeeName ="Mr.Chalor Howell S. Icban";
+
+require 'PHPMailer/src/Exception.php';
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+
+$mail = new PHPMailer(true);
+try {
+// Server settings
+$mail->isSMTP();
+$mail->Host = 'smtp.gmail.com';
+$mail->SMTPAuth = true;
+$mail->Username = 'bataanpgbsap@gmail.com'; // Your Gmail address
+$mail->Password = 'cmpp hltn mxuc tcgl'; // Your Gmail password or App Password
+$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+$mail->Port = 587;
+
+// Recipients
+$mail->setFrom('bataanpgbsap@gmail.com', 'PGB-SAP');
+$mail->addAddress($Email);
+
+// Content
+$mail->isHTML(true);
+$mail->Subject = 'Pending Application due to Insufficient Stocks';
+$mail->Body = "
+<html>
+<body>
+<p>Dear Mr./Ms./Mrs. $lastName,</p>
+<p>We regret to inform you that we currently do not have sufficient stocks available to process your assistance application.<br></p>
+<p>As a result, your application is pending at the moment. We will keep you updated as soon as stocks become available.<br><br></p>
+<p>Thank you for your cooperation. God Bless!<br><br></p>
+<p>Best regards,<br>$employeeName<br>
+Special Assistance Program Coordinator<br>
+Provincial Government of Bataan - Damayan Center</p>
+</body>
+</html>
+";
+
+$mail->send();
+echo '<body>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+swal("This branch has no stocks","","error")
+.then((value) => {
+if (value) {
+    window.location.href = "dialysis.php";
 }
-} else {
-echo "Error inserting data into history table: " . mysqli_error($con);
+});
+</script>
+</body>';
+} catch (Exception $e) {
+echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+echo '<body>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+swal("Message could not be sent","","error")
+.then((value) => {
+if (value) {
+    window.location.href = "dialysis.php";
+}
+});
+</script>
+</body>';
+}
+
+}
+
+}
+} // dto
+
 }
 }
-}
-}
-    
+
+
     elseif ($Status == "Decline Request for Re-schedule") {
           $reason= $_POST['reason'];
        $query = "UPDATE dialysis m
@@ -713,7 +821,7 @@ echo "Error inserting data into history table: " . mysqli_error($con);
         </body>';
     } 
     }
-    }
+
 
     elseif ($Status == "For Re-schedule") {
         $transaction_time = $_POST['time'];
@@ -859,6 +967,7 @@ echo "Error inserting data into history table: " . mysqli_error($con);
     }
     // Construct the update query
 }
+  }
 
 ?>
 
@@ -899,14 +1008,17 @@ echo "Error inserting data into history table: " . mysqli_error($con);
                     <span class="details" style="color:  #f5ca3b;">Transaction Type</span>
                     <input disabled type = "text" required value = "<?php echo $record['TransactionType']; ?>">
                 </div>
-</div>
-        
+</div><input disabled name="f" id="dt3"  style="color:#f5ca3b;background-color: transparent;border: none;outline: none; font-size:15px;margin-top:15px;" type = "hidden" required value = "Date Validated" > 
+              
+<input disabled name="f" id="dt2" type="hidden" style="background-color: transparent;border: none;outline: none; color:white;font-size:15px;margin-top:-9px;" required value="<?php echo $record['Given_Sched']; ?>">
+           
         <div class="user-details">
                 <div class="input-box">
                     <span class="details"style="color:  #f5ca3b;"> Types of Medicines </span>
                     <input disabled type="text" required value="<?php echo $record['DialysisAssistanceType']; ?>" name="MedicineType"/>
                 </div>
-     
+                <input type = "hidden" id="stats" name="stats" required value = "<?php echo $record['Status']; ?>">
+                     
                 <div class="input-box">
                     <span class="details" style="color:  #f5ca3b; ">Status</span>
                    <!-- <select id="status" name="Status" onchange="handleStatusChange()">
@@ -923,23 +1035,22 @@ echo "Error inserting data into history table: " . mysqli_error($con);
 
                     <?php
                        
-                       $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Release Assistance' ,'Releasing of Assistance','Request for Re-schedule','For Re-schedule', 'Decline Request for Re-schedule','Pending due to Insufficient funds', 'Receive Assistance');
-
-                       if ($record['Status'] == 'Pending due to Insufficient funds') {
+                       $status = array('For Schedule','For Validation','Pending for Requirements','Pending for Release Assistance' ,'Releasing of Assistance','Request for Re-schedule','For Re-schedule', 'Decline Request for Re-schedule','Pending due to Insufficient stocks', 'Receive Assistance');
+                       if ($record['Status'] == 'Pending due to Insufficient stocks') {
                         $today = date('Y-m-d');
                       $oneMonthAgo = date('Y-m-d', strtotime('-1 month'));
                       $givenSched = $record['Given_Sched'];
-                            if ($role === 'Community Affairs Officer'){
+                         
                           
                     if ($givenSched < $oneMonthAgo) {
                         echo "<input type='text' id='status' name='Status' value='For Schedule' readonly>";
                                 }
                                 else{
-                                    echo "<input type='text' id='status' name='Status' value='Releasing of Assistance' readonly>";
+                                    echo "<input type='text' id='status' name='Status' value='Receive Assistance' readonly>";
                     
                                 }
-                       }
-                    }      
+                       
+                    }
     elseif ($record['Status'] == 'For Schedule') {
         // If the current status is "For Schedule", display an input field instead of a dropdown
         echo "<input type='text' id='status' name='Status' value='For Schedule' readonly>";
@@ -1012,23 +1123,46 @@ var empID = document.querySelector('input[name="Emp_ID"]').value;
             emailFormat.innerHTML = '';
             requirements.style.display = 'none'; // Hide requirements by default
             
-            if (status === 'For Schedule') {
-                submitbtn.style.display = 'inline';
-                emailFormat.innerHTML = `
-                     <div style = "color: black; padding:15px; background:white; margin-top:20px;"> 
+        
+    if (status === 'For Schedule') {
+        submitbtn.style.display = 'inline';
+       
+if(stats === 'Pending due to Insufficient stocks') {
+        emailFormat.innerHTML = `
+         <div style = "color: black; padding:15px; background:white; margin-top:20px;"> 
             Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
-            <p>I am writing to inform you that your request for scheduling has been approved.<br>
+            <p>I am writing to inform you that we now have the necessary stocks available to proceed with your application.<br>
+        However, we regret to inform you that your submitted requirements have expired. Kindly submit a new set of requirements on <input type="date" id="calendar" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
+            at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" /> to proceed with the validation of requirements to process your assistance.<br><br>
+       Thank you for your cooperation. God Bless!<br><br>
+        
+            <br>
+         
+            Best regards,<br>
+            <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+            Provincial Government of Bataan - Special Assistance Program</p>
+         </div> 
+        `;
+
+
+    }else{
+      
+        emailFormat.innerHTML = `
+         <div style = "color: black; padding:15px; background:white; margin-top:20px;"> 
+            Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
+            <p>I am writing to inform you that your request for scheduling for applying assistance has been approved.<br>
             Your schedule has been set for <input type="date" id="calendar" name="Given_Sched" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $record['Given_Sched']; ?>" /> 
             at <input type="time" id="time" name="time" value="<?php echo date("H:i", strtotime($record['transaction_time'])); ?>" />. We kindly expect your presence on the said date.<br>
           <br>
          
-             Best regards,<br>
-            Mr.Chalor Howell S. Icban<br>
-          Special Assistance Program Coordinator<br>
-        Provincial Government of Bataan - Damayan Center</p>
-          </div> 
-                `;
-            } else if (status === 'For Validation') {
+            Best regards,<br>
+            <input type="text" name="EmpName" style="margin-top:15px;" value="<?php echo isset($res_Fname) ? $res_Fname . ' ' . $res_Lname : ''; ?>" placeholder="Enter employee name" required><br><br>
+            Provincial Government of Bataan - Special Assistance Program</p>
+         </div> 
+        `;
+    }  
+}
+ else if (status === 'For Validation') {
                
 
                 let relationship = document.getElementById('relationship').value;
@@ -1088,7 +1222,7 @@ document.getElementById('requirements').innerHTML = requirementsHTML;
                     <div style="color: black; padding:15px; background:white; margin-top:20px;">
                         Dear Mr./Ms./Mrs. <?php echo $record['Lastname']; ?>,<br><br>
                         <p>Your assistance request is currently pending for payout.<br>
-                        We are processing your application, and you will receive your financial assistance soon.<br><br>
+                        We are processing your application, and you will receive your assistance soon.<br><br>
                         Thank you for your patience and cooperation.<br><br>
                          Best regards,<br>
             Mr.Chalor Howell S. Icban<br>
@@ -1134,6 +1268,7 @@ Provincial Government of Bataan - Damayan Center</p>
             Provincial Government of Bataan - Special Assistance Program</p>
          </div> 
         `;
+
             }
         else if (status === 'Decline Request for Re-schedule') {
             submitbtn.style.display = 'inline';

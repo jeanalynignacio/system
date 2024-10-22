@@ -75,8 +75,9 @@ $query="SELECT * FROM employees where role='Employee'";
                 </a>
             </li>
             <li>
-                <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
-                <i class="fa-solid fa-flask-vial"></i>
+            <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
+            <i class="fa-solid fa-file-medical" style="margin-right:6px; margin-left:5px;"></i>
+
                     <span>Dialysis</span>
                 </a>
             </li>
@@ -112,7 +113,7 @@ $query="SELECT * FROM employees where role='Employee'";
     <div class="main--content">
         <div class="header--wrapper">
             <div class="header--title">
-                <span> 1Bataan Malasakit - Special Assistance Program </span>
+                <span> Provincial Government of Bataan-Damayan Center  </span>
                 <h2> Assistance </h2>
             </div>
             <div class="user--info">
@@ -239,9 +240,8 @@ function burial(){
 function chemrad(){
     window.location = "http://localhost/public_html/fa-chemrad.php"
 }
-function dialysis(){
-    window.location = "http://localhost/public_html/fa-dialysis.php"
-}
+
+
 function employees(){
         window.location = "http://localhost/public_html/employeeRecords.php"
 }

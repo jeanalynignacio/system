@@ -263,6 +263,7 @@ if ($beneficiaryCount > 0) {
         }
     });
 }
+
 </script>
 </body>
 </html>

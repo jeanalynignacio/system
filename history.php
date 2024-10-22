@@ -83,8 +83,8 @@ if(isset($_POST['Beneficiary_Id'])) {
                 </a>
             </li>
             <li>
-                <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
-                <i class="fa-solid fa-flask-vial"></i>
+            <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
+            <i class="fa-solid fa-file-medical" style="margin-right:6px; margin-left:5px;"></i>
                     <span>Dialysis</span>
                 </a>
             </li>
@@ -120,7 +120,7 @@ if(isset($_POST['Beneficiary_Id'])) {
     <div class="main--content">
         <div class="header--wrapper">
             <div class="header--title">
-                <span> 1Bataan Malasakit - Special Assistance Program </span>
+                <span> Provincial Government of Bataan-Damayan Center  </span>
                 <h2> History of Assistance </h2>
             </div>
             <div class="user--info">
@@ -305,7 +305,7 @@ function chemrad(){
 }
 
 function dialysis(){
-    window.location = "http://localhost/public_html/fa-dialysis.php"
+    window.location = "http://localhost/public_html/dialysis.php"
 }
 
 
@@ -322,17 +322,32 @@ function employees(){
     function profile() {
         window.location = "http://localhost/public_html/profileadmin.php";
     }
+   
     function logout() {
-    var confirmation = confirm("Are you sure you want to Logout?");
-    if (confirmation) {
-        // If user clicks OK, set the value to "yes"
-        document.getElementById("confirmed").value = "yes";
-        // Redirect the user
-        window.location.href = "http://localhost/public_html/logoutemp.php";
-    } else {
-        // If user cancels, set the value to "no"
-        document.getElementById("confirmed").value = "no";
+    // Load SweetAlert script if not already loaded
+    if (typeof swal === 'undefined') {
+        var script = document.createElement('script');
+        script.src = 'https://unpkg.com/sweetalert/dist/sweetalert.min.js';
+        document.head.appendChild(script);
     }
+
+    // Show SweetAlert confirmation dialog
+    swal({
+        title: "Are you sure you want to Logout?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willLogout) => {
+        if (willLogout) {
+            // If user confirms, set the value to "yes"
+            document.getElementById("confirmed").value = "yes";
+            // Redirect the user
+            window.location.href = "http://localhost/public_html/logoutemp.php";
+        } else {
+            // If user cancels, set the value to "no"
+            document.getElementById("confirmed").value = "no";
+        }
+    });
 }
 function editRecord(beneficiaryId) {
             document.getElementById('beneficiaryIdInput').value = beneficiaryId;

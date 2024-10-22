@@ -162,8 +162,8 @@ $totalEntriesSTAT = $row['totalEntriesSTAT'];
                 </a>
             </li>
             <li>
-                <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
-                <i class="fa-solid fa-flask-vial"></i>
+            <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
+            <i class="fa-solid fa-file-medical" style="margin-right:6px; margin-left:5px;"></i>
                     <span>Dialysis</span>
                 </a>
             </li>

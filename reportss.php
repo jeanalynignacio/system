@@ -766,17 +766,32 @@ function employees(){
     function profile() {
         window.location = "http://localhost/public_html/profileadmin.php";
     }
+   
     function logout() {
-    var confirmation = confirm("Are you sure you want to Logout?");
-    if (confirmation) {
-        // If user clicks OK, set the value to "yes"
-        document.getElementById("confirmed").value = "yes";
-        // Redirect the user
-        window.location.href = "http://localhost/public_html/logoutemp.php";
-    } else {
-        // If user cancels, set the value to "no"
-        document.getElementById("confirmed").value = "no";
+    // Load SweetAlert script if not already loaded
+    if (typeof swal === 'undefined') {
+        var script = document.createElement('script');
+        script.src = 'https://unpkg.com/sweetalert/dist/sweetalert.min.js';
+        document.head.appendChild(script);
     }
+
+    // Show SweetAlert confirmation dialog
+    swal({
+        title: "Are you sure you want to Logout?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willLogout) => {
+        if (willLogout) {
+            // If user confirms, set the value to "yes"
+            document.getElementById("confirmed").value = "yes";
+            // Redirect the user
+            window.location.href = "http://localhost/public_html/logoutemp.php";
+        } else {
+            // If user cancels, set the value to "no"
+            document.getElementById("confirmed").value = "no";
+        }
+    });
 }
         </script>
     </div>

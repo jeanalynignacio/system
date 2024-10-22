@@ -138,56 +138,62 @@ awesome/6.4.0/css/all.min.css"/>
 </head>
 <body>
 <div class="sidebar">
-<div class="logo"></div>
-
-<ul class="menu">
-<li>
-<a href="#" onclick="dashboard()">
-<i class="fas fa-tachometer-alt"> </i>
-<span> Dashboard </span>
-</a>
-</li>
-<li >
-<a href="#" onclick="records()">
-<i class="fas fa-chart-bar"> </i>
-<span> Beneficiary's Records </span>
-</a>
-</li>
-<li>
-<a href="#" onclick="assistance()">
-<i class="fas fa-handshake-angle"> </i>
-<span> Financial Assistance </span>
-</a>
-</li>
-<li>
-<a href="#" onclick="hospital()">
-<i class="fas fa-hospital"> </i>
-<span> Hospitals </span>
-</a>
-</li>
-<li>
-<a href="#" onclick="medicines()">
-<i class="fa-solid fa-capsules"></i>
-<span>Medicines</span>
-</a>
-</li>
-<li>
-    <a href="#" onclick="laboratories()">
-        <i class="fa-solid fa-flask-vial"></i>
-            <span>Laboratories</span>
-</a>
-    </li>
-<?php if ($role === 'Admin'): ?>
-            <li class="active">
-                <a href="#" onclick="employees()">
+<div class="logo"  style="height: 2px;" ></div>
+        <ul class="menu" style="margin-top: 15px; margin-left: -8px;" >
+            <li>
+                <a href="#" onclick="dashboard()"   style="font-size:14px;height:10px; ">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="active" >
+                <a href="#" onclick="records()"style="font-size:14px;height:10px; ">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Beneficiary's Records</span>
+                </a>
+            </li>
+            <li >
+                <a href="#" onclick="assistance()" style="font-size:14px;height:10px; ">
+                    <i class="fas fa-handshake-angle"></i>
+                    <span>Financial Assistance</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="hospital()" style="font-size:14px;height:10px; ">
+                    <i class="fas fa-hospital"></i>
+                    <span>Hospitals</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="medicines()" style="font-size:14px;height:10px; ">
+                    <i class="fa-solid fa-capsules"></i>
+                    <span>Medicines</span>
+                </a>
+            </li>
+            <li  >
+                <a href="#" onclick="laboratories()" style="font-size:14px;height:10px; padding-right:-2px; ">
+                <i class="fa-solid fa-flask-vial"></i>
+                    <span>Laboratories</span>
+                </a>
+            </li>
+            <li>
+            <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
+            <i class="fa-solid fa-file-medical" style="margin-right:6px; margin-left:5px;"></i>
+                    <span>Dialysis</span>
+                </a>
+            </li>
+            <?php if ($role === 'Admin'): ?>
+            <li>
+                <a href="#" onclick="employees()" style="font-size:14px;height:10px; ">
                     <i class="fas fa-users"></i>
                     <span>Employees</span>
                 </a>
             </li>
-            
+           
         <?php endif; ?>
-        <li class="user" >
-            <a href="#" onclick="profile()">
+       <br>
+            <li class="user"  >
+            <a href="#" onclick="profile()" style="font-size:14px;height:10px; ">
                     <i class="fas fa-user"></i>
                                     
                 <span>Profile</span>
@@ -195,14 +201,14 @@ awesome/6.4.0/css/all.min.css"/>
                 </a>
             </li>
             <li class="logout">
-                <a href="#" onclick="logout()">
+                <a href="#" onclick="logout()" style="font-size:14px;height:10px; ">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>
             </li>
-</ul>
-
-</div>
+         
+        </ul>
+    </div>
 <div class="main--content">
 <div class="header--wrapper">
 <div class="header--title">
@@ -267,6 +273,9 @@ window.location ="http://localhost/public_html/medicines.php";
 function laboratories() {
 window.location = "http://localhost/public_html/laboratories.php";
     }
+    function dialysis() {
+window.location = "http://localhost/public_html/dialysis.php";
+    }
 function employees(){
         window.location = "http://localhost/public_html/employeeRecords.php"
     }
@@ -274,17 +283,32 @@ function employees(){
 function profile() {
         window.location = "http://localhost/public_html/profileadmin.php";
     }
+    
     function logout() {
-    var confirmation = confirm("Are you sure you want to Logout?");
-    if (confirmation) {
-        // If user clicks OK, set the value to "yes"
-        document.getElementById("confirmed").value = "yes";
-        // Redirect the user
-        window.location.href = "http://localhost/public_html/logoutemp.php";
-    } else {
-        // If user cancels, set the value to "no"
-        document.getElementById("confirmed").value = "no";
+    // Load SweetAlert script if not already loaded
+    if (typeof swal === 'undefined') {
+        var script = document.createElement('script');
+        script.src = 'https://unpkg.com/sweetalert/dist/sweetalert.min.js';
+        document.head.appendChild(script);
     }
+
+    // Show SweetAlert confirmation dialog
+    swal({
+        title: "Are you sure you want to Logout?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willLogout) => {
+        if (willLogout) {
+            // If user confirms, set the value to "yes"
+            document.getElementById("confirmed").value = "yes";
+            // Redirect the user
+            window.location.href = "http://localhost/public_html/logoutemp.php";
+        } else {
+            // If user cancels, set the value to "no"
+            document.getElementById("confirmed").value = "no";
+        }
+    });
 }
 function showConfirmation() {
             var confirmation = confirm("Are you sure you want to update?");

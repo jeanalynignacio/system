@@ -30,7 +30,7 @@ $query="SELECT * FROM employees where role='Employee'";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Medicines </title>
+    <title> Dialysis </title>
     <link rel = "stylesheet" href = "medicines.css"/>
     <link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
@@ -76,8 +76,8 @@ $query="SELECT * FROM employees where role='Employee'";
                 </a>
             </li>
             <li class="active" >
-                <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
-                <i class="fa-solid fa-flask-vial"></i>
+            <a href="#" onclick="dialysis()" style="font-size:14px;height:10px; ">
+            <i class="fa-solid fa-file-medical" style="margin-right:6px; margin-left:5px;"></i>
                     <span>Dialysis</span>
                 </a>
             </li>
@@ -113,7 +113,7 @@ $query="SELECT * FROM employees where role='Employee'";
     <div class="main--content">
         <div class="header--wrapper">
             <div class="header--title">
-                <span> 1Bataan Malasakit - Special Assistance Program </span>
+                <span>Provincial Government of Bataan-Damayan Center  </span>
                 <h2> Assistance </h2>
             </div>
             <div class="user--info">
@@ -134,8 +134,11 @@ $query="SELECT * FROM employees where role='Employee'";
 
         <div class="tabular--wrapper">
             <h3 class="main--title">Dialysis Data </h3>
-            <div class="table--container">
-                <table>
+            
+            <div class="table--container"><br>
+            <button class="btn1"  style="font-size:20px; margin-left:50px;" onclick="window.location.href ='addstocks.php';">Add Stocks</button>
+<br>
+                <table style="margin-top:20px;">
                     <thead>
                         <tr>
                             <th> Date: </th>
@@ -241,9 +244,7 @@ function burial(){
 function chemrad(){
     window.location = "http://localhost/public_html/fa-chemrad.php"
 }
-function dialysis(){
-    window.location = "http://localhost/public_html/fa-dialysis.php"
-}
+
 function employees(){
         window.location = "http://localhost/public_html/employeeRecords.php"
 }
@@ -256,17 +257,32 @@ function dialysis() {
 function profile() {
         window.location = "http://localhost/public_html/profileadmin.php";
 }
-    function logout() {
-    var confirmation = confirm("Are you sure you want to Logout?");
-    if (confirmation) {
-        // If user clicks OK, set the value to "yes"
-        document.getElementById("confirmed").value = "yes";
-        // Redirect the user
-        window.location.href = "http://localhost/public_html/logoutemp.php";
-    } else {
-        // If user cancels, set the value to "no"
-        document.getElementById("confirmed").value = "no";
+    
+function logout() {
+    // Load SweetAlert script if not already loaded
+    if (typeof swal === 'undefined') {
+        var script = document.createElement('script');
+        script.src = 'https://unpkg.com/sweetalert/dist/sweetalert.min.js';
+        document.head.appendChild(script);
     }
+
+    // Show SweetAlert confirmation dialog
+    swal({
+        title: "Are you sure you want to Logout?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willLogout) => {
+        if (willLogout) {
+            // If user confirms, set the value to "yes"
+            document.getElementById("confirmed").value = "yes";
+            // Redirect the user
+            window.location.href = "http://localhost/public_html/logoutemp.php";
+        } else {
+            // If user cancels, set the value to "no"
+            document.getElementById("confirmed").value = "no";
+        }
+    });
 }
 
 

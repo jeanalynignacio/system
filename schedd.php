@@ -31,7 +31,7 @@
         $serviceType = $_SESSION['serviceType'];
         echo"<?php$serviceType?>";
     }else{
-        $password = 'tjmonterde24!';
+        $password = 'Arlene45!';
 
         // Hash the password using bcrypt
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
